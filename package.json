@@ -16,6 +16,7 @@
     "react-native": "0.70.1",
     "react-native-gesture-handler": "^2.6.2",
     "react-native-paper": "5.0.0-rc.6",
+    "react-native-reanimated": "^2.10.0",
     "react-native-safe-area-context": "^4.4.1",
     "react-native-screens": "^3.17.0",
     "react-native-vector-icons": "^9.2.0"
@@ -32,13 +33,17 @@
     "@typescript-eslint/parser": "^5.37.0",
     "babel-jest": "^26.6.3",
     "eslint": "^7.32.0",
-    "jest": "^26.6.3",
+    "jest": "^27.5.1",
     "metro-react-native-babel-preset": "^0.72.1",
     "react-test-renderer": "18.1.0",
+    "ts-jest": "^27.1.3",
     "typescript": "^4.8.3"
   },
   "jest": {
     "preset": "react-native",
+    "setupFiles": [
+      "./jest-setup.tsx"
+    ],
     "moduleFileExtensions": [
       "ts",
       "tsx",
@@ -46,6 +51,9 @@
       "jsx",
       "json",
       "node"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!react-native|react-navigation)/"
     ]
   }
 }

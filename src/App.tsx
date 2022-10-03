@@ -1,5 +1,4 @@
 import React from 'react';
-import {Provider as PaperProvider} from 'react-native-paper';
 import {AppRouter} from './router';
 
 import {Provider} from 'react-redux';
@@ -10,9 +9,7 @@ export default function App() {
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor} loading={null}>
-        <PaperProvider>
-          <AppRouter />
-        </PaperProvider>
+        <AppRouter />
       </PersistGate>
     </Provider>
   );

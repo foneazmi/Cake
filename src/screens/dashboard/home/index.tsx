@@ -7,9 +7,9 @@ export const HomePage = () => {
   return (
     <View>
       <Appbar.Header mode="center-aligned">
-        <Appbar.Content title="Home" />
+        <Appbar.Content title="Title" subtitle="Subtitle" />
         <Appbar.Action
-          icon="calendar-cursor"
+          icon="dots-horizontal"
           onPress={() => {
             navigator.navigate('lorem');
           }}

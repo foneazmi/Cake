@@ -1,6 +1,6 @@
 import React from 'react';
-import {Text, View} from 'react-native';
-import {Appbar} from 'react-native-paper';
+import {View} from 'react-native';
+import {Text, Appbar} from 'react-native-paper';
 import {navigator} from '../../../helpers';
 
 export const HomePage = () => {
@@ -15,7 +15,7 @@ export const HomePage = () => {
           }}
         />
       </Appbar.Header>
-      <Text>HomePage</Text>
+      <Text variant="labelMedium">Home Page</Text>
     </View>
   );
 };

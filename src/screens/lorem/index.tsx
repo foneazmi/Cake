@@ -1,11 +1,21 @@
 import React from 'react';
-import {Text, View, StyleSheet} from 'react-native';
-import {Appbar, MD3LightTheme as DefaultTheme} from 'react-native-paper';
+import {StyleSheet, View} from 'react-native';
+import {Appbar, Text} from 'react-native-paper';
 import {navigator} from '../../helpers';
+import {useTheme} from 'react-native-paper';
 
 export const LoremScreen = () => {
+  const theme = useTheme();
+
+  const containerStyle = [
+    styles.container,
+    {
+      backgroundColor: theme.colors.background,
+    },
+  ];
+
   return (
-    <View style={styles.container}>
+    <View style={containerStyle}>
       <Appbar.Header>
         <Appbar.BackAction
           onPress={() => {
@@ -14,14 +24,13 @@ export const LoremScreen = () => {
         />
         <Appbar.Content title="Lorem" />
       </Appbar.Header>
-      <Text>LoremScreen</Text>
+      <Text variant="labelMedium">Lorem Screen</Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: DefaultTheme.colors.background,
     flex: 1,
   },
 });

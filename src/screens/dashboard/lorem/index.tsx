@@ -1,6 +1,6 @@
 import React from 'react';
-import {Text, View} from 'react-native';
-import {Appbar} from 'react-native-paper';
+import {View} from 'react-native';
+import {Text, Appbar} from 'react-native-paper';
 
 export const LoremPage = () => {
   return (
@@ -8,7 +8,7 @@ export const LoremPage = () => {
       <Appbar.Header mode="center-aligned">
         <Appbar.Content title="Lorem" />
       </Appbar.Header>
-      <Text>LoremPage</Text>
+      <Text variant="labelMedium">Lorem Page</Text>
     </View>
   );
 };

@@ -88,3 +88,12 @@ export const navigator = {
   ///CustomActions
   resetTo,
 };
+
+///
+// animation
+
+export const forFade = ({current}: any) => ({
+  cardStyle: {
+    opacity: current.progress,
+  },
+});

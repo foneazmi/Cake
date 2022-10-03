@@ -5,9 +5,10 @@ import {navigator} from '../../helpers';
 export const HomeScreen = () => {
   return (
     <View>
-      <Appbar.Header>
+      <Appbar.Header mode="center-aligned" elevated>
         <Appbar.Content title="Title" />
         <Appbar.Action
+          isLeading
           icon="calendar"
           onPress={() => {
             navigator.navigate('lorem');

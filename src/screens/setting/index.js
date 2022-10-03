@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Appbar, List, Switch} from 'react-native-paper';
 import {navigator} from '../../helpers';
@@ -6,9 +6,12 @@ import {useTheme} from 'react-native-paper';
 import {setDarkMode} from '../../stores/actions';
 import {useDispatch, useSelector} from 'react-redux';
 export const SettingScreen = () => {
-  const settings = useSelector((state: any) => state.settings);
+  const settings = useSelector(state => state.settings);
+  const [darkModeState, setDarkModeState] = useState(settings.darkMode);
+
   const dispatch = useDispatch();
   const theme = useTheme();
+
   const containerStyle = [
     styles.container,
     {
@@ -35,10 +38,10 @@ export const SettingScreen = () => {
           right={() => (
             <View style={styles.switchContainer}>
               <Switch
-                value={settings.darkMode}
-                onValueChange={value => {
-                  console.log('value', value);
-                  dispatch(setDarkMode(!value));
+                value={darkModeState}
+                onValueChange={() => {
+                  setDarkModeState(!darkModeState);
+                  dispatch(setDarkMode(!darkModeState));
                 }}
               />
             </View>

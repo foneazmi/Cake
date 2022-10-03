@@ -7,7 +7,7 @@ export const HomePage = () => {
   return (
     <View>
       <Appbar.Header mode="center-aligned">
-        <Appbar.Content title="Title" subtitle="Subtitle" />
+        <Appbar.Content title="Home" />
         <Appbar.Action
           icon="dots-horizontal"
           onPress={() => {

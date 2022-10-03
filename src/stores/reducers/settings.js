@@ -7,7 +7,7 @@ const INITIAL_STATE = {
 export const settings = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case DARK_MODE:
-      return {...state, DARK_MODE: action.payload};
+      return {...state, darkMode: action.payload};
     default:
       return state;
   }

@@ -6,31 +6,28 @@ import {
   TabActions,
 } from '@react-navigation/native';
 
-export const navigationRef: any = React.createRef();
+export const navigationRef = React.createRef();
 
 ///CommonActions
-const navigate = (...args: any) => {
-  // @ts-ignore
+const navigate = (...args) => {
   navigationRef.current?.dispatch(CommonActions.navigate(...args));
 };
-const reset = (...args: any) => {
+const reset = (...args) => {
   navigationRef.current?.dispatch(CommonActions.reset({...args}));
 };
 const goBack = () => {
   navigationRef.current?.dispatch(CommonActions.goBack());
 };
 
-const setParams = (...args: any) => {
+const setParams = (...args) => {
   navigationRef.current?.dispatch(CommonActions.setParams({...args}));
 };
 
 ///StackActions
-const replace = (...args: any) => {
-  // @ts-ignore
+const replace = (...args) => {
   navigationRef.current?.dispatch(StackActions.replace(...args));
 };
-const push = (...args: any) => {
-  // @ts-ignore
+const push = (...args) => {
   navigationRef.current?.dispatch(StackActions.push(...args));
 };
 const pop = (count = 1) => {
@@ -50,15 +47,17 @@ const closeDrawer = () => {
 const toggleDrawer = () => {
   navigationRef.current?.dispatch(DrawerActions.toggleDrawer());
 };
+const drawerJumpTo = () => {
+  navigationRef.current?.dispatch(DrawerActions.jumpTo());
+};
 
 ///TabActions
-const jumpTo = (...args: any) => {
-  // @ts-ignore
+const jumpTo = (...args) => {
   navigationRef.current?.dispatch(TabActions.jumpTo(...args));
 };
 
 ///CustomActions
-const resetTo = (name: string, index = 0) => {
+const resetTo = (name, index = 0) => {
   navigationRef.current?.dispatch(
     CommonActions.reset({index, routes: [{name}]}),
   );
@@ -81,6 +80,7 @@ export const navigator = {
   openDrawer,
   closeDrawer,
   toggleDrawer,
+  drawerJumpTo,
 
   ///TabActions
   jumpTo,
@@ -89,10 +89,7 @@ export const navigator = {
   resetTo,
 };
 
-///
-// animation
-
-export const forFade = ({current}: any) => ({
+export const forFade = ({current}) => ({
   cardStyle: {
     opacity: current.progress,
   },

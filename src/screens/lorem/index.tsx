@@ -1,11 +1,11 @@
 import React from 'react';
-import {Text, View} from 'react-native';
-import {Appbar} from 'react-native-paper';
+import {Text, View, StyleSheet} from 'react-native';
+import {Appbar, MD3LightTheme as DefaultTheme} from 'react-native-paper';
 import {navigator} from '../../helpers';
 
 export const LoremScreen = () => {
   return (
-    <View>
+    <View style={styles.container}>
       <Appbar.Header>
         <Appbar.BackAction
           onPress={() => {
@@ -13,10 +13,15 @@ export const LoremScreen = () => {
           }}
         />
         <Appbar.Content title="Lorem" />
-        <Appbar.Action icon="calendar" onPress={() => {}} />
-        <Appbar.Action icon="magnify" onPress={() => {}} />
       </Appbar.Header>
       <Text>LoremScreen</Text>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: DefaultTheme.colors.background,
+    flex: 1,
+  },
+});

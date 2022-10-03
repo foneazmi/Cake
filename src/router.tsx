@@ -2,7 +2,7 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {navigationRef, forFade} from './helpers';
-import {HomeScreen, LoremScreen} from './screens';
+import {DashboardScreen, LoremScreen} from './screens';
 
 const Stack = createStackNavigator();
 
@@ -14,7 +14,7 @@ export const AppRouter = () => {
           headerShown: false,
           cardStyleInterpolator: forFade,
         }}>
-        <Stack.Screen name="home" component={HomeScreen} />
+        <Stack.Screen name="dashboard" component={DashboardScreen} />
         <Stack.Screen name="lorem" component={LoremScreen} />
       </Stack.Navigator>
     </NavigationContainer>

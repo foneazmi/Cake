@@ -1,10 +1,11 @@
 import React, {useMemo} from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
+// import {createStackNavigator} from '@react-navigation/stack';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {navigationRef, forFade} from './helpers';
 import {DashboardScreen, LoremScreen, SettingScreen} from './screens';
 import {useSelector} from 'react-redux';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 import {NavigationContainer} from '@react-navigation/native';
 
 import {
@@ -37,7 +38,7 @@ export const AppRouter = () => {
         <Stack.Navigator
           screenOptions={{
             headerShown: false,
-            cardStyleInterpolator: forFade,
+            // cardStyleInterpolator: forFade,
           }}>
           <Stack.Screen name="dashboard" component={DashboardScreen} />
           <Stack.Screen name="lorem" component={LoremScreen} />

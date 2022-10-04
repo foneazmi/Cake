@@ -16,16 +16,13 @@ import {
 import {StatusBar} from 'react-native';
 
 export const AppRouter = () => {
-  const settings = useSelector(state => state.settings);
-  const global = useSelector(state => state.global);
-  console.log('global', global);
-  console.log('settings', settings);
+  const {darkMode} = useSelector(state => state.settings);
   const [theme, barStyle] = useMemo(
     () =>
-      settings.darkMode
+      darkMode
         ? [PaperDarkTheme, 'light-content']
         : [PaperLightTheme, 'dark-content'],
-    [settings.darkMode],
+    [darkMode],
   );
 
   return (

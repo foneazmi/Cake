@@ -21,7 +21,7 @@ export const SettingScreen = () => {
 
   return (
     <View style={containerStyle}>
-      <Appbar.Header>
+      <Appbar.Header mode="small">
         <Appbar.BackAction
           onPress={() => {
             navigator.goBack();

@@ -2,7 +2,12 @@ import React, {useMemo} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {navigationRef} from './helpers';
 import {TransitionPresets} from '@react-navigation/stack';
-import {DashboardScreen, LoremScreen, SettingScreen} from './screens';
+import {
+  DashboardScreen,
+  LoremScreen,
+  SettingScreen,
+  MyWalletScreen,
+} from './screens';
 import {useSelector} from 'react-redux';
 import {NavigationContainer} from '@react-navigation/native';
 
@@ -40,6 +45,7 @@ export const AppRouter = () => {
           <Stack.Screen name="dashboard" component={DashboardScreen} />
           <Stack.Screen name="lorem" component={LoremScreen} />
           <Stack.Screen name="setting" component={SettingScreen} />
+          <Stack.Screen name="my-wallet" component={MyWalletScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>

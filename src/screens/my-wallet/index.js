@@ -4,7 +4,7 @@ import {Appbar, Text} from 'react-native-paper';
 import {navigator} from '../../helpers';
 import {useTheme} from 'react-native-paper';
 
-export const LoremScreen = () => {
+export const MyWalletScreen = () => {
   const theme = useTheme();
 
   const containerStyle = [
@@ -22,9 +22,9 @@ export const LoremScreen = () => {
             navigator.goBack();
           }}
         />
-        <Appbar.Content title="Lorem" />
+        <Appbar.Content title="My Wallet" />
       </Appbar.Header>
-      <Text variant="labelMedium">Lorem Screen</Text>
+      {/* <Text variant="labelMedium">My Wallet</Text> */}
     </View>
   );
 };

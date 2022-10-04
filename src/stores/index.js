@@ -15,7 +15,13 @@ const reducer = combineReducers({
     },
     global,
   ),
-  settings,
+  settings: persistReducer(
+    {
+      key: 'settings',
+      storage: AsyncStorage,
+    },
+    settings,
+  ),
 });
 
 export const store = configureStore({

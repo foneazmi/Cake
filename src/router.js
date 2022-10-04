@@ -1,11 +1,9 @@
 import React, {useMemo} from 'react';
-// import {createStackNavigator} from '@react-navigation/stack';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {navigationRef, forFade} from './helpers';
+import {createStackNavigator} from '@react-navigation/stack';
+import {navigationRef} from './helpers';
+import {TransitionPresets} from '@react-navigation/stack';
 import {DashboardScreen, LoremScreen, SettingScreen} from './screens';
 import {useSelector} from 'react-redux';
-
-const Stack = createNativeStackNavigator();
 import {NavigationContainer} from '@react-navigation/native';
 
 import {
@@ -14,6 +12,8 @@ import {
   Provider as PaperProvider,
 } from 'react-native-paper';
 import {StatusBar} from 'react-native';
+
+const Stack = createStackNavigator();
 
 export const AppRouter = () => {
   const {darkMode} = useSelector(state => state.settings);
@@ -27,7 +27,7 @@ export const AppRouter = () => {
 
   return (
     <PaperProvider theme={theme}>
-      <NavigationContainer ref={navigationRef}>
+      <NavigationContainer ref={navigationRef} theme={theme}>
         <StatusBar
           barStyle={barStyle}
           backgroundColor={theme.colors.background}
@@ -35,7 +35,7 @@ export const AppRouter = () => {
         <Stack.Navigator
           screenOptions={{
             headerShown: false,
-            // cardStyleInterpolator: forFade,
+            ...TransitionPresets.SlideFromRightIOS,
           }}>
           <Stack.Screen name="dashboard" component={DashboardScreen} />
           <Stack.Screen name="lorem" component={LoremScreen} />

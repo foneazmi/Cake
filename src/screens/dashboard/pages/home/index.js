@@ -1,9 +1,9 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {TouchableOpacity, View} from 'react-native';
+import {ScrollView, TouchableOpacity, View} from 'react-native';
 import {Text, Appbar, useTheme, Card, IconButton} from 'react-native-paper';
-import {navigator, greetingByTime} from '../../../helpers';
-import {MyAccount} from './components';
+import {navigator, greetingByTime} from '../../../../helpers';
+import {MyAccount, RecentTransaction} from './components';
 
 const AppBarSection = () => (
   <Appbar.Header mode="center-aligned">
@@ -15,7 +15,10 @@ export const HomePage = () => {
   return (
     <View style={{flex: 1}}>
       <AppBarSection />
-      <MyAccount />
+      <ScrollView>
+        <MyAccount />
+        <RecentTransaction />
+      </ScrollView>
     </View>
   );
 };

@@ -6,7 +6,8 @@ import {
   DashboardScreen,
   LoremScreen,
   SettingScreen,
-  MyWalletScreen,
+  AddAccountScreen,
+  DetailAccountScreen,
 } from './screens';
 import {useSelector} from 'react-redux';
 import {NavigationContainer} from '@react-navigation/native';
@@ -21,7 +22,7 @@ import {StatusBar} from 'react-native';
 const Stack = createStackNavigator();
 
 export const AppRouter = () => {
-  const {darkMode} = useSelector(state => state.settings);
+  const {darkMode} = useSelector(({global}) => global);
   const [theme, barStyle] = useMemo(
     () =>
       darkMode
@@ -45,7 +46,8 @@ export const AppRouter = () => {
           <Stack.Screen name="dashboard" component={DashboardScreen} />
           <Stack.Screen name="lorem" component={LoremScreen} />
           <Stack.Screen name="setting" component={SettingScreen} />
-          <Stack.Screen name="my-wallet" component={MyWalletScreen} />
+          <Stack.Screen name="add-account" component={AddAccountScreen} />
+          <Stack.Screen name="detail-account" component={DetailAccountScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>

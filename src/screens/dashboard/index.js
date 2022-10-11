@@ -1,9 +1,7 @@
 import React from 'react';
 import {BottomNavigation} from 'react-native-paper';
 
-import {HomePage} from './home';
-import {ProfilePage} from './profile';
-import {LoremPage} from './lorem';
+import {HomePage, ProfilePage, LoremPage} from './pages';
 
 export const DashboardScreen = () => {
   const [index, setIndex] = React.useState(0);

@@ -6,8 +6,8 @@ import {useTheme} from 'react-native-paper';
 import {setDarkMode} from '../../stores/actions';
 import {useDispatch, useSelector} from 'react-redux';
 export const SettingScreen = () => {
-  const settings = useSelector(state => state.settings);
-  const [darkModeState, setDarkModeState] = useState(settings.darkMode);
+  const {darkMode} = useSelector(({global}) => global);
+  const [darkModeState, setDarkModeState] = useState(darkMode);
 
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -33,20 +33,18 @@ export const SettingScreen = () => {
       <List.Section>
         <List.Subheader>Themes</List.Subheader>
         <List.Item
+          onPress={() => {
+            setDarkModeState(!darkModeState);
+            dispatch(setDarkMode(!darkModeState));
+          }}
           title="Dark Mode"
-          description="Set manual dark mode"
-          right={() => (
-            <View style={styles.switchContainer}>
-              <Switch
-                value={darkModeState}
-                onValueChange={() => {
-                  setDarkModeState(!darkModeState);
-                  dispatch(setDarkMode(!darkModeState));
-                }}
-              />
-            </View>
+          description="Press to change mode"
+          right={props => (
+            <List.Icon
+              {...props}
+              icon={darkModeState ? 'brightness-7' : 'brightness-4'}
+            />
           )}
-          left={props => <List.Icon {...props} icon="brightness-4" />}
         />
       </List.Section>
     </View>
@@ -57,5 +55,4 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  switchContainer: {justifyContent: 'center'},
 });

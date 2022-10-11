@@ -1,7 +1,7 @@
 import React from 'react';
 import {View} from 'react-native';
 import {Appbar, Text} from 'react-native-paper';
-import {navigator} from '../../../helpers';
+import {navigator} from '../../../../helpers';
 
 export const ProfilePage = () => {
   return (

@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     marginHorizontal: -4,
   },
   itemContainer: {
-    width: (width - 48) / 3,
+    width: (width - 48.5) / 3,
     padding: 8,
     borderRadius: 4,
     margin: 4,

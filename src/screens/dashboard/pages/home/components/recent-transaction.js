@@ -3,9 +3,11 @@ import {
   View,
   StyleSheet,
   // Dimensions,
+  Image,
   TouchableOpacity,
 } from 'react-native';
-import {Text} from 'react-native-paper';
+import {Text, List} from 'react-native-paper';
+import Icon from 'react-native-vector-icons/Feather';
 // import {useSelector} from 'react-redux';
 import {
   currency,
@@ -19,6 +21,14 @@ const TRANSACTION_DATA = [
     name: 'Test-1',
     amount: 20000,
   },
+  {
+    name: 'Test-1',
+    amount: 20000,
+  },
+  {
+    name: 'Test-1',
+    amount: 20000,
+  },
 ];
 
 const ListTransaction = () => {
@@ -26,14 +36,41 @@ const ListTransaction = () => {
 
   return (
     <View>
-      {TRANSACTION_DATA.map(account => (
-        <TouchableOpacity
-          key={`${account.id}`}
-          //   onPress={() => navigator.navigate('detail-account', account)}
-          style={styles.itemContainer}>
-          <Text variant="labelLarge">{account.name}</Text>
-          <Text variant="labelSmall">{currency(account.amount)}</Text>
-        </TouchableOpacity>
+      {TRANSACTION_DATA.map((account, index) => (
+        <List.Item
+          key={`${index}-transaction`}
+          title={account.name}
+          titleStyle={{
+            fontSize: 12,
+          }}
+          descriptionStyle={{
+            fontWeight: 'bold',
+          }}
+          description={currency(account.amount)}
+          left={props => <List.Icon {...props} icon="folder" />}
+          right={props => (
+            <View
+              style={{
+                alignItems: 'flex-end',
+                justifyContent: 'center',
+              }}>
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: 'bold',
+                }}>
+                Account Name
+              </Text>
+              <Text
+                style={{
+                  fontSize: 10,
+                  opacity: 0.5,
+                }}>
+                {Date()}
+              </Text>
+            </View>
+          )}
+        />
       ))}
     </View>
   );
@@ -54,6 +91,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   itemContainer: {
-    // margin: 4,
+    flexDirection: 'row',
+    margin: 4,
   },
 });

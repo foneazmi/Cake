@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React from 'react';
 import {
   View,
@@ -29,11 +30,42 @@ const TRANSACTION_DATA = [
     name: 'Test-1',
     amount: 20000,
   },
+  {
+    name: 'Test-1',
+    amount: 20000,
+  },
+  {
+    name: 'Test-1',
+    amount: 20000,
+  },
+  {
+    name: 'Test-1',
+    amount: 20000,
+  },
+  {
+    name: 'Test-1',
+    amount: 20000,
+  },
+  {
+    name: 'Test-1',
+    amount: 20000,
+  },
+  {
+    name: 'Test-1',
+    amount: 20000,
+  },
+  {
+    name: 'Test-1',
+    amount: 20000,
+  },
+  {
+    name: 'Test-1',
+    amount: 20000,
+  },
 ];
 
 const ListTransaction = () => {
   //   const {accounts} = useSelector(({global}) => global);
-
   return (
     <View>
       {TRANSACTION_DATA.map((account, index) => (
@@ -59,14 +91,14 @@ const ListTransaction = () => {
                   fontSize: 12,
                   fontWeight: 'bold',
                 }}>
-                Account Name
+                Seabank
               </Text>
               <Text
                 style={{
                   fontSize: 10,
                   opacity: 0.5,
                 }}>
-                {Date()}
+                {moment().format('D-MMM-Y')}
               </Text>
             </View>
           )}

@@ -28,19 +28,18 @@ const AppBarSection = () => (
 
 export const HomePage = () => {
   const [scrollY, setScrollY] = useState(0);
-  const [scrollBottom, setScrollBottom] = useState(false);
+  const [showFab, setShowFab] = useState(true);
   return (
     <View style={{flex: 1}}>
       <AppBarSection />
       <ScrollView
-        scrollEventThrottle={100}
+        scrollEventThrottle={300}
         onScroll={({nativeEvent}) => {
           setScrollY(nativeEvent.contentOffset.y);
-          console.log(nativeEvent);
           if (nativeEvent.contentOffset.y <= 0) {
-            setScrollBottom(true);
+            setShowFab(true);
           } else {
-            setScrollBottom(scrollY > nativeEvent.contentOffset.y);
+            setShowFab(scrollY > nativeEvent.contentOffset.y);
           }
         }}>
         <MyAccount />
@@ -49,11 +48,11 @@ export const HomePage = () => {
 
       <FAB
         icon="plus"
-        visible={scrollBottom}
+        visible={showFab}
         animated
         mode="flat"
         style={styles.fab}
-        onPress={() => console.log('Pressed')}
+        onPress={() => navigator.navigate('add-transaction')}
       />
     </View>
   );

@@ -8,6 +8,8 @@ import {
   SettingScreen,
   AddAccountScreen,
   DetailAccountScreen,
+  DetailTransactionScreen,
+  AddTransactionScreen,
 } from './screens';
 import {useSelector} from 'react-redux';
 import {NavigationContainer} from '@react-navigation/native';
@@ -45,9 +47,22 @@ export const AppRouter = () => {
           }}>
           <Stack.Screen name="dashboard" component={DashboardScreen} />
           <Stack.Screen name="lorem" component={LoremScreen} />
+          {/* //? Settings  */}
           <Stack.Screen name="setting" component={SettingScreen} />
+
+          {/* //? Account  */}
           <Stack.Screen name="add-account" component={AddAccountScreen} />
           <Stack.Screen name="detail-account" component={DetailAccountScreen} />
+
+          {/* //? Transaction  */}
+          <Stack.Screen
+            name="add-transaction"
+            component={AddTransactionScreen}
+          />
+          <Stack.Screen
+            name="detail-transaction"
+            component={DetailTransactionScreen}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>

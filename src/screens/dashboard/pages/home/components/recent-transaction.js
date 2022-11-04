@@ -26,42 +26,6 @@ const TRANSACTION_DATA = [
     name: 'Test-1',
     amount: 20000,
   },
-  {
-    name: 'Test-1',
-    amount: 20000,
-  },
-  {
-    name: 'Test-1',
-    amount: 20000,
-  },
-  {
-    name: 'Test-1',
-    amount: 20000,
-  },
-  {
-    name: 'Test-1',
-    amount: 20000,
-  },
-  {
-    name: 'Test-1',
-    amount: 20000,
-  },
-  {
-    name: 'Test-1',
-    amount: 20000,
-  },
-  {
-    name: 'Test-1',
-    amount: 20000,
-  },
-  {
-    name: 'Test-1',
-    amount: 20000,
-  },
-  {
-    name: 'Test-1',
-    amount: 20000,
-  },
 ];
 
 const ListTransaction = () => {

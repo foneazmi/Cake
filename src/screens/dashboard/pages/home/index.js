@@ -29,6 +29,7 @@ const AppBarSection = () => (
 export const HomePage = () => {
   const [scrollY, setScrollY] = useState(0);
   const [showFab, setShowFab] = useState(true);
+  const [open, setOpen] = useState(true);
   return (
     <View style={{flex: 1}}>
       <AppBarSection />
@@ -46,23 +47,30 @@ export const HomePage = () => {
         <RecentTransaction />
       </ScrollView>
 
-      <FAB
-        icon="plus"
+      <FAB.Group
+        open={open}
+        variant="secondary"
         visible={showFab}
-        animated
-        mode="flat"
-        style={styles.fab}
-        onPress={() => navigator.navigate('add-transaction')}
+        icon={open ? 'wallet' : 'plus'}
+        actions={[
+          {
+            icon: 'bank-transfer',
+            label: 'Account Transfer',
+            onPress: () => console.log('Pressed star'),
+          },
+          {
+            icon: 'bank-transfer-out',
+            label: 'Add Expense',
+            onPress: () => console.log('Pressed email'),
+          },
+          {
+            icon: 'bank-transfer-in',
+            label: 'Add Income',
+            onPress: () => console.log('Pressed notifications'),
+          },
+        ]}
+        onStateChange={() => setOpen(!open)}
       />
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  fab: {
-    position: 'absolute',
-    margin: 16,
-    right: 0,
-    bottom: 0,
-  },
-});

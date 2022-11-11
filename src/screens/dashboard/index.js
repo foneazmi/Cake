@@ -1,10 +1,10 @@
 import React from 'react';
 import {BottomNavigation} from 'react-native-paper';
 
-import {HomePage, ProfilePage, LoremPage} from './pages';
+import {HomePage, ProfilePage, AccountPage} from './pages';
 
 export const DashboardScreen = () => {
-  const [index, setIndex] = React.useState(0);
+  const [index, setIndex] = React.useState(1);
   const [routes] = React.useState([
     {
       key: 'home',
@@ -13,10 +13,10 @@ export const DashboardScreen = () => {
       unfocusedIcon: 'home-circle-outline',
     },
     {
-      key: 'lorem',
-      title: 'Lorem',
-      focusedIcon: 'alien',
-      unfocusedIcon: 'alien-outline',
+      key: 'account',
+      title: 'Account',
+      focusedIcon: 'wallet',
+      unfocusedIcon: 'wallet-outline',
     },
     {
       key: 'profile',
@@ -28,7 +28,7 @@ export const DashboardScreen = () => {
 
   const renderScene = BottomNavigation.SceneMap({
     home: HomePage,
-    lorem: LoremPage,
+    account: AccountPage,
     profile: ProfilePage,
   });
 

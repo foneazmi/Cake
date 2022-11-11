@@ -13,23 +13,16 @@ import {
 } from './screens';
 import {useSelector} from 'react-redux';
 import {NavigationContainer} from '@react-navigation/native';
-
-import {
-  MD3DarkTheme as PaperDarkTheme,
-  MD3LightTheme as PaperLightTheme,
-  Provider as PaperProvider,
-} from 'react-native-paper';
+import {Provider as PaperProvider} from 'react-native-paper';
 import {StatusBar} from 'react-native';
-
+import {darkTheme, lightTheme} from './theme';
 const Stack = createStackNavigator();
 
 export const AppRouter = () => {
   const {darkMode} = useSelector(({global}) => global);
   const [theme, barStyle] = useMemo(
     () =>
-      darkMode
-        ? [PaperDarkTheme, 'light-content']
-        : [PaperLightTheme, 'dark-content'],
+      darkMode ? [darkTheme, 'light-content'] : [lightTheme, 'dark-content'],
     [darkMode],
   );
 

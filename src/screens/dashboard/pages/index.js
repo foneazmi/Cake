@@ -1,3 +1,3 @@
 export * from './home';
-export * from './lorem';
+export * from './account';
 export * from './profile';

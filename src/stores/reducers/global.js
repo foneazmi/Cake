@@ -1,8 +1,6 @@
-import {BEGIN, END, LOGOUT, DARK_MODE, SET_ACCOUNT} from '../types';
+import {BEGIN, END, LOGOUT, DARK_MODE, RESET_GLOBAL} from '../types';
 
 const INITIAL_STATE = {
-  // ? Accounts
-  accounts: [],
   // ? Settings
   darkMode: false,
   // ? Misc
@@ -11,9 +9,6 @@ const INITIAL_STATE = {
 
 export const global = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    // ? Accounts
-    case SET_ACCOUNT:
-      return {...state, accounts: action.payload};
     // ? Settings
     case DARK_MODE:
       return {...state, darkMode: action.payload};
@@ -22,7 +17,7 @@ export const global = (state = INITIAL_STATE, action) => {
       return {...state, loading: true};
     case END:
       return {...state, loading: false};
-    case LOGOUT:
+    case RESET_GLOBAL:
       return INITIAL_STATE;
     // ? Default
     default:

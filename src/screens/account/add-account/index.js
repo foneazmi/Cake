@@ -51,7 +51,6 @@ export const AddAccountScreen = () => {
           error={error}
           onFocus={() => setError(false)}
           onChangeText={setName}
-          left={<TextInput.Affix text="@ " />}
         />
         <TextInput
           label="Initial Amount"

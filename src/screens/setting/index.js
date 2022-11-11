@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Appbar, List, Switch} from 'react-native-paper';
+import {Appbar, List} from 'react-native-paper';
 import {navigator} from '../../helpers';
 import {useTheme} from 'react-native-paper';
-import {setDarkMode} from '../../stores/actions';
+import {setDarkMode, resetAll} from '../../stores/actions';
 import {useDispatch, useSelector} from 'react-redux';
 export const SettingScreen = () => {
   const {darkMode} = useSelector(({global}) => global);
@@ -45,6 +45,18 @@ export const SettingScreen = () => {
               icon={darkModeState ? 'brightness-7' : 'brightness-4'}
             />
           )}
+        />
+      </List.Section>
+
+      <List.Section>
+        <List.Subheader>Reset</List.Subheader>
+        <List.Item
+          onPress={() => {
+            dispatch(resetAll());
+          }}
+          title="Factory Reset"
+          description="Delete All Saved Data"
+          right={props => <List.Icon {...props} icon={'backup-restore'} />}
         />
       </List.Section>
     </View>

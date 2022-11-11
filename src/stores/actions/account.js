@@ -1,7 +1,11 @@
-import {SET_ACCOUNT} from '../types';
+import {SET_ACCOUNT, SET_TRANSACTION} from '../types';
 
 export const addAccount = data => (dispatch, getState) => {
-  const {accounts} = getState().global;
+  const {accounts} = getState().account;
   dispatch({type: SET_ACCOUNT, payload: [...accounts, data]});
-  // dispatch({type: SET_ACCOUNT, payload: []});
+};
+
+export const addTransaction = data => (dispatch, getState) => {
+  const {transactions} = getState().account;
+  dispatch({type: SET_TRANSACTION, payload: [...transactions, data]});
 };

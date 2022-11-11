@@ -1,80 +1,353 @@
 import React, {useState} from 'react';
-import {StyleSheet, View} from 'react-native';
-import {Appbar, Button, TextInput} from 'react-native-paper';
-import {navigator} from '../../../helpers';
-import {useTheme} from 'react-native-paper';
+import {
+  StyleSheet,
+  View,
+  SafeAreaView,
+  FlatList,
+  Pressable,
+  Modal,
+  TextInput,
+} from 'react-native';
+import {Button, useTheme, IconButton, Text} from 'react-native-paper';
 import CurrencyInput from 'react-native-currency-input';
-import {useDispatch} from 'react-redux';
-import {addAccount} from '../../../stores/actions';
+import {useDispatch, useSelector} from 'react-redux';
+import {addTransaction} from '../../../stores/actions';
+import {currency, navigator} from '../../../helpers';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export const AddTransactionScreen = () => {
-  const [name, setName] = useState('');
-  const [amount, setAmount] = useState('');
-  const [errorName, setErrorName] = useState(false);
-  const [errorAmount, setErrorAmount] = useState(false);
+export const AddTransactionScreen = ({route}) => {
+  const {type} = route.params;
   const theme = useTheme();
   const dispatch = useDispatch();
-  const submit = () => {
-    if (name.length === 0) {
-      setErrorName(true);
-    } else {
-      navigator.goBack();
-      const data = {
-        name,
-        amount: amount || 0,
-        id: Date.now(),
-      };
-      dispatch(addAccount(data));
-    }
+
+  const [form, setForm] = useState({
+    title: '',
+    description: '',
+    amount: '',
+  });
+
+  const {accounts} = useSelector(({account}) => account);
+  const [selectedAccount, setSelectedAccount] = useState(accounts[0]?.id || '');
+
+  const typeDescription = {
+    income: 'Add Income',
+    expense: 'Add Expense',
+    transfer: 'Transfer Account',
   };
 
-  return (
+  const submitTransaction = () => {
+    if (form.amount === '') {
+      return;
+    } else {
+      dispatch(
+        addTransaction({
+          ...form,
+          id: Date.now(),
+          idAccount: selectedAccount,
+        }),
+      );
+      navigator.goBack();
+    }
+  };
+  const Header = () => (
     <View
+      style={{
+        flexDirection: 'row',
+        paddingHorizontal: 16,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+      }}>
+      <IconButton
+        icon="close"
+        mode="outlined"
+        size={24}
+        onPress={() => navigator.goBack()}
+      />
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          borderWidth: 1,
+          borderRadius: 50,
+          paddingHorizontal: 16,
+          paddingVertical: 8,
+          borderColor: theme.colors.outline,
+        }}>
+        <Icon
+          name="credit-card-edit"
+          color={theme.colors.onSurface}
+          size={16}
+        />
+        <Text
+          style={{
+            marginLeft: 4,
+          }}
+          variant="labelLarge">
+          {typeDescription[type] || ''}
+        </Text>
+      </View>
+    </View>
+  );
+
+  const AccountList = () => {
+    if (type === 'income' || type === 'expense') {
+      return (
+        <View>
+          <Text
+            style={{
+              fontWeight: 'bold',
+              marginBottom: 12,
+            }}
+            variant="labelLarge">
+            {type === 'income' ? 'Add Money To' : 'Pay With'}
+          </Text>
+          <FlatList
+            data={accounts}
+            horizontal
+            renderItem={({item}) => (
+              <Button
+                icon="wallet"
+                mode={
+                  selectedAccount === item.id ? 'contained' : 'contained-tonal'
+                }
+                style={{marginRight: 8}}
+                onPress={() => setSelectedAccount(item.id)}>
+                {item.name}
+              </Button>
+            )}
+          />
+        </View>
+      );
+    } else {
+      return (
+        <View>
+          <Text
+            style={{
+              fontWeight: 'bold',
+              marginBottom: 12,
+            }}
+            variant="labelLarge">
+            From
+          </Text>
+          <FlatList
+            data={accounts}
+            horizontal
+            renderItem={({item}) => (
+              <Button
+                icon="wallet"
+                mode={
+                  selectedAccount === item.id ? 'contained' : 'contained-tonal'
+                }
+                style={{marginRight: 8}}
+                onPress={() => setSelectedAccount(item.id)}>
+                {item.name}
+              </Button>
+            )}
+          />
+          <Text
+            style={{
+              marginTop: 24,
+              fontWeight: 'bold',
+              marginBottom: 12,
+            }}
+            variant="labelLarge">
+            To
+          </Text>
+          <FlatList
+            data={accounts}
+            horizontal
+            renderItem={({item}) => (
+              <Button
+                icon="wallet"
+                mode={
+                  selectedAccount === item.id ? 'contained' : 'contained-tonal'
+                }
+                style={{marginRight: 8}}
+                onPress={() => setSelectedAccount(item.id)}>
+                {item.name}
+              </Button>
+            )}
+          />
+        </View>
+      );
+    }
+  };
+  const Form = () => {
+    const [modalFor, setModalFor] = useState('');
+    const [modalText, setModalText] = useState('');
+    const submitModal = () => {
+      setForm({...form, [`${modalFor}`]: modalText});
+      setModalFor('');
+    };
+    return (
+      <View style={{marginVertical: 16}}>
+        <Pressable
+          onPress={() => {
+            setModalText(form.title || '');
+            setModalFor('title');
+          }}
+          style={{
+            flexDirection: 'row',
+            borderRadius: 10,
+            marginTop: 12,
+            backgroundColor: theme.colors.secondaryContainer,
+            paddingVertical: 16,
+            paddingHorizontal: 24,
+          }}>
+          <Icon
+            name="tag-text-outline"
+            size={20}
+            color={theme.colors.onSurface}
+          />
+          <Text
+            style={{
+              marginLeft: 8,
+            }}
+            variant="labelLarge">
+            {form.title || 'Add title'}
+          </Text>
+        </Pressable>
+
+        <Pressable
+          onPress={() => {
+            setModalText(form.description || '');
+            setModalFor('description');
+          }}
+          style={{
+            flexDirection: 'row',
+            borderRadius: 10,
+            marginTop: 12,
+            backgroundColor: theme.colors.secondaryContainer,
+            paddingVertical: 16,
+            paddingHorizontal: 24,
+          }}>
+          <Icon name="text" size={20} color={theme.colors.onSurface} />
+          <Text
+            style={{
+              marginLeft: 8,
+            }}
+            variant="labelLarge">
+            {form.description || 'Add description'}
+          </Text>
+        </Pressable>
+
+        <Pressable
+          onPress={() => {
+            setModalText(form.amount || '');
+            setModalFor('amount');
+          }}
+          style={{
+            flexDirection: 'row',
+            borderRadius: 10,
+            marginTop: 12,
+            backgroundColor: theme.colors.secondaryContainer,
+            paddingVertical: 16,
+            paddingHorizontal: 24,
+          }}>
+          <Icon
+            name="sort-numeric-variant"
+            size={20}
+            color={theme.colors.onSurface}
+          />
+          <Text
+            style={{
+              marginLeft: 8,
+            }}
+            variant="labelLarge">
+            {form.amount ? currency(form.amount) : 'Add amount'}
+          </Text>
+        </Pressable>
+
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalFor.length > 0}>
+          <Pressable
+            onPress={() => setModalFor('')}
+            style={{
+              flex: 1,
+              backgroundColor: '#00000080',
+            }}>
+            <View
+              style={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                backgroundColor: theme.colors.secondaryContainer,
+                paddingHorizontal: 16,
+                paddingVertical: 32,
+              }}>
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  marginBottom: 8,
+                }}>
+                {modalFor.toUpperCase()}
+              </Text>
+              <TextInput
+                placeholderTextColor={theme.colors.onSecondaryContainer}
+                autoFocus
+                placeholder="Input Here"
+                style={{
+                  marginBottom: 32,
+                  fontSize: 20,
+                  color: theme.colors.onSecondaryContainer,
+                }}
+                onChangeText={e => setModalText(e)}
+                value={modalText}
+              />
+              <Pressable
+                style={{
+                  borderRadius: 10,
+                  padding: 16,
+                  backgroundColor: theme.colors.primary,
+                }}
+                onPress={submitModal}>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    color: theme.colors.onPrimary,
+                  }}>
+                  Save
+                </Text>
+              </Pressable>
+            </View>
+          </Pressable>
+        </Modal>
+      </View>
+    );
+  };
+  return (
+    <SafeAreaView
       style={[
         styles.container,
         {
           backgroundColor: theme.colors.background,
         },
       ]}>
-      <Appbar.Header mode="small">
-        <Appbar.BackAction
-          onPress={() => {
-            navigator.goBack();
-          }}
-        />
-        <Appbar.Content title="Add Transaction" />
-      </Appbar.Header>
-      <View style={{padding: 8, flex: 1}}>
-        <TextInput
-          label="Name"
-          value={name}
-          error={errorName}
-          onFocus={() => setErrorName(false)}
-          onChangeText={setName}
-        />
-        <TextInput
-          label="Amount"
-          value={amount}
-          onChangeValue={setAmount}
-          error={errorAmount}
-          onFocus={() => setErrorAmount(false)}
-          left={<TextInput.Affix text="Rp." />}
-          render={props => (
-            <CurrencyInput
-              {...props}
-              delimiter=","
-              separator="."
-              precision={0}
-            />
-          )}
-        />
+      <Header />
+      <View style={{padding: 16, flex: 1}}>
+        <AccountList />
+        <Form />
       </View>
-      <View style={{marginBottom: 32, marginHorizontal: 16}}>
-        <Button icon="wallet" mode="contained-tonal" onPress={submit}>
-          Add New Transaction
-        </Button>
-      </View>
-    </View>
+      <Pressable
+        style={{
+          borderRadius: 10,
+          marginHorizontal: 16,
+          padding: 16,
+          backgroundColor: theme.colors.primary,
+        }}
+        onPress={submitTransaction}>
+        <Text
+          style={{
+            textAlign: 'center',
+            color: theme.colors.onPrimary,
+          }}>
+          Add Transaction
+        </Text>
+      </Pressable>
+    </SafeAreaView>
   );
 };
 

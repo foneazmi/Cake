@@ -4,7 +4,7 @@ import {BottomNavigation} from 'react-native-paper';
 import {HomePage, ProfilePage, AccountPage} from './pages';
 
 export const DashboardScreen = () => {
-  const [index, setIndex] = React.useState(1);
+  const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     {
       key: 'home',

@@ -1,4 +1,4 @@
-import {BEGIN, END} from '../types';
+import {BEGIN, END, RESET_GLOBAL, RESET_ACCOUNT} from '../types';
 
 export const begin = () => dispatch => {
   dispatch({type: BEGIN});
@@ -16,3 +16,8 @@ export const setLoading =
       dispatch({type: END});
     }, timer);
   };
+
+export const resetAll = () => dispatch => {
+  dispatch({type: RESET_GLOBAL});
+  dispatch({type: RESET_ACCOUNT});
+};

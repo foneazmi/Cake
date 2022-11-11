@@ -29,7 +29,7 @@ const AppBarSection = () => (
 export const HomePage = () => {
   const [scrollY, setScrollY] = useState(0);
   const [showFab, setShowFab] = useState(true);
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   return (
     <View style={{flex: 1}}>
       <AppBarSection />
@@ -43,7 +43,6 @@ export const HomePage = () => {
             setShowFab(scrollY > nativeEvent.contentOffset.y);
           }
         }}>
-        <MyAccount />
         <RecentTransaction />
       </ScrollView>
 

@@ -154,15 +154,13 @@ export const AddTransactionScreen = ({route}) => {
             data={accounts}
             showsHorizontalScrollIndicator={false}
             ListFooterComponent={
-              accounts.length < 6 && (
-                <Button
-                  icon="wallet-plus"
-                  mode="contained-tonal"
-                  style={{marginRight: 8}}
-                  onPress={() => navigator.navigate('add-account')}>
-                  Add Account
-                </Button>
-              )
+              <Button
+                icon="wallet-plus"
+                mode="contained-tonal"
+                style={{marginRight: 8}}
+                onPress={() => navigator.navigate('add-account')}>
+                Add Account
+              </Button>
             }
             horizontal
             renderItem={({item}) => (
@@ -200,15 +198,13 @@ export const AddTransactionScreen = ({route}) => {
             showsHorizontalScrollIndicator={false}
             horizontal
             ListFooterComponent={
-              accounts.length < 6 && (
-                <Button
-                  icon="wallet-plus"
-                  mode="contained-tonal"
-                  style={{marginRight: 8}}
-                  onPress={() => navigator.navigate('add-account')}>
-                  Add Account
-                </Button>
-              )
+              <Button
+                icon="wallet-plus"
+                mode="contained-tonal"
+                style={{marginRight: 8}}
+                onPress={() => navigator.navigate('add-account')}>
+                Add Account
+              </Button>
             }
             renderItem={({item}) => (
               <Button
@@ -236,15 +232,13 @@ export const AddTransactionScreen = ({route}) => {
             data={accounts}
             horizontal
             ListFooterComponent={
-              accounts.length < 6 && (
-                <Button
-                  icon="wallet-plus"
-                  mode="contained-tonal"
-                  style={{marginRight: 8}}
-                  onPress={() => navigator.navigate('add-account')}>
-                  Add Account
-                </Button>
-              )
+              <Button
+                icon="wallet-plus"
+                mode="contained-tonal"
+                style={{marginRight: 8}}
+                onPress={() => navigator.navigate('add-account')}>
+                Add Account
+              </Button>
             }
             renderItem={({item}) => (
               <Button

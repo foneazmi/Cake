@@ -43,13 +43,27 @@ export const TotalTransaction = () => {
             <Icon
               name="credit-card-plus-outline"
               size={24}
-              color={theme.colors.onBackground}
+              color={theme.colors.onSurfaceVariant}
             />
-            <Text variant="titleMedium" style={styles.titleStyle}>
+            <Text
+              variant="titleMedium"
+              style={[
+                styles.titleStyle,
+                {
+                  color: theme.colors.onSurfaceVariant,
+                },
+              ]}>
               Income
             </Text>
           </View>
-          <Text variant="titleSmall" style={styles.subTitleStyle}>
+          <Text
+            variant="titleSmall"
+            style={[
+              styles.subTitleStyle,
+              {
+                color: theme.colors.onSurfaceVariant,
+              },
+            ]}>
             {currency(income)}
           </Text>
         </View>
@@ -64,13 +78,28 @@ export const TotalTransaction = () => {
             <Icon
               name="credit-card-minus-outline"
               size={24}
-              color={theme.colors.onBackground}
+              color={theme.colors.onSurfaceVariant}
             />
-            <Text variant="titleMedium" style={styles.titleStyle}>
+            <Text
+              variant="titleMedium"
+              style={[
+                styles.titleStyle,
+                {
+                  color: theme.colors.onSurfaceVariant,
+                },
+              ]}>
               Expense
             </Text>
           </View>
-          <Text variant="titleSmall" style={styles.subTitleStyle}>
+          <Text
+            variant="titleSmall"
+            style={[
+              styles.subTitleStyle,
+
+              {
+                color: theme.colors.onSurfaceVariant,
+              },
+            ]}>
             {currency(expense)}
           </Text>
         </View>

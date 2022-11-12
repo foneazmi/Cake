@@ -12,23 +12,37 @@ import {
 import {Button, useTheme, IconButton, Text} from 'react-native-paper';
 import CurrencyInput from 'react-native-currency-input';
 import {useDispatch, useSelector} from 'react-redux';
-import {addTransaction} from '../../../stores/actions';
+import {
+  addTransaction,
+  deleteTransaction,
+  updateTransaction,
+} from '../../../stores/actions';
 import {currency, navigator} from '../../../helpers';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export const AddTransactionScreen = ({route}) => {
-  const {type} = route.params;
+  const {
+    amount = '',
+    description = '',
+    id = '',
+    idAccount = '',
+    title = '',
+    type,
+  } = route.params;
+
   const theme = useTheme();
   const dispatch = useDispatch();
 
   const [form, setForm] = useState({
-    title: '',
-    description: '',
-    amount: '',
+    title,
+    description,
+    amount,
   });
 
   const {accounts} = useSelector(({account}) => account);
-  const [selectedAccount, setSelectedAccount] = useState(accounts[0]?.id || '');
+  const [selectedAccount, setSelectedAccount] = useState(
+    idAccount || accounts[0]?.id,
+  );
 
   const typeDescription = {
     income: 'Add Income',
@@ -37,17 +51,32 @@ export const AddTransactionScreen = ({route}) => {
   };
 
   const submitTransaction = () => {
-    if (form.amount === '' || selectedAccount === '') {
+    if (
+      form.amount === '' ||
+      selectedAccount === '' ||
+      selectedAccount === undefined
+    ) {
       return;
     } else {
-      dispatch(
-        addTransaction({
-          ...form,
-          type,
-          id: Date.now(),
-          idAccount: selectedAccount,
-        }),
-      );
+      if (id === '') {
+        dispatch(
+          addTransaction({
+            ...form,
+            type,
+            id: Date.now(),
+            idAccount: selectedAccount,
+          }),
+        );
+      } else {
+        dispatch(
+          updateTransaction(id, {
+            ...form,
+            type,
+            id,
+            idAccount: selectedAccount,
+          }),
+        );
+      }
       navigator.goBack();
     }
   };
@@ -62,31 +91,44 @@ export const AddTransactionScreen = ({route}) => {
       <IconButton
         icon="close"
         mode="outlined"
-        size={24}
+        size={20}
         onPress={() => navigator.goBack()}
       />
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          borderWidth: 1,
-          borderRadius: 50,
-          paddingHorizontal: 16,
-          paddingVertical: 8,
-          borderColor: theme.colors.outline,
-        }}>
-        <Icon
-          name="credit-card-edit"
-          color={theme.colors.onSurface}
-          size={16}
-        />
-        <Text
+      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View
           style={{
-            marginLeft: 4,
-          }}
-          variant="labelLarge">
-          {typeDescription[type] || ''}
-        </Text>
+            flexDirection: 'row',
+            alignItems: 'center',
+            borderWidth: 1,
+            borderRadius: 50,
+            paddingHorizontal: 16,
+            height: 36,
+            borderColor: theme.colors.outline,
+          }}>
+          <Icon
+            name="credit-card-edit"
+            color={theme.colors.onSurface}
+            size={16}
+          />
+          <Text
+            style={{
+              marginLeft: 4,
+            }}
+            variant="labelMedium">
+            {typeDescription[type] || ''}
+          </Text>
+        </View>
+        {id && (
+          <IconButton
+            icon="trash-can"
+            mode="outlined"
+            size={20}
+            onPress={() => {
+              dispatch(deleteTransaction(id));
+              navigator.goBack();
+            }}
+          />
+        )}
       </View>
     </View>
   );
@@ -322,7 +364,7 @@ export const AddTransactionScreen = ({route}) => {
                 bottom: 0,
                 left: 0,
                 right: 0,
-                backgroundColor: theme.colors.secondaryContainer,
+                backgroundColor: theme.colors.background,
                 paddingHorizontal: 16,
                 paddingVertical: 32,
               }}>
@@ -335,7 +377,7 @@ export const AddTransactionScreen = ({route}) => {
               </Text>
               {modalFor === 'amount' ? (
                 <CurrencyInput
-                  placeholderTextColor={theme.colors.onSecondaryContainer}
+                  placeholderTextColor={theme.colors.onBackground}
                   autoFocus
                   prefix="IDR "
                   placeholder="Input Here"
@@ -403,7 +445,7 @@ export const AddTransactionScreen = ({route}) => {
         style={{
           borderRadius: 10,
           marginHorizontal: 16,
-          marginBottom: Platform.OS === 'ios' ? 0 : 16,
+          marginBottom: Platform.OS === 'ios' ? 0 : 32,
           padding: 16,
           backgroundColor: theme.colors.primary,
         }}

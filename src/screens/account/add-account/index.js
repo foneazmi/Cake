@@ -13,28 +13,39 @@ import {navigator} from '../../../helpers';
 import {useTheme} from 'react-native-paper';
 import CurrencyInput from 'react-native-currency-input';
 import {useDispatch} from 'react-redux';
-import {addAccount} from '../../../stores/actions';
+import {addAccount, updateAccount} from '../../../stores/actions';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export const AddAccountScreen = () => {
+export const AddAccountScreen = ({route}) => {
+  console.log(route.params);
+  let {id = '', name = '', description = ''} = route.params;
   const theme = useTheme();
   const dispatch = useDispatch();
   const [form, setForm] = useState({
-    name: '',
-    description: '',
+    name,
+    description,
   });
 
   const submit = () => {
     if (form.title === '') {
       return;
     } else {
+      if (id === '') {
+        dispatch(
+          addAccount({
+            ...form,
+            id: Date.now(),
+          }),
+        );
+      } else {
+        dispatch(
+          updateAccount(id, {
+            ...form,
+            id,
+          }),
+        );
+      }
       navigator.goBack();
-      const data = {
-        name: form.name,
-        description: form.description,
-        id: Date.now(),
-      };
-      dispatch(addAccount(data));
     }
   };
 
@@ -157,7 +168,7 @@ export const AddAccountScreen = () => {
                 bottom: 0,
                 left: 0,
                 right: 0,
-                backgroundColor: theme.colors.secondaryContainer,
+                backgroundColor: theme.colors.background,
                 paddingHorizontal: 16,
                 paddingVertical: 32,
               }}>
@@ -170,14 +181,14 @@ export const AddAccountScreen = () => {
               </Text>
               {modalFor === 'amount' ? (
                 <CurrencyInput
-                  placeholderTextColor={theme.colors.onSecondaryContainer}
+                  placeholderTextColor={theme.colors.onBackground}
                   autoFocus
                   prefix="IDR "
                   placeholder="Input Here"
                   style={{
                     marginBottom: 32,
                     fontSize: 20,
-                    color: theme.colors.onSecondaryContainer,
+                    color: theme.colors.onBackground,
                   }}
                   onChangeValue={e => setModalText(e ? Math.abs(e) : '')}
                   value={modalText}
@@ -187,13 +198,13 @@ export const AddAccountScreen = () => {
                 />
               ) : (
                 <TextInput
-                  placeholderTextColor={theme.colors.onSecondaryContainer}
+                  placeholderTextColor={theme.colors.onBackground}
                   autoFocus
                   placeholder="Input Here"
                   style={{
                     marginBottom: 32,
                     fontSize: 20,
-                    color: theme.colors.onSecondaryContainer,
+                    color: theme.colors.onBackground,
                   }}
                   onChangeText={e => setModalText(e)}
                   value={modalText}
@@ -237,7 +248,7 @@ export const AddAccountScreen = () => {
         style={{
           borderRadius: 10,
           marginHorizontal: 16,
-          marginBottom: Platform.OS === 'ios' ? 0 : 16,
+          marginBottom: Platform.OS === 'ios' ? 0 : 32,
           padding: 16,
           backgroundColor: theme.colors.primary,
         }}
@@ -247,7 +258,7 @@ export const AddAccountScreen = () => {
             textAlign: 'center',
             color: theme.colors.onPrimary,
           }}>
-          Add Account
+          {id === '' ? 'Add Account' : 'Update Account'}
         </Text>
       </Pressable>
     </SafeAreaView>

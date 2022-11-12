@@ -1,7 +1,7 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Pressable} from 'react-native';
 import {Text, useTheme, IconButton} from 'react-native-paper';
-import {currency} from '../../../../../helpers';
+import {currency, navigator} from '../../../../../helpers';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
 
@@ -19,15 +19,15 @@ const ListTag = props => {
             paddingHorizontal: 16,
             borderRadius: 50,
             marginRight: 4,
-            backgroundColor: theme.colors.primary,
+            backgroundColor: theme.colors.secondary,
           }}>
-          <Icon name={tag.icon} size={16} color={theme.colors.onTertiary} />
+          <Icon name={tag.icon} size={16} color={theme.colors.onSecondary} />
           <Text
             variant="labelMedium"
             style={{
               marginLeft: 4,
               fontWeight: 'bold',
-              color: theme.colors.onTertiary,
+              color: theme.colors.onSecondary,
             }}>
             {tag.name}
           </Text>
@@ -45,7 +45,8 @@ const Transaction = props => {
     expense: 'credit-card-minus-outline',
   };
   return (
-    <View
+    <Pressable
+      onPress={() => navigator.navigate('add-transaction', props)}
       style={[
         styles.transactionContainer,
         {
@@ -55,18 +56,32 @@ const Transaction = props => {
       <ListTag
         data={[
           {
-            name: acc.name,
+            name: acc?.name || '',
             icon: 'wallet',
           },
         ]}
       />
       {props.title && (
-        <Text variant="bodyLarge" style={styles.titleStyle}>
+        <Text
+          variant="bodyLarge"
+          style={[
+            styles.titleStyle,
+            {
+              color: theme.colors.onSurfaceVariant,
+            },
+          ]}>
           {props.title}
         </Text>
       )}
       {props.description && (
-        <Text variant="bodySmall" style={styles.descriptionStyle}>
+        <Text
+          variant="bodySmall"
+          style={[
+            styles.descriptionStyle,
+            {
+              color: theme.colors.onSurfaceVariant,
+            },
+          ]}>
           {props.description}
         </Text>
       )}
@@ -77,11 +92,18 @@ const Transaction = props => {
           size={20}
           color={theme.colors.onSurfaceVariant}
         />
-        <Text variant="titleMedium" style={styles.amountStyle}>
+        <Text
+          variant="titleMedium"
+          style={[
+            styles.amountStyle,
+            {
+              color: theme.colors.onSurfaceVariant,
+            },
+          ]}>
           {currency(props.amount)}
         </Text>
       </View>
-    </View>
+    </Pressable>
   );
 };
 

@@ -36,7 +36,11 @@ export const AccountPage = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text variant="titleLarge" style={{fontWeight: 'bold'}}>
+        <Text
+          variant="titleLarge"
+          style={{
+            fontWeight: 'bold',
+          }}>
           Accounts
         </Text>
         <Text variant="titleSmall">{`Total : ${currency(total)}`}</Text>
@@ -104,12 +108,37 @@ const Account = props => {
           },
         ]}>
         <View style={styles.accountHeaderContainer}>
-          <Icon name="wallet" size={24} color={theme.colors.onBackground} />
-          <Text style={styles.accountTitleHeader} variant="titleMedium">
-            {props.name}
-          </Text>
+          <Icon name="wallet" size={24} color={theme.colors.onSurfaceVariant} />
+          <View style={{marginLeft: 4}}>
+            <Text
+              style={[
+                styles.accountTitleHeader,
+                {
+                  color: theme.colors.onSurfaceVariant,
+                },
+              ]}
+              variant="titleMedium">
+              {props.name}
+            </Text>
+            <Text
+              style={[
+                {
+                  color: theme.colors.onSurfaceVariant,
+                },
+              ]}
+              variant="labelSmall">
+              {props.description}
+            </Text>
+          </View>
         </View>
-        <Text variant="headlineSmall" style={styles.accountAmount}>
+        <Text
+          variant="headlineSmall"
+          style={[
+            styles.accountAmount,
+            {
+              color: theme.colors.onSurfaceVariant,
+            },
+          ]}>
           {currency(total)}
         </Text>
         <View style={styles.accountInnerContainer}>
@@ -120,10 +149,24 @@ const Account = props => {
                 backgroundColor: theme.colors.surface,
               },
             ]}>
-            <Text variant="labelMedium" style={styles.accountInnerTitle}>
+            <Text
+              variant="labelMedium"
+              style={[
+                styles.accountInnerTitle,
+                {
+                  color: theme.colors.onSurface,
+                },
+              ]}>
               Total Income
             </Text>
-            <Text variant="labelSmall" style={styles.accountInnerSubTitle}>
+            <Text
+              variant="labelSmall"
+              style={[
+                styles.accountInnerSubTitle,
+                {
+                  color: theme.colors.onSurface,
+                },
+              ]}>
               {currency(income)}
             </Text>
           </View>
@@ -134,10 +177,24 @@ const Account = props => {
                 backgroundColor: theme.colors.surface,
               },
             ]}>
-            <Text variant="labelMedium" style={styles.accountInnerTitle}>
+            <Text
+              variant="labelMedium"
+              style={[
+                styles.accountInnerTitle,
+                {
+                  color: theme.colors.onSurface,
+                },
+              ]}>
               Total Expense
             </Text>
-            <Text variant="labelSmall" style={styles.accountInnerSubTitle}>
+            <Text
+              variant="labelSmall"
+              style={[
+                styles.accountInnerSubTitle,
+                {
+                  color: theme.colors.onSurface,
+                },
+              ]}>
               {currency(expense)}
             </Text>
           </View>
@@ -170,10 +227,9 @@ const styles = StyleSheet.create({
   },
   accountHeaderContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
+    // alignItems: 'center',
   },
   accountTitleHeader: {
-    marginLeft: 4,
     fontWeight: 'bold',
   },
   accountAmount: {

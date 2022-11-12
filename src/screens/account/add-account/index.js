@@ -8,20 +8,25 @@ import {
   Platform,
   TextInput,
 } from 'react-native';
-import {IconButton, Text} from 'react-native-paper';
+import {IconButton, Text, useTheme, SegmentedButtons} from 'react-native-paper';
 import {navigator} from '../../../helpers';
-import {useTheme} from 'react-native-paper';
 import CurrencyInput from 'react-native-currency-input';
 import {useDispatch} from 'react-redux';
 import {addAccount, updateAccount} from '../../../stores/actions';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export const AddAccountScreen = ({route}) => {
-  console.log(route.params);
-  let {id = '', name = '', description = ''} = route.params;
+  let {
+    id = '',
+    name = '',
+    description = '',
+    type = 'cash',
+  } = route?.params || {};
+
   const theme = useTheme();
   const dispatch = useDispatch();
   const [form, setForm] = useState({
+    type,
     name,
     description,
   });
@@ -75,6 +80,29 @@ export const AddAccountScreen = ({route}) => {
     };
     return (
       <View style={{padding: 16}}>
+        <SegmentedButtons
+          value={form.type}
+          onValueChange={value => {
+            setForm({...form, type: value});
+          }}
+          buttons={[
+            {
+              value: 'cash',
+              label: 'Cash',
+            },
+            {
+              value: 'invest',
+              label: 'Invest',
+            },
+            {
+              value: 'loan',
+              label: 'Loan',
+            },
+          ]}
+          style={{
+            alignSelf: 'center',
+          }}
+        />
         <Pressable
           onPress={() => {
             setModalText(form.name || '');

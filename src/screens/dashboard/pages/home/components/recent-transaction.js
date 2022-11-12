@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {View, StyleSheet, Pressable} from 'react-native';
 import {Text, useTheme, IconButton} from 'react-native-paper';
 import {currency, navigator} from '../../../../../helpers';
@@ -39,11 +39,23 @@ const ListTag = props => {
 const Transaction = props => {
   const theme = useTheme();
   const {accounts} = useSelector(({account}) => account);
-  const acc = accounts.find(account => account.id === props.idAccount);
-  const iconByType = {
+
+  const account = useMemo(
+    () => accounts.find(acc => acc.id === props.idAccount),
+    [accounts, props.idAccount],
+  );
+
+  const transactionByType = {
     income: 'credit-card-plus-outline',
     expense: 'credit-card-minus-outline',
   };
+
+  const accountByType = {
+    cash: 'wallet',
+    invest: 'chart-areaspline-variant',
+    loan: 'credit-card',
+  };
+
   return (
     <Pressable
       onPress={() => navigator.navigate('add-transaction', props)}
@@ -56,8 +68,8 @@ const Transaction = props => {
       <ListTag
         data={[
           {
-            name: acc?.name || '',
-            icon: 'wallet',
+            name: account?.name || '',
+            icon: accountByType[account?.type] || '',
           },
         ]}
       />
@@ -88,7 +100,7 @@ const Transaction = props => {
 
       <View style={styles.amountContainer}>
         <Icon
-          name={iconByType[props.type] || ''}
+          name={transactionByType[props.type] || ''}
           size={20}
           color={theme.colors.onSurfaceVariant}
         />
@@ -140,7 +152,8 @@ const styles = StyleSheet.create({
 
   transactionContainer: {
     flex: 1,
-    marginTop: 8,
+    marginVertical: 8,
+    // marginTop: 8,
     borderRadius: 10,
     padding: 20,
   },

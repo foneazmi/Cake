@@ -8,12 +8,12 @@ import {
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import {currency, navigator} from '../../../../helpers';
-import {useTheme, FAB, Text} from 'react-native-paper';
+import {useTheme, FAB, Text, SegmentedButtons} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export const AccountPage = () => {
   const {accounts, transactions} = useSelector(({account}) => account);
-
+  const [type, setType] = useState('all');
   const [scrollY, setScrollY] = useState(0);
   const [showFab, setShowFab] = useState(true);
 
@@ -46,6 +46,35 @@ export const AccountPage = () => {
         <Text variant="titleSmall">{`Total : ${currency(total)}`}</Text>
       </View>
       <FlatList
+        ListHeaderComponent={
+          <SegmentedButtons
+            value={type}
+            onValueChange={setType}
+            buttons={[
+              {
+                value: 'all',
+                label: 'All',
+              },
+              {
+                value: 'cash',
+                label: 'Cash',
+              },
+              {
+                value: 'invest',
+                label: 'Invest',
+              },
+              {
+                value: 'loan',
+                label: 'Loan',
+              },
+            ]}
+            style={{
+              alignSelf: 'center',
+              marginTop: 16,
+              marginBottom: 8,
+            }}
+          />
+        }
         scrollEventThrottle={300}
         onScroll={({nativeEvent}) => {
           setScrollY(nativeEvent.contentOffset.y);
@@ -55,20 +84,24 @@ export const AccountPage = () => {
             setShowFab(scrollY > nativeEvent.contentOffset.y);
           }
         }}
-        data={accounts}
+        data={
+          type === 'all'
+            ? accounts
+            : accounts.filter(account => account.type === type)
+        }
         keyExtractor={(_, index) => `account-${index}`}
         renderItem={({item}) => <Account {...item} />}
       />
-      {accounts.length < 6 && (
-        <FAB
-          variant="secondary"
-          icon="plus"
-          visible={showFab}
-          animated
-          style={styles.fab}
-          onPress={() => navigator.navigate('add-account')}
-        />
-      )}
+      {/* {accounts.length < 6 && ( */}
+      <FAB
+        variant="secondary"
+        icon="plus"
+        visible={showFab}
+        animated
+        style={styles.fab}
+        onPress={() => navigator.navigate('add-account')}
+      />
+      {/* )} */}
     </SafeAreaView>
   );
 };
@@ -97,6 +130,11 @@ const Account = props => {
     return [totalIncome, totalExpense, totalIncome - totalExpense];
   }, [transactions, props]);
 
+  const byType = {
+    cash: ['Income', 'Expense', 'wallet'],
+    invest: ['Unrealized', 'Realized', 'chart-areaspline-variant'],
+    loan: ['Credit', 'Debt', 'credit-card'],
+  };
   const theme = useTheme();
   return (
     <Pressable onPress={() => navigator.navigate('detail-account', props)}>
@@ -108,7 +146,11 @@ const Account = props => {
           },
         ]}>
         <View style={styles.accountHeaderContainer}>
-          <Icon name="wallet" size={24} color={theme.colors.onSurfaceVariant} />
+          <Icon
+            name={byType[props.type][2]}
+            size={24}
+            color={theme.colors.onSurfaceVariant}
+          />
           <View style={{marginLeft: 4}}>
             <Text
               style={[
@@ -157,7 +199,7 @@ const Account = props => {
                   color: theme.colors.onSurface,
                 },
               ]}>
-              Total Income
+              {`Total ${byType[props.type][0]}`}
             </Text>
             <Text
               variant="labelSmall"
@@ -185,7 +227,7 @@ const Account = props => {
                   color: theme.colors.onSurface,
                 },
               ]}>
-              Total Expense
+              {`Total ${byType[props.type][1]}`}
             </Text>
             <Text
               variant="labelSmall"
@@ -221,7 +263,7 @@ const styles = StyleSheet.create({
   //////
   accountContainer: {
     marginHorizontal: 16,
-    marginTop: 16,
+    marginVertical: 8,
     padding: 16,
     borderRadius: 10,
   },

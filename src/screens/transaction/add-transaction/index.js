@@ -28,7 +28,7 @@ export const AddTransactionScreen = ({route}) => {
     idAccount = '',
     title = '',
     type,
-  } = route.params;
+  } = route?.params || {};
 
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -455,7 +455,7 @@ export const AddTransactionScreen = ({route}) => {
             textAlign: 'center',
             color: theme.colors.onPrimary,
           }}>
-          Add Transaction
+          {id === '' ? 'Add Transaction' : 'Update Transaction'}
         </Text>
       </Pressable>
     </SafeAreaView>

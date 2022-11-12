@@ -6,8 +6,6 @@ import {useTheme} from 'react-native-paper';
 
 export const DetailTransactionScreen = ({route}) => {
   const account = route.params;
-  console.log(account);
-
   const theme = useTheme();
 
   return (

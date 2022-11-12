@@ -7,7 +7,6 @@ import {setDarkMode, resetAll} from '../../stores/actions';
 import {useDispatch, useSelector} from 'react-redux';
 export const SettingScreen = () => {
   const {darkMode} = useSelector(({global}) => global);
-  const [darkModeState, setDarkModeState] = useState(darkMode);
 
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -34,31 +33,31 @@ export const SettingScreen = () => {
         <List.Subheader>Themes</List.Subheader>
         <List.Item
           onPress={() => {
-            setDarkModeState(!darkModeState);
-            dispatch(setDarkMode(!darkModeState));
+            dispatch(setDarkMode(!darkMode));
           }}
           title="Dark Mode"
           description="Press to change mode"
           right={props => (
             <List.Icon
               {...props}
-              icon={darkModeState ? 'brightness-7' : 'brightness-4'}
+              icon={darkMode ? 'brightness-7' : 'brightness-4'}
             />
           )}
         />
       </List.Section>
-
-      <List.Section>
-        <List.Subheader>Reset</List.Subheader>
-        <List.Item
-          onPress={() => {
-            dispatch(resetAll());
-          }}
-          title="Factory Reset"
-          description="Delete All Saved Data"
-          right={props => <List.Icon {...props} icon={'backup-restore'} />}
-        />
-      </List.Section>
+      {__DEV__ && (
+        <List.Section>
+          <List.Subheader>Developer Mode</List.Subheader>
+          <List.Item
+            onPress={() => {
+              dispatch(resetAll());
+            }}
+            title="Factory Reset"
+            description="Delete All Saved Data"
+            right={props => <List.Icon {...props} icon={'backup-restore'} />}
+          />
+        </List.Section>
+      )}
     </View>
   );
 };

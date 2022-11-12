@@ -7,5 +7,5 @@ export const addAccount = data => (dispatch, getState) => {
 
 export const addTransaction = data => (dispatch, getState) => {
   const {transactions} = getState().account;
-  dispatch({type: SET_TRANSACTION, payload: [...transactions, data]});
+  dispatch({type: SET_TRANSACTION, payload: [data, ...transactions]});
 };

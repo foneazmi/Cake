@@ -12,22 +12,34 @@ import {useTheme, FAB, Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export const AccountPage = () => {
-  const {accounts} = useSelector(({account}) => account);
-  const totalAmount = useMemo(() => {
-    return accounts.reduce(
-      (accumulator, currentValue) => accumulator + currentValue.amount,
-      0,
-    );
-  }, [accounts]);
+  const {accounts, transactions} = useSelector(({account}) => account);
+
   const [scrollY, setScrollY] = useState(0);
   const [showFab, setShowFab] = useState(true);
+
+  const total = useMemo(() => {
+    let totalIncome = transactions
+      .filter(transaction => transaction.type === 'income')
+      .reduce(
+        (accumulator, currentValue) => accumulator + currentValue.amount,
+        0,
+      );
+    let totalExpense = transactions
+      .filter(transaction => transaction.type === 'expense')
+      .reduce(
+        (accumulator, currentValue) => accumulator + currentValue.amount,
+        0,
+      );
+    return totalIncome - totalExpense;
+  }, [transactions]);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text variant="titleLarge" style={{fontWeight: 'bold'}}>
           Accounts
         </Text>
-        <Text variant="titleSmall">{`Total : ${currency(totalAmount)}`}</Text>
+        <Text variant="titleSmall">{`Total : ${currency(total)}`}</Text>
       </View>
       <FlatList
         scrollEventThrottle={300}
@@ -58,6 +70,29 @@ export const AccountPage = () => {
 };
 
 const Account = props => {
+  const {transactions} = useSelector(({account}) => account);
+  const [income, expense, total] = useMemo(() => {
+    let totalIncome = transactions
+      .filter(
+        transaction =>
+          transaction.type === 'income' && transaction.idAccount === props.id,
+      )
+      .reduce(
+        (accumulator, currentValue) => accumulator + currentValue.amount,
+        0,
+      );
+    let totalExpense = transactions
+      .filter(
+        transaction =>
+          transaction.type === 'expense' && transaction.idAccount === props.id,
+      )
+      .reduce(
+        (accumulator, currentValue) => accumulator + currentValue.amount,
+        0,
+      );
+    return [totalIncome, totalExpense, totalIncome - totalExpense];
+  }, [transactions, props]);
+
   const theme = useTheme();
   return (
     <Pressable onPress={() => navigator.navigate('detail-account', props)}>
@@ -75,7 +110,7 @@ const Account = props => {
           </Text>
         </View>
         <Text variant="headlineSmall" style={styles.accountAmount}>
-          {currency(props.amount)}
+          {currency(total)}
         </Text>
         <View style={styles.accountInnerContainer}>
           <View
@@ -86,10 +121,10 @@ const Account = props => {
               },
             ]}>
             <Text variant="labelMedium" style={styles.accountInnerTitle}>
-              Income This Month
+              Total Income
             </Text>
             <Text variant="labelSmall" style={styles.accountInnerSubTitle}>
-              {currency(0)}
+              {currency(income)}
             </Text>
           </View>
           <View
@@ -100,10 +135,10 @@ const Account = props => {
               },
             ]}>
             <Text variant="labelMedium" style={styles.accountInnerTitle}>
-              Expense This Month
+              Total Expense
             </Text>
             <Text variant="labelSmall" style={styles.accountInnerSubTitle}>
-              {currency(0)}
+              {currency(expense)}
             </Text>
           </View>
         </View>

@@ -1,18 +1,35 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 
 import {View, StyleSheet} from 'react-native';
 import {Text, useTheme} from 'react-native-paper';
 import {currency} from '../../../../../helpers';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector} from 'react-redux';
 
 export const TotalTransaction = () => {
   const theme = useTheme();
+  const {transactions} = useSelector(({account}) => account);
+  const [income, expense, total] = useMemo(() => {
+    let totalIncome = transactions
+      .filter(transaction => transaction.type === 'income')
+      .reduce(
+        (accumulator, currentValue) => accumulator + currentValue.amount,
+        0,
+      );
+    let totalExpense = transactions
+      .filter(transaction => transaction.type === 'expense')
+      .reduce(
+        (accumulator, currentValue) => accumulator + currentValue.amount,
+        0,
+      );
+    return [totalIncome, totalExpense, totalIncome - totalExpense];
+  }, [transactions]);
 
   return (
     <View style={styles.container}>
       <View>
-        <Text variant="headlineSmall">{currency(0)}</Text>
+        <Text variant="headlineSmall">{currency(total)}</Text>
       </View>
       <View style={styles.contentContainer}>
         <View
@@ -33,7 +50,7 @@ export const TotalTransaction = () => {
             </Text>
           </View>
           <Text variant="titleSmall" style={styles.subTitleStyle}>
-            {currency(0)}
+            {currency(income)}
           </Text>
         </View>
         <View
@@ -54,7 +71,7 @@ export const TotalTransaction = () => {
             </Text>
           </View>
           <Text variant="titleSmall" style={styles.subTitleStyle}>
-            {currency(0)}
+            {currency(expense)}
           </Text>
         </View>
       </View>

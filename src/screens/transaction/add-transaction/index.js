@@ -7,6 +7,7 @@ import {
   Pressable,
   Modal,
   TextInput,
+  Platform,
 } from 'react-native';
 import {Button, useTheme, IconButton, Text} from 'react-native-paper';
 import CurrencyInput from 'react-native-currency-input';
@@ -36,12 +37,13 @@ export const AddTransactionScreen = ({route}) => {
   };
 
   const submitTransaction = () => {
-    if (form.amount === '') {
+    if (form.amount === '' || selectedAccount === '') {
       return;
     } else {
       dispatch(
         addTransaction({
           ...form,
+          type,
           id: Date.now(),
           idAccount: selectedAccount,
         }),
@@ -92,17 +94,34 @@ export const AddTransactionScreen = ({route}) => {
   const AccountList = () => {
     if (type === 'income' || type === 'expense') {
       return (
-        <View>
+        <View
+          style={{
+            marginTop: 16,
+          }}>
           <Text
             style={{
               fontWeight: 'bold',
               marginBottom: 12,
+              marginLeft: 16,
             }}
             variant="labelLarge">
             {type === 'income' ? 'Add Money To' : 'Pay With'}
           </Text>
           <FlatList
+            style={{paddingHorizontal: 16}}
             data={accounts}
+            showsHorizontalScrollIndicator={false}
+            ListFooterComponent={
+              accounts.length < 6 && (
+                <Button
+                  icon="wallet-plus"
+                  mode="contained-tonal"
+                  style={{marginRight: 8}}
+                  onPress={() => navigator.navigate('add-account')}>
+                  Add Account
+                </Button>
+              )
+            }
             horizontal
             renderItem={({item}) => (
               <Button
@@ -120,18 +139,35 @@ export const AddTransactionScreen = ({route}) => {
       );
     } else {
       return (
-        <View>
+        <View
+          style={{
+            marginTop: 16,
+          }}>
           <Text
             style={{
               fontWeight: 'bold',
               marginBottom: 12,
+              marginLeft: 16,
             }}
             variant="labelLarge">
             From
           </Text>
           <FlatList
             data={accounts}
+            style={{paddingHorizontal: 16}}
+            showsHorizontalScrollIndicator={false}
             horizontal
+            ListFooterComponent={
+              accounts.length < 6 && (
+                <Button
+                  icon="wallet-plus"
+                  mode="contained-tonal"
+                  style={{marginRight: 8}}
+                  onPress={() => navigator.navigate('add-account')}>
+                  Add Account
+                </Button>
+              )
+            }
             renderItem={({item}) => (
               <Button
                 icon="wallet"
@@ -154,8 +190,20 @@ export const AddTransactionScreen = ({route}) => {
             To
           </Text>
           <FlatList
+            showsHorizontalScrollIndicator={false}
             data={accounts}
             horizontal
+            ListFooterComponent={
+              accounts.length < 6 && (
+                <Button
+                  icon="wallet-plus"
+                  mode="contained-tonal"
+                  style={{marginRight: 8}}
+                  onPress={() => navigator.navigate('add-account')}>
+                  Add Account
+                </Button>
+              )
+            }
             renderItem={({item}) => (
               <Button
                 icon="wallet"
@@ -180,7 +228,7 @@ export const AddTransactionScreen = ({route}) => {
       setModalFor('');
     };
     return (
-      <View style={{marginVertical: 16}}>
+      <View style={{padding: 16}}>
         <Pressable
           onPress={() => {
             setModalText(form.title || '');
@@ -285,18 +333,38 @@ export const AddTransactionScreen = ({route}) => {
                 }}>
                 {modalFor.toUpperCase()}
               </Text>
-              <TextInput
-                placeholderTextColor={theme.colors.onSecondaryContainer}
-                autoFocus
-                placeholder="Input Here"
-                style={{
-                  marginBottom: 32,
-                  fontSize: 20,
-                  color: theme.colors.onSecondaryContainer,
-                }}
-                onChangeText={e => setModalText(e)}
-                value={modalText}
-              />
+              {modalFor === 'amount' ? (
+                <CurrencyInput
+                  placeholderTextColor={theme.colors.onSecondaryContainer}
+                  autoFocus
+                  prefix="IDR "
+                  placeholder="Input Here"
+                  style={{
+                    marginBottom: 32,
+                    fontSize: 20,
+                    color: theme.colors.onSecondaryContainer,
+                  }}
+                  onChangeValue={e => setModalText(e ? Math.abs(e) : '')}
+                  value={modalText}
+                  delimiter=","
+                  separator="."
+                  precision={0}
+                />
+              ) : (
+                <TextInput
+                  placeholderTextColor={theme.colors.onSecondaryContainer}
+                  autoFocus
+                  placeholder="Input Here"
+                  style={{
+                    marginBottom: 32,
+                    fontSize: 20,
+                    color: theme.colors.onSecondaryContainer,
+                  }}
+                  onChangeText={e => setModalText(e)}
+                  value={modalText}
+                />
+              )}
+
               <Pressable
                 style={{
                   borderRadius: 10,
@@ -327,7 +395,7 @@ export const AddTransactionScreen = ({route}) => {
         },
       ]}>
       <Header />
-      <View style={{padding: 16, flex: 1}}>
+      <View style={{flex: 1}}>
         <AccountList />
         <Form />
       </View>
@@ -335,6 +403,7 @@ export const AddTransactionScreen = ({route}) => {
         style={{
           borderRadius: 10,
           marginHorizontal: 16,
+          marginBottom: Platform.OS === 'ios' ? 0 : 16,
           padding: 16,
           backgroundColor: theme.colors.primary,
         }}

@@ -40,6 +40,10 @@ const Transaction = props => {
   const theme = useTheme();
   const {accounts} = useSelector(({account}) => account);
   const acc = accounts.find(account => account.id === props.idAccount);
+  const iconByType = {
+    income: 'credit-card-plus-outline',
+    expense: 'credit-card-minus-outline',
+  };
   return (
     <View
       style={[
@@ -69,7 +73,7 @@ const Transaction = props => {
 
       <View style={styles.amountContainer}>
         <Icon
-          name="credit-card-plus-outline"
+          name={iconByType[props.type] || ''}
           size={20}
           color={theme.colors.onSurfaceVariant}
         />

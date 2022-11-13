@@ -130,7 +130,7 @@ const Account = props => {
     return [totalIncome, totalExpense, totalIncome - totalExpense];
   }, [transactions, props]);
 
-  const byType = {
+  const accountByType = {
     cash: ['Income', 'Expense', 'wallet'],
     invest: ['Unrealized', 'Realized', 'chart-areaspline-variant'],
     loan: ['Credit', 'Debt', 'credit-card'],
@@ -147,7 +147,7 @@ const Account = props => {
         ]}>
         <View style={styles.accountHeaderContainer}>
           <Icon
-            name={byType[props.type][2]}
+            name={props.type ? accountByType[props.type][2] : ''}
             size={24}
             color={theme.colors.onSurfaceVariant}
           />
@@ -199,7 +199,7 @@ const Account = props => {
                   color: theme.colors.onSurface,
                 },
               ]}>
-              {`Total ${byType[props.type][0]}`}
+              {`Total ${props.type ? accountByType[props.type][0] : ''}`}
             </Text>
             <Text
               variant="labelSmall"
@@ -227,7 +227,7 @@ const Account = props => {
                   color: theme.colors.onSurface,
                 },
               ]}>
-              {`Total ${byType[props.type][1]}`}
+              {`Total ${props.type ? accountByType[props.type][1] : ''}`}
             </Text>
             <Text
               variant="labelSmall"

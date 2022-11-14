@@ -6,7 +6,6 @@ import {currency} from '../../../../../helpers';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
-
 export const TotalTransaction = () => {
   const theme = useTheme();
   const {transactions} = useSelector(({account}) => account);
@@ -36,21 +35,21 @@ export const TotalTransaction = () => {
           style={[
             styles.incomeContainer,
             {
-              backgroundColor: theme.colors.surfaceVariant,
+              backgroundColor: theme.colors.secondaryContainer,
             },
           ]}>
           <View style={styles.titleContainer}>
             <Icon
               name="credit-card-plus-outline"
               size={24}
-              color={theme.colors.onSurfaceVariant}
+              color={theme.colors.onSecondaryContainer}
             />
             <Text
               variant="titleMedium"
               style={[
                 styles.titleStyle,
                 {
-                  color: theme.colors.onSurfaceVariant,
+                  color: theme.colors.onSecondaryContainer,
                 },
               ]}>
               Income
@@ -61,7 +60,7 @@ export const TotalTransaction = () => {
             style={[
               styles.subTitleStyle,
               {
-                color: theme.colors.onSurfaceVariant,
+                color: theme.colors.onSecondaryContainer,
               },
             ]}>
             {currency(income)}
@@ -71,21 +70,21 @@ export const TotalTransaction = () => {
           style={[
             styles.expenseContainer,
             {
-              backgroundColor: theme.colors.surfaceVariant,
+              backgroundColor: theme.colors.secondaryContainer,
             },
           ]}>
           <View style={styles.titleContainer}>
             <Icon
               name="credit-card-minus-outline"
               size={24}
-              color={theme.colors.onSurfaceVariant}
+              color={theme.colors.onSecondaryContainer}
             />
             <Text
               variant="titleMedium"
               style={[
                 styles.titleStyle,
                 {
-                  color: theme.colors.onSurfaceVariant,
+                  color: theme.colors.onSecondaryContainer,
                 },
               ]}>
               Expense
@@ -97,7 +96,7 @@ export const TotalTransaction = () => {
               styles.subTitleStyle,
 
               {
-                color: theme.colors.onSurfaceVariant,
+                color: theme.colors.onSecondaryContainer,
               },
             ]}>
             {currency(expense)}

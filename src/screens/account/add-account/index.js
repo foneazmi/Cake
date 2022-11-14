@@ -123,6 +123,7 @@ export const AddAccountScreen = ({route}) => {
           />
           <Text
             style={{
+              color: theme.colors.onSurface,
               marginLeft: 8,
             }}
             variant="labelLarge">
@@ -147,6 +148,7 @@ export const AddAccountScreen = ({route}) => {
           <Text
             style={{
               marginLeft: 8,
+              color: theme.colors.onSurface,
             }}
             variant="labelLarge">
             {form.description || 'Add description'}

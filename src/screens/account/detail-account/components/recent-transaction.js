@@ -1,11 +1,9 @@
-import React, {useMemo, useState} from 'react';
+import React, {useMemo} from 'react';
 import {View, StyleSheet, Pressable} from 'react-native';
 import {Text, useTheme} from 'react-native-paper';
-import {currency, navigator} from '../../../../../helpers';
+import {currency, navigator} from '../../../../helpers';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
-import {CalendarWeek} from '../../../../../components/calendar';
-import moment from 'moment';
 
 const ListTag = props => {
   const theme = useTheme();
@@ -61,7 +59,12 @@ const Transaction = props => {
   return (
     <Pressable
       onPress={() => navigator.navigate('add-transaction', props)}
-      style={[styles.transactionContainer]}>
+      style={[
+        styles.transactionContainer,
+        {
+          backgroundColor: theme.colors.secondaryContainer,
+        },
+      ]}>
       <ListTag
         data={[
           {
@@ -76,7 +79,7 @@ const Transaction = props => {
           style={[
             styles.titleStyle,
             {
-              color: theme.colors.onSurface,
+              color: theme.colors.onSecondaryContainer,
             },
           ]}>
           {props.title}
@@ -88,7 +91,7 @@ const Transaction = props => {
           style={[
             styles.descriptionStyle,
             {
-              color: theme.colors.onSurface,
+              color: theme.colors.onSecondaryContainer,
             },
           ]}>
           {props.description}
@@ -99,14 +102,14 @@ const Transaction = props => {
         <Icon
           name={transactionByType[props.type] || ''}
           size={20}
-          color={theme.colors.onSurfaceVariant}
+          color={theme.colors.onSecondaryContainer}
         />
         <Text
           variant="titleMedium"
           style={[
             styles.amountStyle,
             {
-              color: theme.colors.onSurface,
+              color: theme.colors.onSecondaryContainer,
             },
           ]}>
           {currency(props.amount)}
@@ -116,74 +119,39 @@ const Transaction = props => {
   );
 };
 
-export const RecentTransaction = () => {
-  const theme = useTheme();
+export const RecentTransaction = props => {
   const {transactions} = useSelector(({account}) => account);
-  const nowDate = new Date();
-  const [selectedDate, setSelectedDate] = useState(nowDate);
   const filteredTransactions = useMemo(
     () =>
-      transactions.filter(
-        transaction =>
-          moment(transaction.id).format('D/M/Y') ===
-          moment(selectedDate).format('D/M/Y'),
-      ),
-    [transactions, selectedDate],
+      props.account
+        ? transactions.filter(
+            transaction => transaction.idAccount === props.account.id,
+          )
+        : transactions,
+    [transactions, props.account],
   );
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          marginBottom: 8,
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-        }}>
-        <Text variant="titleMedium">Recent Transaction</Text>
-        <Pressable
-          onPress={() => {
-            navigator.navigate('detail-account', {});
-          }}>
-          <Text variant="titleMedium">Show All</Text>
-        </Pressable>
-      </View>
-      <View
-        style={[
-          styles.calendarContainer,
-          {
-            backgroundColor: theme.colors.secondaryContainer,
-          },
-        ]}>
-        <View style={{paddingHorizontal: 16}}>
-          <CalendarWeek
-            nowDate={nowDate}
-            weekTypes={[]}
-            onDateSelect={day => {
-              setSelectedDate(day);
-            }}
-          />
+      <Text variant="titleMedium">Recent Transaction</Text>
+
+      {filteredTransactions.length > 0 ? (
+        filteredTransactions.map((transaction, index) => (
+          <Transaction {...transaction} key={`${index}-transaction-item`} />
+        ))
+      ) : (
+        <View style={styles.noTransactionContainer}>
+          <Text style={styles.titleStyle}>No Transaction</Text>
         </View>
-        {filteredTransactions.length > 0 ? (
-          filteredTransactions.map((transaction, index) => (
-            <Transaction {...transaction} key={`${index}-transaction-item`} />
-          ))
-        ) : (
-          <View style={styles.noTransactionContainer}>
-            <Text style={styles.titleStyle}>No Transaction</Text>
-          </View>
-        )}
-      </View>
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 16,
+    marginTop: 32,
+    paddingHorizontal: 16,
     flex: 1,
-  },
-  calendarContainer: {
-    borderRadius: 10,
-    paddingVertical: 16,
   },
   itemContainer: {
     flexDirection: 'row',
@@ -192,8 +160,10 @@ const styles = StyleSheet.create({
 
   transactionContainer: {
     flex: 1,
-    marginTop: 24,
-    paddingHorizontal: 16,
+    marginVertical: 8,
+    // marginTop: 8,
+    borderRadius: 10,
+    padding: 20,
   },
   titleContainer: {
     flexDirection: 'row',
@@ -215,7 +185,6 @@ const styles = StyleSheet.create({
   },
   noTransactionContainer: {
     marginTop: 16,
-    padding: 32,
     justifyContent: 'center',
     alignItems: 'center',
   },

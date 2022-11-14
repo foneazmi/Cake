@@ -142,21 +142,21 @@ const Account = props => {
         style={[
           styles.accountContainer,
           {
-            backgroundColor: theme.colors.surfaceVariant,
+            backgroundColor: theme.colors.secondaryContainer,
           },
         ]}>
         <View style={styles.accountHeaderContainer}>
           <Icon
             name={props.type ? accountByType[props.type][2] : ''}
             size={24}
-            color={theme.colors.onSurfaceVariant}
+            color={theme.colors.onSecondaryContainer}
           />
           <View style={{marginLeft: 4}}>
             <Text
               style={[
                 styles.accountTitleHeader,
                 {
-                  color: theme.colors.onSurfaceVariant,
+                  color: theme.colors.onSecondaryContainer,
                 },
               ]}
               variant="titleMedium">
@@ -165,7 +165,7 @@ const Account = props => {
             <Text
               style={[
                 {
-                  color: theme.colors.onSurfaceVariant,
+                  color: theme.colors.onSecondaryContainer,
                 },
               ]}
               variant="labelSmall">
@@ -178,7 +178,7 @@ const Account = props => {
           style={[
             styles.accountAmount,
             {
-              color: theme.colors.onSurfaceVariant,
+              color: theme.colors.onSecondaryContainer,
             },
           ]}>
           {currency(total)}

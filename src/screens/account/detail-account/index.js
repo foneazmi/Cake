@@ -1,11 +1,18 @@
 import React, {useMemo} from 'react';
-import {Pressable, SafeAreaView, StyleSheet, View} from 'react-native';
-import {Appbar, IconButton, Text} from 'react-native-paper';
+import {
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
+import {IconButton, Text} from 'react-native-paper';
 import {currency, navigator} from '../../../helpers';
 import {useTheme} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {deleteAccount} from '../../../stores/actions';
 import {useDispatch, useSelector} from 'react-redux';
+import {RecentTransaction} from './components/recent-transaction';
 
 export const DetailAccountScreen = ({route}) => {
   const {accounts, transactions} = useSelector(({account}) => account);
@@ -17,31 +24,58 @@ export const DetailAccountScreen = ({route}) => {
 
   const [income, incomeTransaction, expense, expenseTransaction, total] =
     useMemo(() => {
-      let totalIncome = transactions.filter(
-        transaction =>
-          transaction.type === 'income' && transaction.idAccount === account.id,
-      );
-      let amountIncome = totalIncome.reduce(
-        (accumulator, currentValue) => accumulator + currentValue.amount,
-        0,
-      );
-      let totalExpense = transactions.filter(
-        transaction =>
-          transaction.type === 'expense' &&
-          transaction.idAccount === account.id,
-      );
-      let amountExpense = totalExpense.reduce(
-        (accumulator, currentValue) => accumulator + currentValue.amount,
-        0,
-      );
-      return [
-        amountIncome,
-        totalIncome.length,
-        amountExpense,
-        totalExpense.length,
-        amountIncome - amountExpense,
-      ];
-    }, [transactions, account.id]);
+      if (account) {
+        let totalIncome = transactions.filter(
+          transaction =>
+            transaction.type === 'income' &&
+            transaction.idAccount === account?.id,
+        );
+        let amountIncome = totalIncome.reduce(
+          (accumulator, currentValue) => accumulator + currentValue.amount,
+          0,
+        );
+        let totalExpense = transactions.filter(
+          transaction =>
+            transaction.type === 'expense' &&
+            transaction.idAccount === account?.id,
+        );
+        let amountExpense = totalExpense.reduce(
+          (accumulator, currentValue) => accumulator + currentValue.amount,
+          0,
+        );
+
+        return [
+          amountIncome,
+          totalIncome.length,
+          amountExpense,
+          totalExpense.length,
+          amountIncome - amountExpense,
+        ];
+      } else {
+        let totalIncome = transactions.filter(
+          transaction => transaction.type === 'income',
+        );
+        let amountIncome = totalIncome.reduce(
+          (accumulator, currentValue) => accumulator + currentValue.amount,
+          0,
+        );
+        let totalExpense = transactions.filter(
+          transaction => transaction.type === 'expense',
+        );
+        let amountExpense = totalExpense.reduce(
+          (accumulator, currentValue) => accumulator + currentValue.amount,
+          0,
+        );
+
+        return [
+          amountIncome,
+          totalIncome.length,
+          amountExpense,
+          totalExpense.length,
+          amountIncome - amountExpense,
+        ];
+      }
+    }, [transactions, account]);
 
   const theme = useTheme();
 
@@ -50,12 +84,6 @@ export const DetailAccountScreen = ({route}) => {
     invest: ['Unrealized', 'Realized', 'chart-areaspline-variant'],
     loan: ['Credit', 'Debt', 'credit-card'],
   };
-
-  // const accountByType = {
-  //   cash: 'wallet',
-  //   invest: 'chart-areaspline-variant',
-  //   loan: 'credit-card',
-  // };
 
   const Header = () => (
     <View
@@ -71,53 +99,54 @@ export const DetailAccountScreen = ({route}) => {
         size={20}
         onPress={() => navigator.goBack()}
       />
-      <View style={{flexDirection: 'row', alignItems: 'center'}}>
-        <Pressable
-          onPress={() => navigator.navigate('add-account', account)}
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            borderWidth: 1,
-            borderRadius: 50,
-            paddingHorizontal: 16,
-            height: 36,
-            borderColor: theme.colors.outline,
-          }}>
-          <Icon
-            name="application-edit"
-            color={theme.colors.onSurface}
-            size={16}
-          />
-          <Text
+      {account && (
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Pressable
+            onPress={() => navigator.navigate('add-account', account)}
             style={{
-              marginLeft: 8,
+              flexDirection: 'row',
+              alignItems: 'center',
+              borderWidth: 1,
+              borderRadius: 50,
+              paddingHorizontal: 16,
+              height: 36,
+              borderColor: theme.colors.outline,
+            }}>
+            <Icon
+              name="application-edit"
+              color={theme.colors.onSurface}
+              size={16}
+            />
+            <Text
+              style={{
+                marginLeft: 8,
+              }}
+              variant="labelMedium">
+              Edit
+            </Text>
+          </Pressable>
+          <IconButton
+            icon="trash-can"
+            mode="outlined"
+            size={20}
+            onPress={() => {
+              dispatch(deleteAccount(account.id));
+              navigator.goBack();
             }}
-            variant="labelMedium">
-            Edit
-          </Text>
-        </Pressable>
-        <IconButton
-          icon="trash-can"
-          mode="outlined"
-          size={20}
-          onPress={() => {
-            dispatch(deleteAccount(account.id));
-            navigator.goBack();
-          }}
-        />
-      </View>
+          />
+        </View>
+      )}
     </View>
   );
 
   const AccountDetail = () => (
-    <View style={{paddingHorizontal: 32, paddingVertical: 16}}>
+    <View style={{paddingHorizontal: 32, paddingTop: 16}}>
       <View
         style={{
           flexDirection: 'row',
-          // alignItems: 'center',
         }}>
         <Icon
-          name={accountByType[account.type][2] || ''}
+          name={account?.type ? accountByType[account.type][2] : 'credit-card'}
           color={theme.colors.onSurface}
           size={24}
         />
@@ -130,31 +159,25 @@ export const DetailAccountScreen = ({route}) => {
               {
                 fontWeight: 'bold',
 
-                color: theme.colors.onSurfaceVariant,
+                color: theme.colors.onSecondaryContainer,
               },
             ]}
             variant="labelLarge">
-            {account.name}
+            {account?.name || 'All'}
           </Text>
 
           <Text
             style={[
               {
-                color: theme.colors.onSurfaceVariant,
+                color: theme.colors.onSecondaryContainer,
               },
             ]}
             variant="labelSmall">
-            {account.description}
+            {account?.description || 'All Transaction Account'}
           </Text>
         </View>
       </View>
-      <Text
-        style={{
-          marginTop: 8,
-        }}
-        variant="headlineSmall">
-        {currency(total)}
-      </Text>
+      <Text variant="headlineSmall">{currency(total)}</Text>
     </View>
   );
 
@@ -164,7 +187,7 @@ export const DetailAccountScreen = ({route}) => {
         style={[
           styles.incomeContainer,
           {
-            backgroundColor: theme.colors.surfaceVariant,
+            backgroundColor: theme.colors.secondaryContainer,
           },
         ]}>
         <Text
@@ -172,17 +195,17 @@ export const DetailAccountScreen = ({route}) => {
           style={[
             styles.titleStyle,
             {
-              color: theme.colors.onSurfaceVariant,
+              color: theme.colors.onSecondaryContainer,
             },
           ]}>
-          {accountByType[account.type][0] || ''}
+          {account?.type ? accountByType[account.type][0] : 'Income'}
         </Text>
         <Text
           variant="titleSmall"
           style={[
             styles.amountStyle,
             {
-              color: theme.colors.onSurfaceVariant,
+              color: theme.colors.onSecondaryContainer,
             },
           ]}>
           {currency(income, {})}
@@ -192,7 +215,7 @@ export const DetailAccountScreen = ({route}) => {
           style={[
             styles.subTitleStyle,
             {
-              color: theme.colors.onSurfaceVariant,
+              color: theme.colors.onSecondaryContainer,
             },
           ]}>
           Indonesian Rupiah
@@ -203,7 +226,7 @@ export const DetailAccountScreen = ({route}) => {
           style={[
             styles.amountStyle,
             {
-              color: theme.colors.onSurfaceVariant,
+              color: theme.colors.onSecondaryContainer,
             },
           ]}>
           {incomeTransaction}
@@ -213,7 +236,7 @@ export const DetailAccountScreen = ({route}) => {
           style={[
             styles.subTitleStyle,
             {
-              color: theme.colors.onSurfaceVariant,
+              color: theme.colors.onSecondaryContainer,
             },
           ]}>
           Transactions
@@ -223,7 +246,7 @@ export const DetailAccountScreen = ({route}) => {
         style={[
           styles.expenseContainer,
           {
-            backgroundColor: theme.colors.surfaceVariant,
+            backgroundColor: theme.colors.secondaryContainer,
           },
         ]}>
         <Text
@@ -231,10 +254,10 @@ export const DetailAccountScreen = ({route}) => {
           style={[
             styles.titleStyle,
             {
-              color: theme.colors.onSurfaceVariant,
+              color: theme.colors.onSecondaryContainer,
             },
           ]}>
-          {accountByType[account.type][1] || ''}
+          {account?.type ? accountByType[account.type][1] : 'Expense'}
         </Text>
         <Text
           variant="titleMedium"
@@ -242,7 +265,7 @@ export const DetailAccountScreen = ({route}) => {
             styles.amountStyle,
 
             {
-              color: theme.colors.onSurfaceVariant,
+              color: theme.colors.onSecondaryContainer,
             },
           ]}>
           {currency(expense, {})}
@@ -252,7 +275,7 @@ export const DetailAccountScreen = ({route}) => {
           style={[
             styles.subTitleStyle,
             {
-              color: theme.colors.onSurfaceVariant,
+              color: theme.colors.onSecondaryContainer,
             },
           ]}>
           Indonesian Rupiah
@@ -263,7 +286,7 @@ export const DetailAccountScreen = ({route}) => {
           style={[
             styles.amountStyle,
             {
-              color: theme.colors.onSurfaceVariant,
+              color: theme.colors.onSecondaryContainer,
             },
           ]}>
           {expenseTransaction}
@@ -273,7 +296,7 @@ export const DetailAccountScreen = ({route}) => {
           style={[
             styles.subTitleStyle,
             {
-              color: theme.colors.onSurfaceVariant,
+              color: theme.colors.onSecondaryContainer,
             },
           ]}>
           Transactions
@@ -281,6 +304,7 @@ export const DetailAccountScreen = ({route}) => {
       </View>
     </View>
   );
+
   return (
     <SafeAreaView
       style={[
@@ -290,8 +314,11 @@ export const DetailAccountScreen = ({route}) => {
         },
       ]}>
       <Header />
-      <AccountDetail />
-      <TransactionsDetail />
+      <ScrollView>
+        <AccountDetail />
+        <TransactionsDetail />
+        <RecentTransaction account={account} />
+      </ScrollView>
     </SafeAreaView>
   );
 };

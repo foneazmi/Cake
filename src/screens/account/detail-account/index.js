@@ -163,7 +163,7 @@ export const DetailAccountScreen = ({route}) => {
               },
             ]}
             variant="labelLarge">
-            {account?.name || 'All'}
+            {account ? account?.name || '' : 'All'}
           </Text>
 
           <Text
@@ -173,7 +173,7 @@ export const DetailAccountScreen = ({route}) => {
               },
             ]}
             variant="labelSmall">
-            {account?.description || 'All Transaction Account'}
+            {account ? account?.description || '' : 'All Transaction Account'}
           </Text>
         </View>
       </View>

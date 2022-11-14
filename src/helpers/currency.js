@@ -10,7 +10,7 @@ export const currency = (
     !isNaN(num)
       ? Number(num)
           .toFixed(0)
-          .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')
+          .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
       : 0
   }${option?.suffix || ''}`;
 };

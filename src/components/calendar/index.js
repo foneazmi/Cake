@@ -24,43 +24,32 @@ export const CalendarWeek = props => {
   }
 
   return (
-    <View>
-      <View accessibilityLabel="CalendarWeek" style={styles.itemContainer}>
-        {weekNames.map((item, index) => {
-          let eventTypes = [];
-          props.weekTypes?.map(weekItem => {
-            if (moment(days[index]).format('YYYY-MM-DD') === weekItem.date) {
-              eventTypes = weekItem.types;
+    <View style={styles.itemContainer}>
+      {weekNames.map((item, index) => {
+        return (
+          <CalendarWeekItem
+            key={item}
+            weekName={item}
+            day={days[index]}
+            isSelected={
+              moment(days[index]).format('YYYY-MM-DD') ===
+              moment(selectedDate).format('YYYY-MM-DD')
+                ? true
+                : false
             }
-          });
-
-          return (
-            <CalendarWeekItem
-              key={item}
-              weekName={item}
-              day={days[index]}
-              isSelected={
-                moment(days[index]).format('YYYY-MM-DD') ===
-                moment(selectedDate).format('YYYY-MM-DD')
-                  ? true
-                  : false
-              }
-              eventTypes={eventTypes}
-              onDateSelect={day => {
-                setSelectedDate(new Date(day));
-                props.onDateSelect(day);
-              }}
-            />
-          );
-        })}
-      </View>
+            onDateSelect={day => {
+              setSelectedDate(new Date(day));
+              props.onDateSelect(day);
+            }}
+          />
+        );
+      })}
     </View>
   );
 };
 
 export const CalendarWeekItem = props => {
   const theme = useTheme();
-
   return (
     <Pressable
       accessible={false}

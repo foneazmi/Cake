@@ -9,20 +9,38 @@ import {useSelector} from 'react-redux';
 export const TotalTransaction = () => {
   const theme = useTheme();
   const {transactions} = useSelector(({account}) => account);
-  const [income, expense, total] = useMemo(() => {
-    let totalIncome = transactions
-      .filter(transaction => transaction.type === 'income')
-      .reduce(
-        (accumulator, currentValue) => accumulator + currentValue.amount,
-        0,
-      );
-    let totalExpense = transactions
-      .filter(transaction => transaction.type === 'expense')
-      .reduce(
-        (accumulator, currentValue) => accumulator + currentValue.amount,
-        0,
-      );
-    return [totalIncome, totalExpense, totalIncome - totalExpense];
+
+  const [
+    income,
+    // incomeTransaction,
+    expense,
+    // expenseTransaction,
+    total,
+  ] = useMemo(() => {
+    let totalIncome = transactions.filter(
+      transaction =>
+        transaction.type === 'income' || transaction.type === 'transfer',
+    );
+    let amountIncome = totalIncome.reduce(
+      (accumulator, currentValue) => accumulator + currentValue.amount,
+      0,
+    );
+    let totalExpense = transactions.filter(
+      transaction =>
+        transaction.type === 'expense' || transaction.type === 'transfer',
+    );
+    let amountExpense = totalExpense.reduce(
+      (accumulator, currentValue) => accumulator + currentValue.amount,
+      0,
+    );
+
+    return [
+      amountIncome,
+      // totalIncome.length,
+      amountExpense,
+      // totalExpense.length,
+      amountIncome - amountExpense,
+    ];
   }, [transactions]);
 
   return (

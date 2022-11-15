@@ -8,30 +8,29 @@ import {useSelector} from 'react-redux';
 const ListTag = props => {
   const theme = useTheme();
   return (
-    <View style={{flexDirection: 'row', marginBottom: 4}}>
+    <View style={styles.listTagContainer}>
       {props.data.map((tag, index) => (
-        <View
+        <Pressable
+          onPress={() => navigator.navigate('detail-account', {id: tag.id})}
           key={`${index}-tag`}
-          style={{
-            flexDirection: 'row',
-            paddingVertical: 8,
-            alignItems: 'center',
-            paddingHorizontal: 16,
-            borderRadius: 50,
-            marginRight: 4,
-            backgroundColor: theme.colors.primary,
-          }}>
+          style={[
+            styles.tagContainer,
+            {
+              backgroundColor: theme.colors.primary,
+            },
+          ]}>
           <Icon name={tag.icon} size={16} color={theme.colors.onPrimary} />
           <Text
             variant="labelMedium"
-            style={{
-              marginLeft: 4,
-              fontWeight: 'bold',
-              color: theme.colors.onPrimary,
-            }}>
+            style={[
+              styles.tagTitle,
+              {
+                color: theme.colors.onPrimary,
+              },
+            ]}>
             {tag.name}
           </Text>
-        </View>
+        </Pressable>
       ))}
     </View>
   );
@@ -45,11 +44,16 @@ const Transaction = props => {
     [accounts, props.idAccount],
   );
 
+  const account2 = useMemo(
+    () => accounts.find(acc => acc.id === props.idAccount2),
+    [accounts, props.idAccount2],
+  );
+
   const transactionByType = {
+    transfer: 'credit-card-sync-outline',
     income: 'credit-card-plus-outline',
     expense: 'credit-card-minus-outline',
   };
-
   const accountByType = {
     cash: 'wallet',
     invest: 'chart-areaspline-variant',
@@ -70,7 +74,17 @@ const Transaction = props => {
           {
             name: account?.name || '',
             icon: accountByType[account?.type] || '',
+            id: account?.id || '',
           },
+          ...(account2
+            ? [
+                {
+                  name: account2?.name,
+                  icon: accountByType[account2?.type],
+                  id: account2?.id,
+                },
+              ]
+            : []),
         ]}
       />
       {props.title && (
@@ -125,7 +139,9 @@ export const RecentTransaction = props => {
     () =>
       props.account
         ? transactions.filter(
-            transaction => transaction.idAccount === props.account.id,
+            transaction =>
+              transaction.idAccount === props.account.id ||
+              transaction.idAccount2 === props.account.id,
           )
         : transactions,
     [transactions, props.account],
@@ -187,5 +203,23 @@ const styles = StyleSheet.create({
     marginTop: 16,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+
+  ///
+  listTagContainer: {
+    flexDirection: 'row',
+    marginBottom: 4,
+  },
+  tagContainer: {
+    flexDirection: 'row',
+    paddingVertical: 8,
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    borderRadius: 50,
+    marginRight: 8,
+  },
+  tagTitle: {
+    marginLeft: 4,
+    fontWeight: 'bold',
   },
 });

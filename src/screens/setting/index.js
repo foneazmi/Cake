@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Appbar, List} from 'react-native-paper';
 import {navigator} from '../../helpers';

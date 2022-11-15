@@ -8,7 +8,6 @@ import {
   SettingScreen,
   AddAccountScreen,
   DetailAccountScreen,
-  DetailTransactionScreen,
   AddTransactionScreen,
 } from './screens';
 import {useSelector} from 'react-redux';
@@ -51,10 +50,6 @@ export const AppRouter = () => {
           <Stack.Screen
             name="add-transaction"
             component={AddTransactionScreen}
-          />
-          <Stack.Screen
-            name="detail-transaction"
-            component={DetailTransactionScreen}
           />
         </Stack.Navigator>
       </NavigationContainer>

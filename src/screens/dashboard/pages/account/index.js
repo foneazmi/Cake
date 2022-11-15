@@ -36,11 +36,7 @@ export const AccountPage = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text
-          variant="titleLarge"
-          style={{
-            fontWeight: 'bold',
-          }}>
+        <Text variant="titleLarge" style={styles.headerText}>
           Accounts
         </Text>
         <Text variant="titleSmall">{`Total : ${currency(total)}`}</Text>
@@ -68,11 +64,7 @@ export const AccountPage = () => {
                 label: 'Loan',
               },
             ]}
-            style={{
-              alignSelf: 'center',
-              marginTop: 16,
-              marginBottom: 8,
-            }}
+            style={styles.headerSegmentContainer}
           />
         }
         scrollEventThrottle={300}
@@ -108,27 +100,46 @@ export const AccountPage = () => {
 
 const Account = props => {
   const {transactions} = useSelector(({account}) => account);
-  const [income, expense, total] = useMemo(() => {
-    let totalIncome = transactions
-      .filter(
-        transaction =>
-          transaction.type === 'income' && transaction.idAccount === props.id,
-      )
-      .reduce(
-        (accumulator, currentValue) => accumulator + currentValue.amount,
-        0,
+
+  const [
+    income,
+    // incomeTransaction,
+    expense,
+    // expenseTransaction,
+    total,
+  ] = useMemo(() => {
+    let totalIncome = transactions.filter(transaction => {
+      return (
+        (transaction.type === 'income' &&
+          transaction.idAccount === props?.id) ||
+        (transaction.type === 'transfer' &&
+          transaction.idAccount2 === props?.id)
       );
-    let totalExpense = transactions
-      .filter(
-        transaction =>
-          transaction.type === 'expense' && transaction.idAccount === props.id,
-      )
-      .reduce(
-        (accumulator, currentValue) => accumulator + currentValue.amount,
-        0,
+    });
+    let amountIncome = totalIncome.reduce(
+      (accumulator, currentValue) => accumulator + currentValue.amount,
+      0,
+    );
+    let totalExpense = transactions.filter(transaction => {
+      return (
+        (transaction.type === 'expense' &&
+          transaction.idAccount === props?.id) ||
+        (transaction.type === 'transfer' && transaction.idAccount === props?.id)
       );
-    return [totalIncome, totalExpense, totalIncome - totalExpense];
-  }, [transactions, props]);
+    });
+    let amountExpense = totalExpense.reduce(
+      (accumulator, currentValue) => accumulator + currentValue.amount,
+      0,
+    );
+
+    return [
+      amountIncome,
+      // totalIncome.length,
+      amountExpense,
+      // totalExpense.length,
+      amountIncome - amountExpense,
+    ];
+  }, [transactions, props.id]);
 
   const accountByType = {
     cash: ['Income', 'Expense', 'wallet'],
@@ -151,7 +162,7 @@ const Account = props => {
             size={24}
             color={theme.colors.onSecondaryContainer}
           />
-          <View style={{marginLeft: 4}}>
+          <View style={styles.accountTextHeaderContainer}>
             <Text
               style={[
                 styles.accountTitleHeader,
@@ -253,6 +264,17 @@ const styles = StyleSheet.create({
   header: {
     paddingVertical: 4,
     paddingHorizontal: 16,
+  },
+  headerText: {
+    fontWeight: 'bold',
+  },
+  headerSegmentContainer: {
+    alignSelf: 'center',
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  accountTextHeaderContainer: {
+    marginLeft: 4,
   },
   fab: {
     position: 'absolute',

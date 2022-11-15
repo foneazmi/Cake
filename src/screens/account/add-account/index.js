@@ -55,13 +55,7 @@ export const AddAccountScreen = ({route}) => {
   };
 
   const Header = () => (
-    <View
-      style={{
-        flexDirection: 'row',
-        paddingHorizontal: 16,
-        alignItems: 'center',
-        justifyContent: 'space-between',
-      }}>
+    <View style={styles.headerContainer}>
       <IconButton
         icon="close"
         mode="outlined"
@@ -79,7 +73,7 @@ export const AddAccountScreen = ({route}) => {
       setModalFor('');
     };
     return (
-      <View style={{padding: 16}}>
+      <View style={styles.formContainer}>
         <SegmentedButtons
           value={form.type}
           onValueChange={value => {
@@ -99,33 +93,31 @@ export const AddAccountScreen = ({route}) => {
               label: 'Loan',
             },
           ]}
-          style={{
-            alignSelf: 'center',
-          }}
+          style={styles.segmentContainer}
         />
         <Pressable
           onPress={() => {
             setModalText(form.name || '');
             setModalFor('name');
           }}
-          style={{
-            flexDirection: 'row',
-            borderRadius: 10,
-            marginTop: 12,
-            backgroundColor: theme.colors.secondaryContainer,
-            paddingVertical: 16,
-            paddingHorizontal: 24,
-          }}>
+          style={[
+            styles.formInputContainer,
+            {
+              backgroundColor: theme.colors.secondaryContainer,
+            },
+          ]}>
           <Icon
             name="tag-text-outline"
             size={20}
             color={theme.colors.onSurface}
           />
           <Text
-            style={{
-              color: theme.colors.onSurface,
-              marginLeft: 8,
-            }}
+            style={[
+              styles.formText,
+              {
+                color: theme.colors.onSurface,
+              },
+            ]}
             variant="labelLarge">
             {form.name || 'Add name'}
           </Text>
@@ -136,51 +128,24 @@ export const AddAccountScreen = ({route}) => {
             setModalText(form.description || '');
             setModalFor('description');
           }}
-          style={{
-            flexDirection: 'row',
-            borderRadius: 10,
-            marginTop: 12,
-            backgroundColor: theme.colors.secondaryContainer,
-            paddingVertical: 16,
-            paddingHorizontal: 24,
-          }}>
+          style={[
+            styles.formInputContainer,
+            {
+              backgroundColor: theme.colors.secondaryContainer,
+            },
+          ]}>
           <Icon name="text" size={20} color={theme.colors.onSurface} />
           <Text
-            style={{
-              marginLeft: 8,
-              color: theme.colors.onSurface,
-            }}
+            style={[
+              styles.formText,
+              {
+                color: theme.colors.onSurface,
+              },
+            ]}
             variant="labelLarge">
             {form.description || 'Add description'}
           </Text>
         </Pressable>
-
-        {/* <Pressable
-          onPress={() => {
-            setModalText(form.amount || '');
-            setModalFor('amount');
-          }}
-          style={{
-            flexDirection: 'row',
-            borderRadius: 10,
-            marginTop: 12,
-            backgroundColor: theme.colors.secondaryContainer,
-            paddingVertical: 16,
-            paddingHorizontal: 24,
-          }}>
-          <Icon
-            name="sort-numeric-variant"
-            size={20}
-            color={theme.colors.onSurface}
-          />
-          <Text
-            style={{
-              marginLeft: 8,
-            }}
-            variant="labelLarge">
-            {form.amount ? currency(form.amount) : 'Add amount'}
-          </Text>
-        </Pressable> */}
 
         <Modal
           animationType="fade"
@@ -188,25 +153,15 @@ export const AddAccountScreen = ({route}) => {
           visible={modalFor.length > 0}>
           <Pressable
             onPress={() => setModalFor('')}
-            style={{
-              flex: 1,
-              backgroundColor: '#00000080',
-            }}>
+            style={styles.modalContainer}>
             <View
-              style={{
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                right: 0,
-                backgroundColor: theme.colors.background,
-                paddingHorizontal: 16,
-                paddingVertical: 32,
-              }}>
-              <Text
-                style={{
-                  fontWeight: 'bold',
-                  marginBottom: 8,
-                }}>
+              style={[
+                styles.modalContentContainer,
+                {
+                  backgroundColor: theme.colors.background,
+                },
+              ]}>
+              <Text style={styles.modalFormTitle}>
                 {modalFor.toUpperCase()}
               </Text>
               {modalFor === 'amount' ? (
@@ -215,11 +170,12 @@ export const AddAccountScreen = ({route}) => {
                   autoFocus
                   prefix="IDR "
                   placeholder="Input Here"
-                  style={{
-                    marginBottom: 32,
-                    fontSize: 20,
-                    color: theme.colors.onBackground,
-                  }}
+                  style={[
+                    styles.modalFormInput,
+                    {
+                      color: theme.colors.onBackground,
+                    },
+                  ]}
                   onChangeValue={e => setModalText(e ? Math.abs(e) : '')}
                   value={modalText}
                   delimiter=","
@@ -231,28 +187,32 @@ export const AddAccountScreen = ({route}) => {
                   placeholderTextColor={theme.colors.onBackground}
                   autoFocus
                   placeholder="Input Here"
-                  style={{
-                    marginBottom: 32,
-                    fontSize: 20,
-                    color: theme.colors.onBackground,
-                  }}
+                  style={[
+                    styles.modalFormInput,
+                    {
+                      color: theme.colors.onBackground,
+                    },
+                  ]}
                   onChangeText={e => setModalText(e)}
                   value={modalText}
                 />
               )}
 
               <Pressable
-                style={{
-                  borderRadius: 10,
-                  padding: 16,
-                  backgroundColor: theme.colors.primary,
-                }}
+                style={[
+                  styles.modalSubmitContainer,
+                  {
+                    backgroundColor: theme.colors.primary,
+                  },
+                ]}
                 onPress={submitModal}>
                 <Text
-                  style={{
-                    textAlign: 'center',
-                    color: theme.colors.onPrimary,
-                  }}>
+                  style={[
+                    styles.modalSubmitText,
+                    {
+                      color: theme.colors.onPrimary,
+                    },
+                  ]}>
                   Save
                 </Text>
               </Pressable>
@@ -271,23 +231,24 @@ export const AddAccountScreen = ({route}) => {
         },
       ]}>
       <Header />
-      <View style={{flex: 1}}>
+      <View style={styles.container}>
         <Form />
       </View>
       <Pressable
-        style={{
-          borderRadius: 10,
-          marginHorizontal: 16,
-          marginBottom: Platform.OS === 'ios' ? 0 : 32,
-          padding: 16,
-          backgroundColor: theme.colors.primary,
-        }}
+        style={[
+          styles.submitContainer,
+          {
+            backgroundColor: theme.colors.primary,
+          },
+        ]}
         onPress={submit}>
         <Text
-          style={{
-            textAlign: 'center',
-            color: theme.colors.onPrimary,
-          }}>
+          style={[
+            styles.submitText,
+            {
+              color: theme.colors.onPrimary,
+            },
+          ]}>
           {id === '' ? 'Add Account' : 'Update Account'}
         </Text>
       </Pressable>
@@ -298,5 +259,65 @@ export const AddAccountScreen = ({route}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  formContainer: {
+    padding: 16,
+  },
+  segmentContainer: {
+    alignSelf: 'center',
+  },
+  formInputContainer: {
+    flexDirection: 'row',
+    borderRadius: 10,
+    marginTop: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+  },
+  formText: {
+    marginLeft: 8,
+  },
+  //////
+  modalContainer: {
+    flex: 1,
+    backgroundColor: '#00000080',
+  },
+  modalContentContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 16,
+    paddingVertical: 32,
+  },
+  modalFormTitle: {
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  modalFormInput: {
+    marginBottom: 32,
+    fontSize: 20,
+  },
+  modalSubmitContainer: {
+    borderRadius: 10,
+    padding: 16,
+  },
+  modalSubmitText: {
+    textAlign: 'center',
+  },
+  ///
+  submitContainer: {
+    borderRadius: 10,
+    marginHorizontal: 16,
+    marginBottom: Platform.OS === 'ios' ? 0 : 32,
+    padding: 16,
+  },
+  submitText: {
+    textAlign: 'center',
   },
 });

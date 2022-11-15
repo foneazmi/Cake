@@ -1,6 +1,6 @@
 import React from 'react';
 import {View} from 'react-native';
-import {Appbar, Text} from 'react-native-paper';
+import {Appbar} from 'react-native-paper';
 import {navigator} from '../../../../helpers';
 
 export const ProfilePage = () => {
@@ -15,7 +15,7 @@ export const ProfilePage = () => {
           }}
         />
       </Appbar.Header>
-      <Text variant="labelMedium">Profile Page</Text>
+      {/* <Text variant="labelMedium">Profile Page</Text> */}
     </View>
   );
 };

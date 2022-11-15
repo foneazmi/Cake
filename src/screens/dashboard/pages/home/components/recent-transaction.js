@@ -10,30 +10,29 @@ import moment from 'moment';
 const ListTag = props => {
   const theme = useTheme();
   return (
-    <View style={{flexDirection: 'row', marginBottom: 4}}>
+    <View style={styles.tagContainer}>
       {props.data.map((tag, index) => (
-        <View
+        <Pressable
+          onPress={() => navigator.navigate('detail-account', {id: tag.id})}
           key={`${index}-tag`}
-          style={{
-            flexDirection: 'row',
-            paddingVertical: 8,
-            alignItems: 'center',
-            paddingHorizontal: 16,
-            borderRadius: 50,
-            marginRight: 4,
-            backgroundColor: theme.colors.primary,
-          }}>
+          style={[
+            styles.itemTagContainer,
+            {
+              backgroundColor: theme.colors.primary,
+            },
+          ]}>
           <Icon name={tag.icon} size={16} color={theme.colors.onPrimary} />
           <Text
             variant="labelMedium"
-            style={{
-              marginLeft: 4,
-              fontWeight: 'bold',
-              color: theme.colors.onPrimary,
-            }}>
+            style={[
+              styles.tagName,
+              {
+                color: theme.colors.onPrimary,
+              },
+            ]}>
             {tag.name}
           </Text>
-        </View>
+        </Pressable>
       ))}
     </View>
   );
@@ -46,8 +45,13 @@ const Transaction = props => {
     () => accounts.find(acc => acc.id === props.idAccount),
     [accounts, props.idAccount],
   );
+  const account2 = useMemo(
+    () => accounts.find(acc => acc.id === props.idAccount2),
+    [accounts, props.idAccount2],
+  );
 
   const transactionByType = {
+    transfer: 'credit-card-sync-outline',
     income: 'credit-card-plus-outline',
     expense: 'credit-card-minus-outline',
   };
@@ -67,7 +71,17 @@ const Transaction = props => {
           {
             name: account?.name || '',
             icon: accountByType[account?.type] || '',
+            id: account?.id || '',
           },
+          ...(account2
+            ? [
+                {
+                  name: account2?.name || '',
+                  icon: accountByType[account2?.type] || '',
+                  id: account2?.id || '',
+                },
+              ]
+            : []),
         ]}
       />
       {props.title && (
@@ -132,12 +146,7 @@ export const RecentTransaction = () => {
   );
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          marginBottom: 8,
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-        }}>
+      <View style={styles.header}>
         <Text variant="titleMedium">Recent Transaction</Text>
         <Pressable
           onPress={() => {
@@ -153,10 +162,9 @@ export const RecentTransaction = () => {
             backgroundColor: theme.colors.secondaryContainer,
           },
         ]}>
-        <View style={{paddingHorizontal: 16}}>
+        <View style={styles.calendarWeekContainer}>
           <CalendarWeek
             nowDate={nowDate}
-            weekTypes={[]}
             onDateSelect={day => {
               setSelectedDate(day);
             }}
@@ -180,6 +188,14 @@ const styles = StyleSheet.create({
   container: {
     marginHorizontal: 16,
     flex: 1,
+  },
+  header: {
+    marginBottom: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  calendarWeekContainer: {
+    paddingHorizontal: 16,
   },
   calendarContainer: {
     borderRadius: 10,
@@ -218,5 +234,23 @@ const styles = StyleSheet.create({
     padding: 32,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+
+  ///
+  tagContainer: {
+    flexDirection: 'row',
+    marginBottom: 4,
+  },
+  itemTagContainer: {
+    flexDirection: 'row',
+    paddingVertical: 8,
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    borderRadius: 50,
+    marginRight: 4,
+  },
+  tagName: {
+    marginLeft: 4,
+    fontWeight: 'bold',
   },
 });

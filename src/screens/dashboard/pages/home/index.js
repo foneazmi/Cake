@@ -36,14 +36,14 @@ export const HomePage = () => {
         visible={showFab}
         icon={open ? 'credit-card-fast-outline' : 'plus'}
         actions={[
-          // {
-          //   icon: 'credit-card-sync-outline',
-          //   label: 'Account Transfer',
-          //   onPress: () =>
-          //     navigator.navigate('add-transaction', {
-          //       type: 'transfer',
-          //     }),
-          // },
+          {
+            icon: 'credit-card-sync-outline',
+            label: 'Account Transfer',
+            onPress: () =>
+              navigator.navigate('add-transaction', {
+                type: 'transfer',
+              }),
+          },
           {
             icon: 'credit-card-minus-outline',
             label: 'Add Expense',

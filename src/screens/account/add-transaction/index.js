@@ -26,6 +26,7 @@ export const AddTransactionScreen = ({route}) => {
     description = '',
     id = '',
     idAccount = '',
+    idAccount2 = '',
     title = '',
     type,
   } = route?.params || {};
@@ -44,6 +45,10 @@ export const AddTransactionScreen = ({route}) => {
     idAccount || accounts[0]?.id,
   );
 
+  const [selectedToAccount, setSelectedToAccount] = useState(
+    idAccount2 || type === 'transfer' ? accounts[1]?.id : '',
+  );
+
   const typeDescription = {
     income: 'Add Income',
     expense: 'Add Expense',
@@ -54,7 +59,8 @@ export const AddTransactionScreen = ({route}) => {
     if (
       form.amount === '' ||
       selectedAccount === '' ||
-      selectedAccount === undefined
+      selectedAccount === undefined ||
+      (type === 'transfer' && selectedToAccount === '')
     ) {
       return;
     } else {
@@ -65,6 +71,7 @@ export const AddTransactionScreen = ({route}) => {
             type,
             id: Date.now(),
             idAccount: selectedAccount,
+            idAccount2: selectedToAccount,
           }),
         );
       } else {
@@ -74,6 +81,7 @@ export const AddTransactionScreen = ({route}) => {
             type,
             id,
             idAccount: selectedAccount,
+            idAccount2: selectedToAccount,
           }),
         );
       }
@@ -81,40 +89,27 @@ export const AddTransactionScreen = ({route}) => {
     }
   };
   const Header = () => (
-    <View
-      style={{
-        flexDirection: 'row',
-        paddingHorizontal: 16,
-        alignItems: 'center',
-        justifyContent: 'space-between',
-      }}>
+    <View style={styles.headerContainer}>
       <IconButton
         icon="close"
         mode="outlined"
         size={20}
         onPress={() => navigator.goBack()}
       />
-      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+      <View style={styles.headerActionContainer}>
         <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            borderWidth: 1,
-            borderRadius: 50,
-            paddingHorizontal: 16,
-            height: 36,
-            borderColor: theme.colors.outline,
-          }}>
+          style={[
+            styles.headerActionEditContainer,
+            {
+              borderColor: theme.colors.outline,
+            },
+          ]}>
           <Icon
             name="credit-card-edit"
             color={theme.colors.onSurface}
             size={16}
           />
-          <Text
-            style={{
-              marginLeft: 4,
-            }}
-            variant="labelMedium">
+          <Text style={styles.headerActionEditText} variant="labelMedium">
             {typeDescription[type] || ''}
           </Text>
         </View>
@@ -136,28 +131,19 @@ export const AddTransactionScreen = ({route}) => {
   const AccountList = () => {
     if (type === 'income' || type === 'expense') {
       return (
-        <View
-          style={{
-            marginTop: 16,
-          }}>
-          <Text
-            style={{
-              fontWeight: 'bold',
-              marginBottom: 12,
-              marginLeft: 16,
-            }}
-            variant="labelLarge">
+        <View>
+          <Text style={styles.accountListTitle} variant="labelLarge">
             {type === 'income' ? 'Add Money To' : 'Pay With'}
           </Text>
           <FlatList
-            style={{paddingHorizontal: 16}}
+            style={styles.accountListContainer}
             data={accounts}
             showsHorizontalScrollIndicator={false}
             ListFooterComponent={
               <Button
                 icon="wallet-plus"
                 mode="contained-tonal"
-                style={{marginRight: 8}}
+                style={styles.accountItemContainer}
                 onPress={() => navigator.navigate('add-account')}>
                 Add Account
               </Button>
@@ -169,7 +155,7 @@ export const AddTransactionScreen = ({route}) => {
                 mode={
                   selectedAccount === item.id ? 'contained' : 'contained-tonal'
                 }
-                style={{marginRight: 8}}
+                style={styles.accountItemContainer}
                 onPress={() => setSelectedAccount(item.id)}>
                 {item.name}
               </Button>
@@ -179,29 +165,20 @@ export const AddTransactionScreen = ({route}) => {
       );
     } else {
       return (
-        <View
-          style={{
-            marginTop: 16,
-          }}>
-          <Text
-            style={{
-              fontWeight: 'bold',
-              marginBottom: 12,
-              marginLeft: 16,
-            }}
-            variant="labelLarge">
+        <View>
+          <Text style={styles.accountListTitle} variant="labelLarge">
             From
           </Text>
           <FlatList
             data={accounts}
-            style={{paddingHorizontal: 16}}
+            style={styles.accountListContainer}
             showsHorizontalScrollIndicator={false}
             horizontal
             ListFooterComponent={
               <Button
                 icon="wallet-plus"
                 mode="contained-tonal"
-                style={{marginRight: 8}}
+                style={styles.accountItemContainer}
                 onPress={() => navigator.navigate('add-account')}>
                 Add Account
               </Button>
@@ -212,42 +189,45 @@ export const AddTransactionScreen = ({route}) => {
                 mode={
                   selectedAccount === item.id ? 'contained' : 'contained-tonal'
                 }
-                style={{marginRight: 8}}
-                onPress={() => setSelectedAccount(item.id)}>
+                style={styles.accountItemContainer}
+                onPress={() => {
+                  if (selectedToAccount === item.id) {
+                    setSelectedToAccount('');
+                  }
+                  setSelectedAccount(item.id);
+                }}>
                 {item.name}
               </Button>
             )}
           />
-          <Text
-            style={{
-              marginTop: 24,
-              fontWeight: 'bold',
-              marginBottom: 12,
-            }}
-            variant="labelLarge">
+          <Text style={styles.accountListTitle} variant="labelLarge">
             To
           </Text>
           <FlatList
             showsHorizontalScrollIndicator={false}
             data={accounts}
+            style={styles.accountListContainer}
             horizontal
             ListFooterComponent={
               <Button
                 icon="wallet-plus"
                 mode="contained-tonal"
-                style={{marginRight: 8}}
+                style={styles.accountItemContainer}
                 onPress={() => navigator.navigate('add-account')}>
                 Add Account
               </Button>
             }
             renderItem={({item}) => (
               <Button
+                disabled={selectedAccount === item.id}
                 icon="wallet"
                 mode={
-                  selectedAccount === item.id ? 'contained' : 'contained-tonal'
+                  selectedToAccount === item.id
+                    ? 'contained'
+                    : 'contained-tonal'
                 }
-                style={{marginRight: 8}}
-                onPress={() => setSelectedAccount(item.id)}>
+                style={styles.accountItemContainer}
+                onPress={() => setSelectedToAccount(item.id)}>
                 {item.name}
               </Button>
             )}
@@ -264,29 +244,30 @@ export const AddTransactionScreen = ({route}) => {
       setModalFor('');
     };
     return (
-      <View style={{padding: 16}}>
+      <View style={styles.formContainer}>
         <Pressable
           onPress={() => {
             setModalText(form.title || '');
             setModalFor('title');
           }}
-          style={{
-            flexDirection: 'row',
-            borderRadius: 10,
-            marginTop: 12,
-            backgroundColor: theme.colors.secondaryContainer,
-            paddingVertical: 16,
-            paddingHorizontal: 24,
-          }}>
+          style={[
+            styles.formInputContainer,
+            {
+              backgroundColor: theme.colors.secondaryContainer,
+            },
+          ]}>
           <Icon
             name="tag-text-outline"
             size={20}
             color={theme.colors.onSurface}
           />
           <Text
-            style={{
-              marginLeft: 8,
-            }}
+            style={[
+              styles.formText,
+              {
+                color: theme.colors.onSurface,
+              },
+            ]}
             variant="labelLarge">
             {form.title || 'Add title'}
           </Text>
@@ -297,19 +278,20 @@ export const AddTransactionScreen = ({route}) => {
             setModalText(form.description || '');
             setModalFor('description');
           }}
-          style={{
-            flexDirection: 'row',
-            borderRadius: 10,
-            marginTop: 12,
-            backgroundColor: theme.colors.secondaryContainer,
-            paddingVertical: 16,
-            paddingHorizontal: 24,
-          }}>
+          style={[
+            styles.formInputContainer,
+            {
+              backgroundColor: theme.colors.secondaryContainer,
+            },
+          ]}>
           <Icon name="text" size={20} color={theme.colors.onSurface} />
           <Text
-            style={{
-              marginLeft: 8,
-            }}
+            style={[
+              styles.formText,
+              {
+                color: theme.colors.onSurface,
+              },
+            ]}
             variant="labelLarge">
             {form.description || 'Add description'}
           </Text>
@@ -320,23 +302,24 @@ export const AddTransactionScreen = ({route}) => {
             setModalText(form.amount || '');
             setModalFor('amount');
           }}
-          style={{
-            flexDirection: 'row',
-            borderRadius: 10,
-            marginTop: 12,
-            backgroundColor: theme.colors.secondaryContainer,
-            paddingVertical: 16,
-            paddingHorizontal: 24,
-          }}>
+          style={[
+            styles.formInputContainer,
+            {
+              backgroundColor: theme.colors.secondaryContainer,
+            },
+          ]}>
           <Icon
             name="sort-numeric-variant"
             size={20}
             color={theme.colors.onSurface}
           />
           <Text
-            style={{
-              marginLeft: 8,
-            }}
+            style={[
+              styles.formText,
+              {
+                color: theme.colors.onSurface,
+              },
+            ]}
             variant="labelLarge">
             {form.amount ? currency(form.amount) : 'Add amount'}
           </Text>
@@ -348,25 +331,15 @@ export const AddTransactionScreen = ({route}) => {
           visible={modalFor.length > 0}>
           <Pressable
             onPress={() => setModalFor('')}
-            style={{
-              flex: 1,
-              backgroundColor: '#00000080',
-            }}>
+            style={styles.modalContainer}>
             <View
-              style={{
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                right: 0,
-                backgroundColor: theme.colors.background,
-                paddingHorizontal: 16,
-                paddingVertical: 32,
-              }}>
-              <Text
-                style={{
-                  fontWeight: 'bold',
-                  marginBottom: 8,
-                }}>
+              style={[
+                styles.modalContentContainer,
+                {
+                  backgroundColor: theme.colors.background,
+                },
+              ]}>
+              <Text style={styles.modalFormTitle}>
                 {modalFor.toUpperCase()}
               </Text>
               {modalFor === 'amount' ? (
@@ -375,11 +348,12 @@ export const AddTransactionScreen = ({route}) => {
                   autoFocus
                   prefix="IDR "
                   placeholder="Input Here"
-                  style={{
-                    marginBottom: 32,
-                    fontSize: 20,
-                    color: theme.colors.onSecondaryContainer,
-                  }}
+                  style={[
+                    styles.modalFormInput,
+                    {
+                      color: theme.colors.onBackground,
+                    },
+                  ]}
                   onChangeValue={e => setModalText(e ? Math.abs(e) : '')}
                   value={modalText}
                   delimiter=","
@@ -388,31 +362,35 @@ export const AddTransactionScreen = ({route}) => {
                 />
               ) : (
                 <TextInput
-                  placeholderTextColor={theme.colors.onSecondaryContainer}
+                  placeholderTextColor={theme.colors.onBackground}
                   autoFocus
                   placeholder="Input Here"
-                  style={{
-                    marginBottom: 32,
-                    fontSize: 20,
-                    color: theme.colors.onSecondaryContainer,
-                  }}
+                  style={[
+                    styles.modalFormInput,
+                    {
+                      color: theme.colors.onBackground,
+                    },
+                  ]}
                   onChangeText={e => setModalText(e)}
                   value={modalText}
                 />
               )}
 
               <Pressable
-                style={{
-                  borderRadius: 10,
-                  padding: 16,
-                  backgroundColor: theme.colors.primary,
-                }}
+                style={[
+                  styles.modalSubmitContainer,
+                  {
+                    backgroundColor: theme.colors.primary,
+                  },
+                ]}
                 onPress={submitModal}>
                 <Text
-                  style={{
-                    textAlign: 'center',
-                    color: theme.colors.onPrimary,
-                  }}>
+                  style={[
+                    styles.modalSubmitText,
+                    {
+                      color: theme.colors.onPrimary,
+                    },
+                  ]}>
                   Save
                 </Text>
               </Pressable>
@@ -431,24 +409,25 @@ export const AddTransactionScreen = ({route}) => {
         },
       ]}>
       <Header />
-      <View style={{flex: 1}}>
+      <View style={styles.container}>
         <AccountList />
         <Form />
       </View>
       <Pressable
-        style={{
-          borderRadius: 10,
-          marginHorizontal: 16,
-          marginBottom: Platform.OS === 'ios' ? 0 : 32,
-          padding: 16,
-          backgroundColor: theme.colors.primary,
-        }}
+        style={[
+          styles.submitContainer,
+          {
+            backgroundColor: theme.colors.primary,
+          },
+        ]}
         onPress={submitTransaction}>
         <Text
-          style={{
-            textAlign: 'center',
-            color: theme.colors.onPrimary,
-          }}>
+          style={[
+            styles.submitText,
+            {
+              color: theme.colors.onPrimary,
+            },
+          ]}>
           {id === '' ? 'Add Transaction' : 'Update Transaction'}
         </Text>
       </Pressable>
@@ -459,5 +438,95 @@ export const AddTransactionScreen = ({route}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  ///////
+  headerContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  headerActionContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headerActionEditContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderRadius: 50,
+    paddingHorizontal: 16,
+    height: 36,
+  },
+  headerActionEditText: {
+    marginLeft: 8,
+  },
+  /////
+  formContainer: {
+    padding: 16,
+  },
+  segmentContainer: {
+    alignSelf: 'center',
+  },
+  formInputContainer: {
+    flexDirection: 'row',
+    borderRadius: 10,
+    marginTop: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+  },
+  formText: {
+    marginLeft: 8,
+  },
+  //////
+  modalContainer: {
+    flex: 1,
+    backgroundColor: '#00000080',
+  },
+  modalContentContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 16,
+    paddingVertical: 32,
+  },
+  modalFormTitle: {
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  modalFormInput: {
+    marginBottom: 32,
+    fontSize: 20,
+  },
+  modalSubmitContainer: {
+    borderRadius: 10,
+    padding: 16,
+  },
+  modalSubmitText: {
+    textAlign: 'center',
+  },
+  ///
+  submitContainer: {
+    borderRadius: 10,
+    marginHorizontal: 16,
+    marginBottom: Platform.OS === 'ios' ? 0 : 32,
+    padding: 16,
+  },
+  submitText: {
+    textAlign: 'center',
+  },
+  ////
+  accountListTitle: {
+    fontWeight: 'bold',
+    marginBottom: 8,
+    marginTop: 20,
+    marginLeft: 16,
+  },
+  accountListContainer: {
+    paddingHorizontal: 16,
+  },
+  accountItemContainer: {
+    marginRight: 8,
   },
 });

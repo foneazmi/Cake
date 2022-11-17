@@ -76,6 +76,7 @@ export const AddTransactionScreen = ({route}) => {
       const payload = {
         ...form,
         type,
+        id,
         idAccount: selectedAccount,
         idAccount2: selectedToAccount,
       };

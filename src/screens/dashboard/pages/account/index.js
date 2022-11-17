@@ -86,7 +86,6 @@ export const AccountPage = () => {
       />
       {/* {accounts.length < 6 && ( */}
       <FAB
-        variant="secondary"
         icon="plus"
         visible={showFab}
         animated

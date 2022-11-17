@@ -32,7 +32,6 @@ export const HomePage = () => {
 
       <FAB.Group
         open={open}
-        variant="secondary"
         visible={showFab}
         icon={open ? 'credit-card-fast-outline' : 'plus'}
         actions={[

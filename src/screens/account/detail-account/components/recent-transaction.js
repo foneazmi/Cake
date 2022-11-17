@@ -4,6 +4,7 @@ import {Text, useTheme} from 'react-native-paper';
 import {currency, navigator} from '../../../../helpers';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
+import moment from 'moment';
 
 const ListTag = props => {
   const theme = useTheme();
@@ -132,7 +133,18 @@ const Transaction = props => {
     </Pressable>
   );
 };
-
+const TransactionsGroup = props => {
+  return (
+    <View style={styles.transactionsGroupContainer}>
+      <Text variant="titleMedium">
+        {moment(props.data.date, 'y/M/D').format('D MMMM Y')}
+      </Text>
+      {props.data.data.map((transaction, index) => (
+        <Transaction {...transaction} key={`${index}-transaction-item`} />
+      ))}
+    </View>
+  );
+};
 export const RecentTransaction = props => {
   const {transactions} = useSelector(({account}) => account);
   const filteredTransactions = useMemo(
@@ -146,13 +158,34 @@ export const RecentTransaction = props => {
         : transactions,
     [transactions, props.account],
   );
+
+  const mappingTransactions = useMemo(
+    () =>
+      filteredTransactions.reduce((acc = [], curr) => {
+        const date = moment(curr.id).format('y/M/D');
+        const isAvailable = acc.findIndex(e => e.date === date);
+        if (isAvailable !== -1) {
+          acc[isAvailable].data.push(curr);
+        } else {
+          acc.push({
+            date,
+            data: [curr],
+          });
+        }
+        return acc;
+      }, []),
+    [filteredTransactions],
+  );
+
   return (
     <View style={styles.container}>
-      <Text variant="titleMedium">Recent Transaction</Text>
-
-      {filteredTransactions.length > 0 ? (
-        filteredTransactions.map((transaction, index) => (
-          <Transaction {...transaction} key={`${index}-transaction-item`} />
+      <Text variant="titleLarge">Recent Transaction</Text>
+      {mappingTransactions?.length > 0 ? (
+        mappingTransactions.map((mapTransactions, index) => (
+          <TransactionsGroup
+            data={mapTransactions}
+            key={`${index}-transaction-group-item`}
+          />
         ))
       ) : (
         <View style={styles.noTransactionContainer}>
@@ -221,5 +254,8 @@ const styles = StyleSheet.create({
   tagTitle: {
     marginLeft: 4,
     fontWeight: 'bold',
+  },
+  transactionsGroupContainer: {
+    marginTop: 12,
   },
 });

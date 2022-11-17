@@ -19,7 +19,14 @@ import {
 } from '../../../stores/actions';
 import {currency, navigator} from '../../../helpers';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {
+  DatePickerModal,
+  registerTranslation,
+  en,
+} from 'react-native-paper-dates';
+import moment from 'moment';
 
+registerTranslation('en', en);
 export const AddTransactionScreen = ({route}) => {
   const {
     amount = '',
@@ -28,9 +35,10 @@ export const AddTransactionScreen = ({route}) => {
     idAccount = '',
     idAccount2 = '',
     title = '',
+    date = '',
     type,
   } = route?.params || {};
-
+  console.log('route?.params', route?.params);
   const theme = useTheme();
   const dispatch = useDispatch();
 
@@ -38,6 +46,7 @@ export const AddTransactionScreen = ({route}) => {
     title,
     description,
     amount,
+    date: date === '' ? Date.now() : date,
   });
 
   const {accounts} = useSelector(({account}) => account);
@@ -64,26 +73,16 @@ export const AddTransactionScreen = ({route}) => {
     ) {
       return;
     } else {
+      const payload = {
+        ...form,
+        type,
+        idAccount: selectedAccount,
+        idAccount2: selectedToAccount,
+      };
       if (id === '') {
-        dispatch(
-          addTransaction({
-            ...form,
-            type,
-            id: Date.now(),
-            idAccount: selectedAccount,
-            idAccount2: selectedToAccount,
-          }),
-        );
+        dispatch(addTransaction(payload));
       } else {
-        dispatch(
-          updateTransaction(id, {
-            ...form,
-            type,
-            id,
-            idAccount: selectedAccount,
-            idAccount2: selectedToAccount,
-          }),
-        );
+        dispatch(updateTransaction(id, payload));
       }
       navigator.goBack();
     }
@@ -239,12 +238,47 @@ export const AddTransactionScreen = ({route}) => {
   const Form = () => {
     const [modalFor, setModalFor] = useState('');
     const [modalText, setModalText] = useState('');
+    const [open, setOpen] = React.useState(false);
+
     const submitModal = () => {
       setForm({...form, [`${modalFor}`]: modalText});
       setModalFor('');
     };
+
+    const onConfirmSingle = React.useCallback(
+      params => {
+        setOpen(false);
+        setForm({...form, date: moment(params.date).valueOf()});
+      },
+      [setOpen],
+    );
+
     return (
       <View style={styles.formContainer}>
+        <Pressable
+          onPress={() => {
+            setOpen(true);
+            // setModalText(form.description || '');
+            // setModalFor('description');
+          }}
+          style={[
+            styles.formInputContainer,
+            {
+              backgroundColor: theme.colors.secondaryContainer,
+            },
+          ]}>
+          <Icon name="calendar" size={20} color={theme.colors.onSurface} />
+          <Text
+            style={[
+              styles.formText,
+              {
+                color: theme.colors.onSurface,
+              },
+            ]}
+            variant="labelLarge">
+            {moment(form.date).format('D MMM Y') || 'Add description'}
+          </Text>
+        </Pressable>
         <Pressable
           onPress={() => {
             setModalText(form.title || '');
@@ -397,6 +431,19 @@ export const AddTransactionScreen = ({route}) => {
             </View>
           </Pressable>
         </Modal>
+
+        <DatePickerModal
+          locale="en"
+          mode="single"
+          visible={open}
+          onDismiss={() => setOpen(false)}
+          date={new Date(form.date)}
+          onConfirm={onConfirmSingle}
+          validRange={{
+            startDate: new Date(2021, 1, 2),
+            endDate: new Date(),
+          }}
+        />
       </View>
     );
   };

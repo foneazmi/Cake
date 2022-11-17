@@ -1,5 +1,10 @@
 import {removeObjectWithId} from '../../helpers';
-import {SET_ACCOUNT, SET_TRANSACTION} from '../types';
+import {
+  SET_ACCOUNT,
+  SET_ACCOUNT_BACKUP,
+  SET_TRANSACTION,
+  SET_TRANSACTION_BACKUP,
+} from '../types';
 
 export const addAccount = data => (dispatch, getState) => {
   const {accounts} = getState().account;
@@ -26,7 +31,23 @@ export const deleteAccount = id => (dispatch, getState) => {
 
 export const addTransaction = data => (dispatch, getState) => {
   const {transactions} = getState().account;
-  dispatch({type: SET_TRANSACTION, payload: [data, ...transactions]});
+  const newTransactions = [
+    {...data, id: transactions.length + 1},
+    ...transactions,
+  ].sort((a, b) => {
+    if (a.date < b.date) {
+      return 1;
+    }
+    if (a.date > b.date) {
+      return -1;
+    }
+    return 0;
+  });
+  console.log('newTransactions', newTransactions);
+  dispatch({
+    type: SET_TRANSACTION,
+    payload: newTransactions,
+  });
 };
 
 export const updateTransaction = (id, data) => (dispatch, getState) => {
@@ -41,4 +62,29 @@ export const deleteTransaction = id => (dispatch, getState) => {
   const {transactions} = getState().account;
   const newTransactions = removeObjectWithId(transactions, id);
   dispatch({type: SET_TRANSACTION, payload: newTransactions});
+};
+
+export const formatTransactionsData = () => (dispatch, getState) => {
+  const {transactions} = getState().account;
+  let formattedData = transactions.map((e, index) => {
+    return e.id > 1000000000000
+      ? {...e, date: e.id, id: index + 1}
+      : {...e, id: index + 1};
+  });
+  dispatch({
+    type: SET_TRANSACTION,
+    payload: formattedData,
+  });
+};
+
+export const backupAccount = () => (dispatch, getState) => {
+  const {accounts, transactions} = getState().account;
+  dispatch({
+    type: SET_TRANSACTION_BACKUP,
+    payload: transactions,
+  });
+  dispatch({
+    type: SET_ACCOUNT_BACKUP,
+    payload: accounts,
+  });
 };

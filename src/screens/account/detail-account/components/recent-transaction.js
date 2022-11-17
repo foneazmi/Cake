@@ -162,7 +162,7 @@ export const RecentTransaction = props => {
   const mappingTransactions = useMemo(
     () =>
       filteredTransactions.reduce((acc = [], curr) => {
-        const date = moment(curr.id).format('y/M/D');
+        const date = moment(curr.date).format('y/M/D');
         const isAvailable = acc.findIndex(e => e.date === date);
         if (isAvailable !== -1) {
           acc[isAvailable].data.push(curr);

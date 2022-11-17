@@ -3,7 +3,12 @@ import {StyleSheet, View} from 'react-native';
 import {Appbar, List} from 'react-native-paper';
 import {navigator} from '../../helpers';
 import {useTheme} from 'react-native-paper';
-import {setDarkMode, resetAll} from '../../stores/actions';
+import {
+  setDarkMode,
+  resetAll,
+  formatTransactionsData,
+  backupAccount,
+} from '../../stores/actions';
 import {useDispatch, useSelector} from 'react-redux';
 export const SettingScreen = () => {
   const {darkMode} = useSelector(({global}) => global);
@@ -45,6 +50,28 @@ export const SettingScreen = () => {
           )}
         />
       </List.Section>
+
+      <List.Section>
+        <List.Subheader>Format Data</List.Subheader>
+
+        <List.Item
+          onPress={() => {
+            dispatch(backupAccount());
+          }}
+          title="Backup Data"
+          description="Backup Account And Transactions"
+          right={props => <List.Icon {...props} icon="backup-restore" />}
+        />
+
+        <List.Item
+          onPress={() => {
+            dispatch(formatTransactionsData());
+          }}
+          title="Format Transaction Data"
+          description="Format Data to new data"
+          right={props => <List.Icon {...props} icon="format-wrap-tight" />}
+        />
+      </List.Section>
       {__DEV__ && (
         <List.Section>
           <List.Subheader>Developer Mode</List.Subheader>
@@ -54,7 +81,7 @@ export const SettingScreen = () => {
             }}
             title="Factory Reset"
             description="Delete All Saved Data"
-            right={props => <List.Icon {...props} icon={'backup-restore'} />}
+            right={props => <List.Icon {...props} icon="information-off" />}
           />
         </List.Section>
       )}

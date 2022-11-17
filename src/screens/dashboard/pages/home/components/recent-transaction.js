@@ -139,7 +139,7 @@ export const RecentTransaction = () => {
     () =>
       transactions.filter(
         transaction =>
-          moment(transaction.id).format('D/M/Y') ===
+          moment(transaction.date).format('D/M/Y') ===
           moment(selectedDate).format('D/M/Y'),
       ),
     [transactions, selectedDate],

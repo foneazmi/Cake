@@ -40,6 +40,7 @@ export const AddAccountScreen = ({route}) => {
           addAccount({
             ...form,
             id: Date.now(),
+            updateAt: Date.now(),
           }),
         );
       } else {
@@ -47,6 +48,7 @@ export const AddAccountScreen = ({route}) => {
           updateAccount(id, {
             ...form,
             id,
+            updateAt: Date.now(),
           }),
         );
       }

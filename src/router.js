@@ -15,10 +15,11 @@ import {NavigationContainer} from '@react-navigation/native';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {StatusBar} from 'react-native';
 import {darkTheme, lightTheme} from './theme';
+import {Loader} from './components';
 const Stack = createStackNavigator();
 
 export const AppRouter = () => {
-  const {darkMode} = useSelector(({global}) => global);
+  const {darkMode, loading} = useSelector(({global}) => global);
   const [theme, barStyle] = useMemo(
     () =>
       darkMode ? [darkTheme, 'light-content'] : [lightTheme, 'dark-content'],
@@ -32,6 +33,7 @@ export const AppRouter = () => {
           barStyle={barStyle}
           backgroundColor={theme.colors.background}
         />
+        <Loader isLoading={loading} />
         <Stack.Navigator
           screenOptions={{
             headerShown: false,

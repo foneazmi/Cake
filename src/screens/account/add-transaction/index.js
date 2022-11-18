@@ -38,7 +38,6 @@ export const AddTransactionScreen = ({route}) => {
     date = '',
     type,
   } = route?.params || {};
-  console.log('route?.params', route?.params);
   const theme = useTheme();
   const dispatch = useDispatch();
 
@@ -77,6 +76,7 @@ export const AddTransactionScreen = ({route}) => {
         ...form,
         type,
         id,
+        updateAt: Date.now(),
         idAccount: selectedAccount,
         idAccount2: selectedToAccount,
       };

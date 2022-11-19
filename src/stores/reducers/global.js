@@ -2,7 +2,7 @@ import {BEGIN, END, LOGOUT, DARK_MODE, RESET_GLOBAL} from '../types';
 
 const INITIAL_STATE = {
   // ? Settings
-  darkMode: false,
+  darkMode: true,
   // ? Misc
   loading: false,
 };

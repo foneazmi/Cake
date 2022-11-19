@@ -65,8 +65,8 @@ export const SettingScreen = () => {
               setModalSync(true);
             }
           }}
-          title="Backup Data"
-          description="Backup Data to server"
+          title="Sync Data"
+          description="Sync Data to server"
           right={props => <List.Icon {...props} icon="code-braces" />}
         />
       </List.Section>

@@ -1,10 +1,13 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {BottomNavigation} from 'react-native-paper';
+import {useDispatch} from 'react-redux';
+import {backupData} from '../../stores/actions';
 
 import {HomePage, ProfilePage, AccountPage} from './pages';
 
 export const DashboardScreen = () => {
   const [index, setIndex] = React.useState(0);
+  const dispatch = useDispatch();
   const [routes] = React.useState([
     {
       key: 'home',
@@ -31,6 +34,10 @@ export const DashboardScreen = () => {
     account: AccountPage,
     profile: ProfilePage,
   });
+  useEffect(() => {
+    console.log('Backup on Process!!!');
+    dispatch(backupData());
+  }, [dispatch]);
 
   return (
     <BottomNavigation

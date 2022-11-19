@@ -101,9 +101,13 @@ export const backupData =
               accounts,
               transactions,
             });
-            delete resultSync.accounts;
-            delete resultSync.transactions;
-            dispatch({type: SET_SYNC, payload: resultSync});
+            if (resultSync.code === 400) {
+              dispatch({type: SET_SYNC, payload: false});
+            } else {
+              delete resultSync.accounts;
+              delete resultSync.transactions;
+              dispatch({type: SET_SYNC, payload: resultSync});
+            }
           }
         }
         dispatch(end());

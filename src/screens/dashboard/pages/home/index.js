@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, View} from 'react-native';
 import {FAB, Text} from 'react-native-paper';
+import {useSelector} from 'react-redux';
 import {greetingByTime, navigator} from '../../../../helpers';
 import {TotalTransaction, RecentTransaction} from './components';
 
@@ -8,12 +9,13 @@ export const HomePage = () => {
   const [scrollY, setScrollY] = useState(0);
   const [showFab, setShowFab] = useState(true);
   const [open, setOpen] = useState(false);
+  const {sync} = useSelector(({account}) => account);
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text variant="titleSmall">{greetingByTime()}</Text>
         <Text variant="titleLarge" style={styles.headerText}>
-          Hi, Farkhan
+          {`Hi, ${sync?.name || '-'}`}
         </Text>
       </View>
       <ScrollView

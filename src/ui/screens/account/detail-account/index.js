@@ -7,10 +7,10 @@ import {
   View,
 } from 'react-native';
 import {IconButton, Text} from 'react-native-paper';
-import {currency, navigator} from '../../../helpers';
+import {currency, navigator} from 'cake/src/helpers';
 import {useTheme} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {deleteAccount} from '../../../stores/actions';
+import {deleteAccount} from 'cake/src/stores/actions';
 import {useDispatch, useSelector} from 'react-redux';
 import {RecentTransaction} from './components/recent-transaction';
 

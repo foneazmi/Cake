@@ -9,13 +9,13 @@ import {
   AddAccountScreen,
   DetailAccountScreen,
   AddTransactionScreen,
-} from './screens';
+} from './ui/screens';
 import {useSelector} from 'react-redux';
 import {NavigationContainer} from '@react-navigation/native';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {StatusBar} from 'react-native';
 import {darkTheme, lightTheme} from './theme';
-import {Loader} from './components';
+import {Loader} from './ui/components';
 const Stack = createStackNavigator();
 
 export const AppRouter = () => {

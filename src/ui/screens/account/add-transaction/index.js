@@ -16,8 +16,8 @@ import {
   addTransaction,
   deleteTransaction,
   updateTransaction,
-} from '../../../stores/actions';
-import {currency, navigator} from '../../../helpers';
+} from 'cake/src/stores/actions';
+import {currency, navigator} from 'cake/src/helpers';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
   DatePickerModal,
@@ -364,9 +364,7 @@ export const AddTransactionScreen = ({route}) => {
           animationType="fade"
           transparent={true}
           visible={modalFor.length > 0}>
-          <Pressable
-            onPress={() => setModalFor('')}
-            style={styles.modalContainer}>
+          <Pressable onPress={submitModal} style={styles.modalContainer}>
             <View
               style={[
                 styles.modalContentContainer,

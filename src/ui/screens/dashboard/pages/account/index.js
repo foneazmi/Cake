@@ -7,7 +7,7 @@ import {
   Pressable,
 } from 'react-native';
 import {useSelector} from 'react-redux';
-import {currency, navigator} from '../../../../helpers';
+import {currency, navigator} from 'cake/src/helpers';
 import {useTheme, FAB, Text, SegmentedButtons} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 

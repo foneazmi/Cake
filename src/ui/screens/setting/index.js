@@ -1,15 +1,11 @@
 import React, {useState} from 'react';
 import {StyleSheet, View, Modal, Pressable, TextInput} from 'react-native';
 import {Appbar, List, Text} from 'react-native-paper';
-import {navigator} from '../../helpers';
+import {navigator} from 'cake/src/helpers';
 import {useTheme} from 'react-native-paper';
-import {
-  setDarkMode,
-  backupData,
-  resetAll,
-  setTemplateData,
-} from '../../stores/actions';
+import {setDarkMode, backupData, resetAll} from 'cake/src/stores/actions';
 import {useDispatch, useSelector} from 'react-redux';
+
 export const SettingScreen = () => {
   const [{darkMode}, {sync}] = useSelector(({global, account}) => [
     global,
@@ -81,14 +77,14 @@ export const SettingScreen = () => {
             description="Delete All Saved Data"
             right={props => <List.Icon {...props} icon="information-off" />}
           />
-          <List.Item
+          {/* <List.Item
             onPress={() => {
               dispatch(setTemplateData());
             }}
             title="Set Template Data"
             description=""
             right={props => <List.Icon {...props} icon="information-off" />}
-          />
+          /> */}
         </List.Section>
       )}
 

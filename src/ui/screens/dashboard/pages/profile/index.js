@@ -1,7 +1,7 @@
 import React from 'react';
 import {View} from 'react-native';
 import {Appbar} from 'react-native-paper';
-import {navigator} from '../../../../helpers';
+import {navigator} from 'cake/src/helpers';
 
 export const ProfilePage = () => {
   return (

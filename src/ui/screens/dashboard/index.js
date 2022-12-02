@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {BottomNavigation} from 'react-native-paper';
 import {useDispatch} from 'react-redux';
-import {backupData} from '../../stores/actions';
+import {backupData} from 'cake/src/stores/actions';
 
 import {HomePage, ProfilePage, AccountPage} from './pages';
 
@@ -35,7 +35,6 @@ export const DashboardScreen = () => {
     profile: ProfilePage,
   });
   useEffect(() => {
-    console.log('Backup on Process!!!');
     dispatch(backupData());
   }, [dispatch]);
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Appbar, Text} from 'react-native-paper';
-import {navigator} from '../../helpers';
+import {navigator} from 'cake/src/helpers';
 import {useTheme} from 'react-native-paper';
 
 export const LoremScreen = () => {

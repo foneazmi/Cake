@@ -1,10 +1,12 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useMemo} from 'react';
 import {View, StyleSheet, Pressable} from 'react-native';
 import {Text, useTheme} from 'react-native-paper';
-import {currency, navigator} from '../../../../helpers';
+import {currency, navigator} from 'cake/src/helpers';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
 import moment from 'moment';
+// import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 
 const ListTag = props => {
   const theme = useTheme();
@@ -39,7 +41,6 @@ const ListTag = props => {
 const Transaction = props => {
   const theme = useTheme();
   const {accounts} = useSelector(({account}) => account);
-
   const account = useMemo(
     () => accounts.find(acc => acc.id === props.idAccount),
     [accounts, props.idAccount],
@@ -88,47 +89,61 @@ const Transaction = props => {
             : []),
         ]}
       />
-      {props.title && (
-        <Text
-          variant="bodyLarge"
-          style={[
-            styles.titleStyle,
-            {
-              color: theme.colors.onSecondaryContainer,
-            },
-          ]}>
-          {props.title}
-        </Text>
-      )}
-      {props.description && (
-        <Text
-          variant="bodySmall"
-          style={[
-            styles.descriptionStyle,
-            {
-              color: theme.colors.onSecondaryContainer,
-            },
-          ]}>
-          {props.description}
-        </Text>
-      )}
-
-      <View style={styles.amountContainer}>
-        <Icon
-          name={transactionByType[props.type] || ''}
-          size={20}
-          color={theme.colors.onSecondaryContainer}
-        />
-        <Text
-          variant="titleMedium"
-          style={[
-            styles.amountStyle,
-            {
-              color: theme.colors.onSecondaryContainer,
-            },
-          ]}>
-          {currency(props.amount)}
-        </Text>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'center',
+          marginTop: 4,
+          alignItems: 'center',
+        }}>
+        <View style={{flex: 1, marginRight: 8}}>
+          {props.title && (
+            <Text
+              numberOfLines={1}
+              variant="bodyLarge"
+              style={[
+                styles.titleStyle,
+                {
+                  color: theme.colors.onSecondaryContainer,
+                },
+              ]}>
+              {props.title}
+            </Text>
+          )}
+          {props.description && (
+            <Text
+              numberOfLines={1}
+              variant="bodyMedium"
+              style={[
+                styles.descriptionStyle,
+                {
+                  color: theme.colors.onSecondaryContainer,
+                },
+              ]}>
+              {props.description}
+            </Text>
+          )}
+          <Text variant="labelSmall">
+            {moment(props.date).format('D MMM Y')}
+          </Text>
+        </View>
+        <View style={styles.amountContainer}>
+          <Icon
+            name={transactionByType[props.type] || ''}
+            size={16}
+            color={theme.colors.onSecondaryContainer}
+          />
+          <Text
+            variant="titleSmall"
+            style={[
+              styles.amountStyle,
+              {
+                color: theme.colors.onSecondaryContainer,
+              },
+            ]}>
+            {currency(props.amount)}
+          </Text>
+        </View>
       </View>
     </Pressable>
   );
@@ -137,7 +152,7 @@ const TransactionsGroup = props => {
   return (
     <View style={styles.transactionsGroupContainer}>
       <Text variant="titleMedium">
-        {moment(props.data.date, 'y/M/D').format('D MMMM Y')}
+        {moment(props.data.date, 'y/M').format('MMM Y')}
       </Text>
       {props.data.data.map((transaction, index) => (
         <Transaction {...transaction} key={`${index}-transaction-item`} />
@@ -146,6 +161,8 @@ const TransactionsGroup = props => {
   );
 };
 export const RecentTransaction = props => {
+  // const theme = useTheme();
+
   const {transactions} = useSelector(({account}) => account);
   const filteredTransactions = useMemo(
     () =>
@@ -162,7 +179,7 @@ export const RecentTransaction = props => {
   const mappingTransactions = useMemo(
     () =>
       filteredTransactions.reduce((acc = [], curr) => {
-        const date = moment(curr.date).format('y/M/D');
+        const date = moment(curr.date).format('y/M');
         const isAvailable = acc.findIndex(e => e.date === date);
         if (isAvailable !== -1) {
           acc[isAvailable].data.push(curr);
@@ -192,6 +209,33 @@ export const RecentTransaction = props => {
           <Text style={styles.titleStyle}>No Transaction</Text>
         </View>
       )}
+
+      {/* <Calendar
+        theme={{
+          backgroundColor: theme.colors.surface,
+          calendarBackground: theme.colors.surface,
+          textSectionTitleColor: theme.colors.onSurface,
+          textSectionTitleDisabledColor: theme.colors.onSurfaceDisabled,
+          selectedDayBackgroundColor: theme.colors.primary,
+          selectedDayTextColor: theme.colors.surface,
+          todayTextColor: theme.colors.primary,
+          dayTextColor: theme.colors.onSurface,
+          textDisabledColor: theme.colors.onSurfaceDisabled,
+          dotColor: theme.colors.primary,
+          selectedDotColor: theme.colors.surface,
+          arrowColor: theme.colors.primary,
+          disabledArrowColor: theme.colors.onSurfaceDisabled,
+          monthTextColor: theme.colors.primary,
+          indicatorColor: theme.colors.primary,
+        }}
+        initialDate={moment().format()}
+        onDayPress={day => {
+          console.log('selected day', day);
+        }}
+        onMonthChange={month => {
+          console.log('month changed', month);
+        }}
+      /> */}
     </View>
   );
 };
@@ -228,7 +272,6 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   amountContainer: {
-    marginTop: 4,
     alignItems: 'center',
     flexDirection: 'row',
   },

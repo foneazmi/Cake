@@ -1,5 +1,5 @@
-import {removeObjectWithId, mergeByProperty} from '../../helpers';
-import {pb} from '../../services';
+import {removeObjectWithId, mergeByProperty} from 'cake/src/helpers';
+import {pb} from 'cake/src/services';
 import {SET_ACCOUNT, SET_TRANSACTION, SET_SYNC} from '../types';
 import {begin, end} from './global';
 import NetInfo from '@react-native-community/netinfo';
@@ -112,42 +112,7 @@ export const backupData =
         }
         dispatch(end());
       } catch (error) {
-        console.log(error);
         dispatch(end());
       }
     }
   };
-
-export const setTemplateData = () => (dispatch, getState) => {
-  dispatch({
-    type: SET_ACCOUNT,
-    payload: [
-      {description: '', id: 1668695558043, name: 'Seabank', type: 'cash'},
-    ],
-  });
-  dispatch({
-    type: SET_TRANSACTION,
-    payload: [
-      {
-        amount: 100000,
-        date: 1668695730230,
-        description: '',
-        id: 1,
-        idAccount: 1668695558043,
-        idAccount2: '',
-        title: 'Test',
-        type: 'expense',
-      },
-      {
-        amount: 10000000,
-        date: 1668445199000,
-        description: '',
-        id: 2,
-        idAccount: 1668695558043,
-        idAccount2: '',
-        title: '10000',
-        type: 'income',
-      },
-    ],
-  });
-};

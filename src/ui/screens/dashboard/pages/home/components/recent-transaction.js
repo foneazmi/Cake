@@ -1,10 +1,10 @@
 import React, {useMemo, useState} from 'react';
 import {View, StyleSheet, Pressable} from 'react-native';
 import {Text, useTheme} from 'react-native-paper';
-import {currency, navigator} from '../../../../../helpers';
+import {currency, navigator} from 'cake/src/helpers';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
-import {CalendarWeek} from '../../../../../components/calendar';
+import {CalendarWeek} from 'cake/src/ui/components/calendar';
 import moment from 'moment';
 
 const ListTag = props => {

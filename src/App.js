@@ -3,6 +3,7 @@ import {AppRouter} from './router';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/lib/integration/react';
 import {store, persistor} from './stores';
+import {logger} from './helpers';
 import codePush from 'react-native-code-push';
 
 const App = () => {
@@ -10,30 +11,30 @@ const App = () => {
     const codePushStatusDidChange = status => {
       switch (status) {
         case codePush.SyncStatus.CHECKING_FOR_UPDATE:
-          console.log('Checking for updates.');
+          logger('Checking for updates.');
           break;
         case codePush.SyncStatus.DOWNLOADING_PACKAGE:
-          console.log('Downloading package.');
+          logger('Downloading package.');
           break;
         case codePush.SyncStatus.INSTALLING_UPDATE:
-          console.log('Installing update.');
+          logger('Installing update.');
           break;
         case codePush.SyncStatus.UP_TO_DATE:
-          console.log('Up-to-date.');
+          logger('Up-to-date.');
           break;
         case codePush.SyncStatus.UPDATE_INSTALLED:
-          console.log('Update installed.');
+          logger('Update installed.');
           break;
       }
     };
 
     const codePushDownloadDidProgress = progress => {
-      console.log(
+      logger(
         progress.receivedBytes + ' of ' + progress.totalBytes + ' received.',
       );
     };
     const syncImmediate = () => {
-      console.log('synced');
+      logger('synced');
       codePush.sync(
         {
           checkFrequency: codePush.CheckFrequency.ON_APP_START,

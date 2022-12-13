@@ -7,7 +7,8 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "code:push":"appcenter codepush release-react -a Cake-Apps/Cake-Android -d Staging"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.17.10",
@@ -15,11 +16,15 @@
     "@react-navigation/native": "^6.0.13",
     "@react-navigation/stack": "^6.3.1",
     "@reduxjs/toolkit": "^1.8.5",
+    "appcenter": "^4.4.5",
+    "appcenter-analytics": "^4.4.5",
+    "appcenter-crashes": "^4.4.5",
     "moment": "^2.29.4",
     "qs": "^6.11.0",
     "react": "18.1.0",
     "react-native": "0.70.6",
     "react-native-calendars": "^1.1292.0",
+    "react-native-code-push": "^7.0.5",
     "react-native-currency-input": "^1.0.1",
     "react-native-gesture-handler": "^2.7.1",
     "react-native-paper": "5.0.0-rc.6",

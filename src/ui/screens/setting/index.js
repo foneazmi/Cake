@@ -195,5 +195,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     fontWeight: 'bold',
     textAlign: 'right',
+    fontStyle: 'italic',
   },
 });

@@ -29,17 +29,17 @@ const CODE_PUSH_STATUS = {
 const codePushDownloadProgress = progress => {
   if (progress.receivedBytes !== progress.totalBytes) {
     store.dispatch(begin());
+    store.dispatch(
+      setProgressDescription(
+        `${Math.floor(
+          (progress.receivedBytes * 100) / progress.totalBytes,
+        )}% [Update CAKE in progress]`,
+      ),
+    );
   } else {
-    store.dispatch(setProgressDescription(''));
     store.dispatch(end());
+    store.dispatch(setProgressDescription(''));
   }
-  store.dispatch(
-    setProgressDescription(
-      `${Math.floor(
-        (progress.receivedBytes * 100) / progress.totalBytes,
-      )}% [Update CAKE in progress]`,
-    ),
-  );
 };
 
 const codePushStatusChange = syncStatus => {

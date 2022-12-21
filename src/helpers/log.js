@@ -1,4 +1,11 @@
 import moment from 'moment';
+import {
+  getDeviceId,
+  getBrand,
+  getModel,
+  getSystemName,
+  getUniqueId,
+} from 'react-native-device-info';
 
 export const logTelegram = async (...args) => {
   const time = moment().format('D/M/Y H:mm:ss');
@@ -9,7 +16,13 @@ export const logTelegram = async (...args) => {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify([...args, '________________________', `🔥 ${time}`]),
+    body: JSON.stringify([
+      ...args,
+      '__________________________________',
+      `🔥 ID::${await getUniqueId()}`,
+      `📱 Device::${getDeviceId()}:${getModel()}:${getBrand()}:${getSystemName()}`,
+      `[${time}]`,
+    ]),
   });
 };
 

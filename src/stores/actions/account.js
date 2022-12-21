@@ -63,7 +63,7 @@ export const deleteTransaction = id => (dispatch, getState) => {
 };
 
 export const backupData =
-  (syncCode = '') =>
+  (syncCode = '', loading = true) =>
   async (dispatch, getState) => {
     let netInfo = await NetInfo.fetch();
     if (netInfo.isConnected) {
@@ -71,6 +71,7 @@ export const backupData =
         const {sync} = getState().account;
         let code = syncCode || sync.code;
         if (code) {
+          loading && dispatch(begin());
           let getSync = await pb.getList('cake_sync', {
             filter: `(code='${code}')`,
           });
@@ -111,7 +112,9 @@ export const backupData =
             }
           }
         }
+        loading && dispatch(end());
       } catch (error) {
+        loading && dispatch(end());
         logger(error);
       }
     }

@@ -35,7 +35,7 @@ export const DashboardScreen = () => {
     profile: ProfilePage,
   });
   useEffect(() => {
-    dispatch(backupData());
+    dispatch(backupData('', false));
   }, [dispatch]);
 
   return (

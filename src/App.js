@@ -14,6 +14,18 @@ const codePushOptions = {
   mandatoryInstallMode: CodePush.InstallMode.ON_NEXT_RESTART,
 };
 
+const CODE_PUSH_STATUS = {
+  [`${CodePush.SyncStatus.AWAITING_USER_ACTION}`]: 'Wait user action.',
+  [`${CodePush.SyncStatus.CHECKING_FOR_UPDATE}`]: 'Checking for updates.',
+  [`${CodePush.SyncStatus.DOWNLOADING_PACKAGE}`]: 'Downloading package.',
+  [`${CodePush.SyncStatus.INSTALLING_UPDATE}`]: 'Installing update.',
+  [`${CodePush.SyncStatus.SYNC_IN_PROGRESS}`]: 'Sync in progress.',
+  [`${CodePush.SyncStatus.UNKNOWN_ERROR}`]: 'Unknown error.',
+  [`${CodePush.SyncStatus.UPDATE_IGNORED}`]: 'Update ignored.',
+  [`${CodePush.SyncStatus.UPDATE_INSTALLED}`]: 'Update installed.',
+  [`${CodePush.SyncStatus.UP_TO_DATE}`]: 'Current app is updated.',
+};
+
 const codePushDownloadProgress = progress => {
   if (progress.receivedBytes !== progress.totalBytes) {
     store.dispatch(begin());
@@ -27,27 +39,10 @@ const codePushDownloadProgress = progress => {
       )}% [Update CAKE in progress]`,
     ),
   );
-  logger(progress);
 };
 
 const codePushStatusChange = syncStatus => {
-  switch (syncStatus) {
-    case CodePush.SyncStatus.CHECKING_FOR_UPDATE:
-      logger('Checking for updates.');
-      break;
-    case CodePush.SyncStatus.DOWNLOADING_PACKAGE:
-      logger('Downloading package.');
-      break;
-    case CodePush.SyncStatus.INSTALLING_UPDATE:
-      logger('Installing update.');
-      break;
-    case CodePush.SyncStatus.UP_TO_DATE:
-      logger('Updated.');
-      break;
-    case CodePush.SyncStatus.UPDATE_INSTALLED:
-      logger('Update installed.');
-      break;
-  }
+  logger(CODE_PUSH_STATUS[syncStatus]);
 };
 
 const App = () => {

@@ -6103,9 +6103,9 @@ react-native-calendars@^1.1292.0:
   optionalDependencies:
     moment "^2.24.0"
 
-"react-native-code-push@git+ssh://git@github.com:foneazmi/react-native-code-push.git":
+"react-native-code-push@git+https://github.com/foneazmi/react-native-code-push.git":
   version "7.0.5"
-  resolved "git+ssh://git@github.com:foneazmi/react-native-code-push.git#0b556775a454343013e1d940fedcf955b36fe93d"
+  resolved "git+https://github.com/foneazmi/react-native-code-push.git#0b556775a454343013e1d940fedcf955b36fe93d"
   dependencies:
     code-push "^4.0.5"
     glob "^7.1.7"

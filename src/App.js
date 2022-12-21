@@ -30,6 +30,7 @@ const codePushDownloadProgress = progress => {
   if (progress.receivedBytes !== progress.totalBytes) {
     store.dispatch(begin());
   } else {
+    store.dispatch(setProgressDescription(''));
     store.dispatch(end());
   }
   store.dispatch(

@@ -1,10 +1,18 @@
 import React, {useState} from 'react';
-import {StyleSheet, View, Modal, Pressable, TextInput} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Modal,
+  Pressable,
+  TextInput,
+  ScrollView,
+} from 'react-native';
 import {Appbar, List, Text} from 'react-native-paper';
 import {navigator} from 'cake/src/helpers';
 import {useTheme} from 'react-native-paper';
 import {setDarkMode, backupData, resetAll} from 'cake/src/stores/actions';
 import {useDispatch, useSelector} from 'react-redux';
+import {getReadableVersion} from 'react-native-device-info';
 
 export const SettingScreen = () => {
   const [{darkMode}, {sync}] = useSelector(({global, account}) => [
@@ -34,50 +42,51 @@ export const SettingScreen = () => {
         <Appbar.Content title="Settings" />
       </Appbar.Header>
 
-      <List.Section>
-        <List.Subheader>Themes</List.Subheader>
-        <List.Item
-          onPress={() => {
-            dispatch(setDarkMode(!darkMode));
-          }}
-          title="Dark Mode"
-          description="Press to change mode"
-          right={props => (
-            <List.Icon
-              {...props}
-              icon={darkMode ? 'brightness-7' : 'brightness-4'}
-            />
-          )}
-        />
-      </List.Section>
-
-      <List.Section>
-        <List.Subheader>Sync</List.Subheader>
-        <List.Item
-          onPress={() => {
-            if (sync) {
-              dispatch(backupData());
-            } else {
-              setModalSync(true);
-            }
-          }}
-          title="Sync Data"
-          description="Sync Data to server"
-          right={props => <List.Icon {...props} icon="code-braces" />}
-        />
-      </List.Section>
-      {__DEV__ && (
+      <ScrollView>
         <List.Section>
-          <List.Subheader>Developer Mode</List.Subheader>
+          <List.Subheader>Themes</List.Subheader>
           <List.Item
             onPress={() => {
-              dispatch(resetAll());
+              dispatch(setDarkMode(!darkMode));
             }}
-            title="Factory Reset"
-            description="Delete All Saved Data"
-            right={props => <List.Icon {...props} icon="information-off" />}
+            title="Dark Mode"
+            description="Press to change mode"
+            right={props => (
+              <List.Icon
+                {...props}
+                icon={darkMode ? 'brightness-7' : 'brightness-4'}
+              />
+            )}
           />
-          {/* <List.Item
+        </List.Section>
+
+        <List.Section>
+          <List.Subheader>Sync</List.Subheader>
+          <List.Item
+            onPress={() => {
+              if (sync) {
+                dispatch(backupData());
+              } else {
+                setModalSync(true);
+              }
+            }}
+            title="Sync Data"
+            description="Sync Data to server"
+            right={props => <List.Icon {...props} icon="code-braces" />}
+          />
+        </List.Section>
+        {__DEV__ && (
+          <List.Section>
+            <List.Subheader>Developer Mode</List.Subheader>
+            <List.Item
+              onPress={() => {
+                dispatch(resetAll());
+              }}
+              title="Factory Reset"
+              description="Delete All Saved Data"
+              right={props => <List.Icon {...props} icon="information-off" />}
+            />
+            {/* <List.Item
             onPress={() => {
               dispatch(setTemplateData());
             }}
@@ -85,8 +94,14 @@ export const SettingScreen = () => {
             description=""
             right={props => <List.Icon {...props} icon="information-off" />}
           /> */}
-        </List.Section>
-      )}
+          </List.Section>
+        )}
+        <Text
+          variant="labelSmall"
+          style={
+            styles.versionText
+          }>{`App Version ${getReadableVersion()}`}</Text>
+      </ScrollView>
 
       <Modal animationType="fade" transparent={true} visible={modalSync}>
         <Pressable
@@ -175,5 +190,10 @@ const styles = StyleSheet.create({
   },
   modalSubmitText: {
     textAlign: 'center',
+  },
+  versionText: {
+    paddingHorizontal: 16,
+    fontWeight: 'bold',
+    textAlign: 'right',
   },
 });

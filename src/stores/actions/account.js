@@ -1,9 +1,8 @@
-import {removeObjectWithId, mergeByProperty} from 'cake/src/helpers';
-import {pb} from 'cake/src/services';
+import {removeObjectWithId, mergeByProperty, logger} from '../../helpers';
+import {pb} from '../../services';
 import {SET_ACCOUNT, SET_TRANSACTION, SET_SYNC} from '../types';
 import {begin, end} from './global';
 import NetInfo from '@react-native-community/netinfo';
-import {logger} from '../../helpers';
 
 export const addAccount = data => (dispatch, getState) => {
   const {accounts} = getState().account;

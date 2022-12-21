@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {BottomNavigation} from 'react-native-paper';
 import {useDispatch} from 'react-redux';
-import {backupData} from 'cake/src/stores/actions';
+import {backupData} from '../../../stores/actions';
 
 import {HomePage, ProfilePage, AccountPage} from './pages';
 

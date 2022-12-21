@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, View} from 'react-native';
 import {FAB, Text} from 'react-native-paper';
 import {useSelector} from 'react-redux';
-import {greetingByTime, navigator} from 'cake/src/helpers';
+import {greetingByTime, navigator} from '../../../../../helpers';
 import {TotalTransaction, RecentTransaction} from './components';
 
 export const HomePage = () => {

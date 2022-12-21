@@ -9,10 +9,10 @@ import {
   TextInput,
 } from 'react-native';
 import {IconButton, Text, useTheme, SegmentedButtons} from 'react-native-paper';
-import {navigator} from 'cake/src/helpers';
+import {navigator} from '../../../../helpers';
 import CurrencyInput from 'react-native-currency-input';
 import {useDispatch} from 'react-redux';
-import {addAccount, updateAccount} from 'cake/src/stores/actions';
+import {addAccount, updateAccount} from '../../../../stores/actions';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export const AddAccountScreen = ({route}) => {

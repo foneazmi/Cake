@@ -1,12 +1,11 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useMemo} from 'react';
+import React, {useMemo, useState} from 'react';
 import {View, StyleSheet, Pressable} from 'react-native';
-import {Text, useTheme} from 'react-native-paper';
-import {currency, navigator} from 'cake/src/helpers';
+import {Text, useTheme, IconButton} from 'react-native-paper';
+import {currency, navigator} from '../../../../../helpers';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
 import moment from 'moment';
-// import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 
 const ListTag = props => {
   const theme = useTheme();
@@ -148,94 +147,58 @@ const Transaction = props => {
     </Pressable>
   );
 };
-const TransactionsGroup = props => {
-  return (
-    <View style={styles.transactionsGroupContainer}>
-      <Text variant="titleMedium">
-        {moment(props.data.date, 'y/M').format('MMM Y')}
-      </Text>
-      {props.data.data.map((transaction, index) => (
-        <Transaction {...transaction} key={`${index}-transaction-item`} />
-      ))}
-    </View>
-  );
-};
 export const RecentTransaction = props => {
-  // const theme = useTheme();
-
+  const [selectedDate, setSelectedDate] = useState(moment());
   const {transactions} = useSelector(({account}) => account);
+
   const filteredTransactions = useMemo(
     () =>
-      props.account
-        ? transactions.filter(
-            transaction =>
-              transaction.idAccount === props.account.id ||
-              transaction.idAccount2 === props.account.id,
-          )
-        : transactions,
-    [transactions, props.account],
-  );
-
-  const mappingTransactions = useMemo(
-    () =>
-      filteredTransactions.reduce((acc = [], curr) => {
-        const date = moment(curr.date).format('y/M');
-        const isAvailable = acc.findIndex(e => e.date === date);
-        if (isAvailable !== -1) {
-          acc[isAvailable].data.push(curr);
+      transactions.filter(transaction => {
+        if (props.account) {
+          return (
+            moment(transaction.date).format('y/M') ===
+              moment(selectedDate).format('y/M') &&
+            (transaction.idAccount === props.account.id ||
+              transaction.idAccount2 === props.account.id)
+          );
         } else {
-          acc.push({
-            date,
-            data: [curr],
-          });
+          return (
+            moment(transaction.date).format('y/M') ===
+            moment(selectedDate).format('y/M')
+          );
         }
-        return acc;
-      }, []),
-    [filteredTransactions],
+      }),
+    [props.account, selectedDate, transactions],
   );
 
   return (
     <View style={styles.container}>
-      <Text variant="titleLarge">Recent Transaction</Text>
-      {mappingTransactions?.length > 0 ? (
-        mappingTransactions.map((mapTransactions, index) => (
-          <TransactionsGroup
-            data={mapTransactions}
-            key={`${index}-transaction-group-item`}
-          />
+      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <IconButton
+          icon="arrow-left-bold-circle"
+          size={20}
+          onPress={() => {
+            setSelectedDate(moment(selectedDate).subtract(1, 'M'));
+          }}
+        />
+        <Text variant="titleLarge">{moment(selectedDate).format('MMM Y')}</Text>
+        <IconButton
+          icon="arrow-right-bold-circle"
+          size={20}
+          onPress={() => {
+            setSelectedDate(moment(selectedDate).add(1, 'M'));
+          }}
+        />
+      </View>
+      {filteredTransactions?.length > 0 ? (
+        filteredTransactions.map((transaction, index) => (
+          <Transaction {...transaction} key={`${index}-transaction-item`} />
         ))
       ) : (
         <View style={styles.noTransactionContainer}>
           <Text style={styles.titleStyle}>No Transaction</Text>
         </View>
       )}
-
-      {/* <Calendar
-        theme={{
-          backgroundColor: theme.colors.surface,
-          calendarBackground: theme.colors.surface,
-          textSectionTitleColor: theme.colors.onSurface,
-          textSectionTitleDisabledColor: theme.colors.onSurfaceDisabled,
-          selectedDayBackgroundColor: theme.colors.primary,
-          selectedDayTextColor: theme.colors.surface,
-          todayTextColor: theme.colors.primary,
-          dayTextColor: theme.colors.onSurface,
-          textDisabledColor: theme.colors.onSurfaceDisabled,
-          dotColor: theme.colors.primary,
-          selectedDotColor: theme.colors.surface,
-          arrowColor: theme.colors.primary,
-          disabledArrowColor: theme.colors.onSurfaceDisabled,
-          monthTextColor: theme.colors.primary,
-          indicatorColor: theme.colors.primary,
-        }}
-        initialDate={moment().format()}
-        onDayPress={day => {
-          console.log('selected day', day);
-        }}
-        onMonthChange={month => {
-          console.log('month changed', month);
-        }}
-      /> */}
     </View>
   );
 };

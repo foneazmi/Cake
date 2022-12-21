@@ -16,8 +16,8 @@ import {
   addTransaction,
   deleteTransaction,
   updateTransaction,
-} from 'cake/src/stores/actions';
-import {currency, navigator} from 'cake/src/helpers';
+} from '../../../../stores/actions';
+import {currency, navigator} from '../../../../helpers';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
   DatePickerModal,

@@ -8,9 +8,9 @@ import {
   ScrollView,
 } from 'react-native';
 import {Appbar, List, Text} from 'react-native-paper';
-import {navigator} from 'cake/src/helpers';
+import {navigator} from '../../../helpers';
 import {useTheme} from 'react-native-paper';
-import {setDarkMode, backupData, resetAll} from 'cake/src/stores/actions';
+import {setDarkMode, backupData, resetAll} from '../../../stores/actions';
 import {useDispatch, useSelector} from 'react-redux';
 import {getReadableVersion} from 'react-native-device-info';
 

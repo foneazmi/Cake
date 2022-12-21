@@ -2,7 +2,7 @@ import React, {useMemo} from 'react';
 
 import {View, StyleSheet} from 'react-native';
 import {Text, useTheme} from 'react-native-paper';
-import {currency} from 'cake/src/helpers';
+import {currency} from '../../../../../../helpers';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';

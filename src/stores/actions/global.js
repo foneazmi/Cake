@@ -1,4 +1,16 @@
-import {BEGIN, END, RESET_GLOBAL, RESET_ACCOUNT} from '../types';
+import {
+  BEGIN,
+  END,
+  RESET_GLOBAL,
+  RESET_ACCOUNT,
+  PROGRESS_DESCRIPTION,
+} from '../types';
+
+export const setProgressDescription =
+  (description = '') =>
+  dispatch => {
+    dispatch({type: PROGRESS_DESCRIPTION, payload: description});
+  };
 
 export const begin = () => dispatch => {
   dispatch({type: BEGIN});

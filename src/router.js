@@ -19,13 +19,14 @@ import {Loader} from './ui/components';
 const Stack = createStackNavigator();
 
 export const AppRouter = () => {
-  const {darkMode, loading} = useSelector(({global}) => global);
+  const {darkMode, loading, progressDescription} = useSelector(
+    ({global}) => global,
+  );
   const [theme, barStyle] = useMemo(
     () =>
       darkMode ? [darkTheme, 'light-content'] : [lightTheme, 'dark-content'],
     [darkMode],
   );
-
   return (
     <PaperProvider theme={theme}>
       <NavigationContainer ref={navigationRef} theme={theme}>
@@ -33,7 +34,7 @@ export const AppRouter = () => {
           barStyle={barStyle}
           backgroundColor={theme.colors.background}
         />
-        <Loader isLoading={loading} />
+        <Loader isLoading={loading} description={progressDescription} />
         <Stack.Navigator
           screenOptions={{
             headerShown: false,

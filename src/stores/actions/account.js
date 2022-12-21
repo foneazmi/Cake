@@ -3,6 +3,7 @@ import {pb} from 'cake/src/services';
 import {SET_ACCOUNT, SET_TRANSACTION, SET_SYNC} from '../types';
 import {begin, end} from './global';
 import NetInfo from '@react-native-community/netinfo';
+import {logger} from '../../helpers';
 
 export const addAccount = data => (dispatch, getState) => {
   const {accounts} = getState().account;
@@ -67,13 +68,13 @@ export const backupData =
     let netInfo = await NetInfo.fetch();
     if (netInfo.isConnected) {
       try {
-        const {accounts, transactions, sync} = getState().account;
+        const {sync} = getState().account;
         let code = syncCode || sync.code;
         if (code) {
-          dispatch(begin());
           let getSync = await pb.getList('cake_sync', {
             filter: `(code='${code}')`,
           });
+          const {accounts, transactions} = getState().account;
           if (getSync.items.length > 0) {
             const syncDataResult = getSync.items[0];
             const mergedAccounts = mergeByProperty(
@@ -110,9 +111,8 @@ export const backupData =
             }
           }
         }
-        dispatch(end());
       } catch (error) {
-        dispatch(end());
+        logger(error);
       }
     }
   };

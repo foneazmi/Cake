@@ -1,10 +1,17 @@
-import {BEGIN, END, LOGOUT, DARK_MODE, RESET_GLOBAL} from '../types';
+import {
+  BEGIN,
+  END,
+  DARK_MODE,
+  RESET_GLOBAL,
+  PROGRESS_DESCRIPTION,
+} from '../types';
 
 const INITIAL_STATE = {
   // ? Settings
   darkMode: true,
   // ? Misc
   loading: false,
+  progressDescription: '',
 };
 
 export const global = (state = INITIAL_STATE, action) => {
@@ -17,6 +24,8 @@ export const global = (state = INITIAL_STATE, action) => {
       return {...state, loading: true};
     case END:
       return {...state, loading: false};
+    case PROGRESS_DESCRIPTION:
+      return {...state, progressDescription: action.payload};
     case RESET_GLOBAL:
       return INITIAL_STATE;
     // ? Default

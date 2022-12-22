@@ -10,7 +10,11 @@ import {IconButton, Text} from 'react-native-paper';
 import {currency, navigator} from '../../../../helpers';
 import {useTheme} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {deleteAccount} from '../../../../stores/actions';
+import {
+  deleteAccount,
+  setDialog,
+  updateAccount,
+} from '../../../../stores/actions';
 import {useDispatch, useSelector} from 'react-redux';
 import {RecentTransaction} from './components/recent-transaction';
 
@@ -78,6 +82,27 @@ export const DetailAccountScreen = ({route}) => {
     loan: ['Credit', 'Debt', 'credit-card'],
   };
 
+  const deleteAccountDialog = () => {
+    dispatch(
+      setDialog({
+        title: 'Delete Account',
+        description: 'Do you want to delete this account ?',
+        actions: [
+          {
+            title: 'No',
+          },
+          {
+            title: 'Yes',
+            onPress: () => {
+              dispatch(deleteAccount(account.id));
+              navigator.goBack();
+            },
+          },
+        ],
+      }),
+    );
+  };
+
   const Header = () => (
     <View style={styles.headerContainer}>
       <IconButton
@@ -88,32 +113,49 @@ export const DetailAccountScreen = ({route}) => {
       />
       {account && (
         <View style={styles.headerActionContainer}>
-          <Pressable
-            onPress={() => navigator.navigate('add-account', account)}
-            style={[
-              styles.headerActionEditContainer,
-              {
-                borderColor: theme.colors.outline,
-              },
-            ]}>
-            <Icon
-              name="application-edit"
-              color={theme.colors.onSurface}
-              size={16}
-            />
-            <Text style={styles.headerActionEditText} variant="labelMedium">
-              Edit
-            </Text>
-          </Pressable>
           <IconButton
-            icon="trash-can"
+            icon={account?.archiveAt ? 'archive-off' : 'archive'}
             mode="outlined"
             size={20}
             onPress={() => {
-              dispatch(deleteAccount(account.id));
-              navigator.goBack();
+              dispatch(
+                updateAccount(account.id, {
+                  ...account,
+                  archiveAt: account?.archiveAt ? false : Date.now(),
+                  id: account.id,
+                  updateAt: Date.now(),
+                }),
+              );
             }}
           />
+          {!account?.archiveAt && (
+            <>
+              <Pressable
+                onPress={() => navigator.navigate('add-account', account)}
+                style={[
+                  styles.headerActionEditContainer,
+                  {
+                    borderColor: theme.colors.outline,
+                  },
+                ]}>
+                <Icon
+                  name="application-edit"
+                  color={theme.colors.onSurface}
+                  size={16}
+                />
+                <Text style={styles.headerActionEditText} variant="labelMedium">
+                  Edit
+                </Text>
+              </Pressable>
+
+              <IconButton
+                icon="trash-can"
+                mode="outlined"
+                size={20}
+                onPress={deleteAccountDialog}
+              />
+            </>
+          )}
         </View>
       )}
     </View>
@@ -137,6 +179,7 @@ export const DetailAccountScreen = ({route}) => {
             ]}
             variant="labelLarge">
             {account ? account?.name || '' : 'All'}
+            {account?.archiveAt ? ' [Archived]' : ''}
           </Text>
 
           <Text
@@ -210,40 +253,44 @@ export const DetailAccountScreen = ({route}) => {
         ]}>
         Transactions
       </Text>
-      <Pressable
-        onPress={() =>
-          navigator.navigate('add-transaction', {
-            type,
-            idAccount: account?.id || '',
-          })
-        }
-        style={[
-          {
-            backgroundColor: theme.colors.primary,
-          },
-          styles.buttonStyle,
-        ]}>
-        <Icon
-          name={
-            type === 'income'
-              ? 'credit-card-plus-outline'
-              : 'credit-card-minus-outline'
+      {account?.archiveAt ? (
+        <></>
+      ) : (
+        <Pressable
+          onPress={() =>
+            navigator.navigate('add-transaction', {
+              type,
+              idAccount: account?.id || '',
+            })
           }
-          size={16}
-          color={theme.colors.onPrimary}
-        />
-        <Text
-          variant="labelMedium"
-          numberOfLines={1}
           style={[
-            styles.buttonText,
             {
-              color: theme.colors.onPrimary,
+              backgroundColor: theme.colors.primary,
             },
+            styles.buttonStyle,
           ]}>
-          {`Add ${title}`}
-        </Text>
-      </Pressable>
+          <Icon
+            name={
+              type === 'income'
+                ? 'credit-card-plus-outline'
+                : 'credit-card-minus-outline'
+            }
+            size={16}
+            color={theme.colors.onPrimary}
+          />
+          <Text
+            variant="labelMedium"
+            numberOfLines={1}
+            style={[
+              styles.buttonText,
+              {
+                color: theme.colors.onPrimary,
+              },
+            ]}>
+            {`Add ${title}`}
+          </Text>
+        </Pressable>
+      )}
     </>
   );
 

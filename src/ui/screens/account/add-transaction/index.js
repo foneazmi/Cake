@@ -15,6 +15,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {
   addTransaction,
   deleteTransaction,
+  setDialog,
   updateTransaction,
 } from '../../../../stores/actions';
 import {currency, navigator} from '../../../../helpers';
@@ -64,12 +65,33 @@ export const AddTransactionScreen = ({route}) => {
   };
 
   const submitTransaction = () => {
-    if (
-      form.amount === '' ||
+    if (form.amount === '') {
+      dispatch(
+        setDialog({
+          description: 'Amount cannot empty!',
+          actions: [
+            {
+              title: 'OK',
+            },
+          ],
+        }),
+      );
+      return;
+    } else if (
       selectedAccount === '' ||
       selectedAccount === undefined ||
       (type === 'transfer' && selectedToAccount === '')
     ) {
+      dispatch(
+        setDialog({
+          description: 'Please select account first!',
+          actions: [
+            {
+              title: 'OK',
+            },
+          ],
+        }),
+      );
       return;
     } else {
       const payload = {
@@ -88,6 +110,28 @@ export const AddTransactionScreen = ({route}) => {
       navigator.goBack();
     }
   };
+
+  const deleteTransactionDialog = () => {
+    dispatch(
+      setDialog({
+        title: 'Delete Transaction',
+        description: 'Do you want to delete this transaction ?',
+        actions: [
+          {
+            title: 'No',
+          },
+          {
+            title: 'Yes',
+            onPress: () => {
+              dispatch(deleteTransaction(id));
+              navigator.goBack();
+            },
+          },
+        ],
+      }),
+    );
+  };
+
   const Header = () => (
     <View style={styles.headerContainer}>
       <IconButton
@@ -118,10 +162,7 @@ export const AddTransactionScreen = ({route}) => {
             icon="trash-can"
             mode="outlined"
             size={20}
-            onPress={() => {
-              dispatch(deleteTransaction(id));
-              navigator.goBack();
-            }}
+            onPress={deleteTransactionDialog}
           />
         )}
       </View>
@@ -137,7 +178,7 @@ export const AddTransactionScreen = ({route}) => {
           </Text>
           <FlatList
             style={styles.accountListContainer}
-            data={accounts}
+            data={accounts.filter(account => !account.archiveAt)}
             showsHorizontalScrollIndicator={false}
             ListFooterComponent={
               <Button

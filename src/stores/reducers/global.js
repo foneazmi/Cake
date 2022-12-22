@@ -7,6 +7,7 @@ import {
   DARK_MODE,
   RESET_GLOBAL,
   PROGRESS_DESCRIPTION,
+  SET_DIALOG,
 } from '../types';
 
 const INITIAL_STATE = {
@@ -15,6 +16,7 @@ const INITIAL_STATE = {
   // ? Misc
   loading: false,
   progressDescription: '',
+  dialog: false,
 };
 
 export const global = (state = INITIAL_STATE, action) => {
@@ -29,6 +31,8 @@ export const global = (state = INITIAL_STATE, action) => {
       return {...state, loading: false};
     case PROGRESS_DESCRIPTION:
       return {...state, progressDescription: action.payload};
+    case SET_DIALOG:
+      return {...state, dialog: action.payload};
     case RESET_GLOBAL:
       return INITIAL_STATE;
     // ? Default
@@ -41,7 +45,7 @@ export const persistGlobal = persistReducer(
   {
     key: 'global',
     storage: AsyncStorage,
-    blacklist: ['loading', 'progressDescription'],
+    blacklist: ['loading', 'progressDescription', 'dialog'],
   },
   global,
 );

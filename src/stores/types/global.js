@@ -6,3 +6,5 @@ export const DARK_MODE = 'DARK_MODE';
 
 export const RESET_GLOBAL = 'RESET_GLOBAL';
 export const PROGRESS_DESCRIPTION = 'PROGRESS_DESCRIPTION';
+
+export const SET_DIALOG = 'SET_DIALOG';

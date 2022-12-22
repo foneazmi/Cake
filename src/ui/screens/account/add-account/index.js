@@ -12,7 +12,7 @@ import {IconButton, Text, useTheme, SegmentedButtons} from 'react-native-paper';
 import {navigator} from '../../../../helpers';
 import CurrencyInput from 'react-native-currency-input';
 import {useDispatch, useSelector} from 'react-redux';
-import {addAccount, updateAccount} from '../../../../stores/actions';
+import {addAccount, setDialog, updateAccount} from '../../../../stores/actions';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export const AddAccountScreen = ({route}) => {
@@ -32,7 +32,17 @@ export const AddAccountScreen = ({route}) => {
   });
 
   const submit = () => {
-    if (form.title === '') {
+    if (form.name === '') {
+      dispatch(
+        setDialog({
+          description: 'Account name cannot empty!',
+          actions: [
+            {
+              title: 'OK',
+            },
+          ],
+        }),
+      );
       return;
     } else {
       if (id === '') {

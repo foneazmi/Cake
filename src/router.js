@@ -9,13 +9,14 @@ import {
   AddAccountScreen,
   DetailAccountScreen,
   AddTransactionScreen,
+  ArchiveAccountScreen,
 } from './ui/screens';
 import {useSelector} from 'react-redux';
 import {NavigationContainer} from '@react-navigation/native';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {StatusBar} from 'react-native';
 import {darkTheme, lightTheme} from './theme';
-import {Loader} from './ui/components';
+import {Loader, Dialog} from './ui/components';
 const Stack = createStackNavigator();
 
 export const AppRouter = () => {
@@ -35,6 +36,7 @@ export const AppRouter = () => {
           backgroundColor={theme.colors.background}
         />
         <Loader isLoading={loading} description={progressDescription} />
+        <Dialog visible />
         <Stack.Navigator
           screenOptions={{
             headerShown: false,
@@ -48,6 +50,10 @@ export const AppRouter = () => {
           {/* //? Account  */}
           <Stack.Screen name="add-account" component={AddAccountScreen} />
           <Stack.Screen name="detail-account" component={DetailAccountScreen} />
+          <Stack.Screen
+            name="archive-account"
+            component={ArchiveAccountScreen}
+          />
 
           {/* //? Transaction  */}
           <Stack.Screen

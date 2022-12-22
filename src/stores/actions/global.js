@@ -4,6 +4,7 @@ import {
   RESET_GLOBAL,
   RESET_ACCOUNT,
   PROGRESS_DESCRIPTION,
+  SET_DIALOG,
 } from '../types';
 
 export const setProgressDescription =
@@ -33,3 +34,20 @@ export const resetAll = () => dispatch => {
   dispatch({type: RESET_GLOBAL});
   dispatch({type: RESET_ACCOUNT});
 };
+
+export const setDialog =
+  ({title = '', description = '', actions = []}) =>
+  dispatch => {
+    if ((title === '' && description === '') || actions.length === 0) {
+      dispatch({type: SET_DIALOG, payload: false});
+    } else {
+      dispatch({
+        type: SET_DIALOG,
+        payload: {
+          title,
+          description,
+          actions,
+        },
+      });
+    }
+  };

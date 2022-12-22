@@ -1,4 +1,4 @@
-import React, {useState, useMemo} from 'react';
+import React, {useMemo} from 'react';
 import {
   View,
   StyleSheet,
@@ -7,108 +7,34 @@ import {
   Pressable,
 } from 'react-native';
 import {useSelector} from 'react-redux';
-import {currency, navigator} from '../../../../../helpers';
-import {
-  useTheme,
-  FAB,
-  Text,
-  SegmentedButtons,
-  IconButton,
-} from 'react-native-paper';
+import {currency, navigator} from '../../../../helpers';
+import {useTheme, Text, IconButton} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export const AccountPage = () => {
-  const {accounts, transactions, features} = useSelector(
-    ({account}) => account,
-  );
-  const [type, setType] = useState('all');
-  const [scrollY, setScrollY] = useState(0);
-  const [showFab, setShowFab] = useState(true);
+export const ArchiveAccountScreen = () => {
+  const {accounts} = useSelector(({account}) => account);
 
-  const total = useMemo(() => {
-    let totalIncome = transactions
-      .filter(transaction => transaction.type === 'income')
-      .reduce(
-        (accumulator, currentValue) => accumulator + currentValue.amount,
-        0,
-      );
-    let totalExpense = transactions
-      .filter(transaction => transaction.type === 'expense')
-      .reduce(
-        (accumulator, currentValue) => accumulator + currentValue.amount,
-        0,
-      );
-    return totalIncome - totalExpense;
-  }, [transactions]);
-
-  const isAccountTypeFeature = useMemo(
-    () =>
-      features?.find(feature => {
-        return feature.name === 'account-type';
-      })?.active || false,
-    [features],
+  const Header = () => (
+    <View style={styles.headerContainer}>
+      <IconButton
+        icon="close"
+        mode="outlined"
+        size={20}
+        onPress={() => navigator.goBack()}
+      />
+    </View>
   );
 
   return (
     <SafeAreaView style={styles.container}>
+      <Header />
       <View style={styles.header}>
-        <View style={styles.headerTextContainer}>
-          <Text variant="titleLarge" style={styles.headerText}>
-            Accounts
-          </Text>
-          <Text variant="titleSmall">{`Total : ${currency(total)}`}</Text>
-        </View>
-        <IconButton
-          icon="archive"
-          mode="outlined"
-          size={20}
-          onPress={() => navigator.navigate('archive-account')}
-        />
+        <Text variant="titleLarge" style={styles.headerText}>
+          Archived Accounts
+        </Text>
       </View>
       <FlatList
-        ListHeaderComponent={
-          isAccountTypeFeature && (
-            <SegmentedButtons
-              value={type}
-              onValueChange={setType}
-              buttons={[
-                {
-                  value: 'all',
-                  label: 'All',
-                },
-                {
-                  value: 'cash',
-                  label: 'Cash',
-                },
-                {
-                  value: 'invest',
-                  label: 'Invest',
-                },
-                {
-                  value: 'loan',
-                  label: 'Loan',
-                },
-              ]}
-              style={styles.headerSegmentContainer}
-            />
-          )
-        }
-        scrollEventThrottle={300}
-        onScroll={({nativeEvent}) => {
-          setScrollY(nativeEvent.contentOffset.y);
-          if (nativeEvent.contentOffset.y <= 0) {
-            setShowFab(true);
-          } else {
-            setShowFab(scrollY > nativeEvent.contentOffset.y);
-          }
-        }}
-        data={
-          type === 'all'
-            ? accounts.filter(account => !account.archiveAt)
-            : accounts.filter(
-                account => account.type === type && !account.archiveAt,
-              )
-        }
+        data={accounts.filter(account => account.archiveAt)}
         ListEmptyComponent={
           <View style={styles.noAccountContainer}>
             <Text style={styles.noAccountText}>No Account</Text>
@@ -117,15 +43,6 @@ export const AccountPage = () => {
         keyExtractor={(_, index) => `account-${index}`}
         renderItem={({item}) => <Account {...item} />}
       />
-      {/* {accounts.length < 6 && ( */}
-      <FAB
-        icon="plus"
-        visible={showFab}
-        animated
-        style={styles.fab}
-        onPress={() => navigator.navigate('add-account')}
-      />
-      {/* )} */}
     </SafeAreaView>
   );
 };
@@ -133,13 +50,7 @@ export const AccountPage = () => {
 const Account = props => {
   const {transactions} = useSelector(({account}) => account);
 
-  const [
-    income,
-    // incomeTransaction,
-    expense,
-    // expenseTransaction,
-    total,
-  ] = useMemo(() => {
+  const [income, expense, total] = useMemo(() => {
     let totalIncome = transactions.filter(transaction => {
       return (
         (transaction.type === 'income' &&
@@ -164,13 +75,7 @@ const Account = props => {
       0,
     );
 
-    return [
-      amountIncome,
-      // totalIncome.length,
-      amountExpense,
-      // totalExpense.length,
-      amountIncome - amountExpense,
-    ];
+    return [amountIncome, amountExpense, amountIncome - amountExpense];
   }, [transactions, props.id]);
 
   const accountByType = {
@@ -297,6 +202,12 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     paddingHorizontal: 16,
     flexDirection: 'row',
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   headerTextContainer: {
     flex: 1,

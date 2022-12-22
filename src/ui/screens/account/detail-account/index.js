@@ -103,6 +103,34 @@ export const DetailAccountScreen = ({route}) => {
     );
   };
 
+  const archiveAccountDialog = () => {
+    let desc = account?.archiveAt ? 'unarchive' : 'archive';
+    dispatch(
+      setDialog({
+        title: 'Archive Account',
+        description: `Do you want to ${desc} this account ?`,
+        actions: [
+          {
+            title: 'No',
+          },
+          {
+            title: 'Yes',
+            onPress: () => {
+              dispatch(
+                updateAccount(account.id, {
+                  ...account,
+                  archiveAt: account?.archiveAt ? false : Date.now(),
+                  id: account.id,
+                  updateAt: Date.now(),
+                }),
+              );
+            },
+          },
+        ],
+      }),
+    );
+  };
+
   const Header = () => (
     <View style={styles.headerContainer}>
       <IconButton
@@ -117,16 +145,7 @@ export const DetailAccountScreen = ({route}) => {
             icon={account?.archiveAt ? 'archive-off' : 'archive'}
             mode="outlined"
             size={20}
-            onPress={() => {
-              dispatch(
-                updateAccount(account.id, {
-                  ...account,
-                  archiveAt: account?.archiveAt ? false : Date.now(),
-                  id: account.id,
-                  updateAt: Date.now(),
-                }),
-              );
-            }}
+            onPress={archiveAccountDialog}
           />
           {!account?.archiveAt && (
             <>

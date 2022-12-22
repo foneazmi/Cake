@@ -296,6 +296,7 @@ const styles = StyleSheet.create({
   header: {
     paddingVertical: 4,
     paddingHorizontal: 16,
+    alignItems: 'center',
     flexDirection: 'row',
   },
   headerTextContainer: {

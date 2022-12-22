@@ -5,6 +5,7 @@ import {currency, navigator} from '../../../../../helpers';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
 import moment from 'moment';
+import {FlashList} from '@shopify/flash-list';
 
 const ListTag = props => {
   const theme = useTheme();
@@ -36,7 +37,7 @@ const ListTag = props => {
     </View>
   );
 };
-const Transaction = props => {
+export const Transaction = props => {
   const theme = useTheme();
   const {accounts} = useSelector(({account}) => account);
   const account = useMemo(
@@ -140,87 +141,9 @@ const Transaction = props => {
     </Pressable>
   );
 };
-export const RecentTransaction = props => {
-  const [selectedDate, setSelectedDate] = useState(moment());
-  const {transactions} = useSelector(({account}) => account);
-
-  const filteredTransactions = useMemo(
-    () =>
-      transactions.filter(transaction => {
-        if (props.account) {
-          return (
-            moment(transaction.date).format('y/M') ===
-              moment(selectedDate).format('y/M') &&
-            (transaction.idAccount === props.account.id ||
-              transaction.idAccount2 === props.account.id)
-          );
-        } else {
-          return (
-            moment(transaction.date).format('y/M') ===
-            moment(selectedDate).format('y/M')
-          );
-        }
-      }),
-    [props.account, selectedDate, transactions],
-  );
-
-  const total = useMemo(() => {
-    let totalIncome = filteredTransactions
-      .filter(transaction => transaction.type === 'income')
-      .reduce(
-        (accumulator, currentValue) => accumulator + currentValue.amount,
-        0,
-      );
-    let totalExpense = filteredTransactions
-      .filter(transaction => transaction.type === 'expense')
-      .reduce(
-        (accumulator, currentValue) => accumulator + currentValue.amount,
-        0,
-      );
-    return totalIncome - totalExpense;
-  }, [filteredTransactions]);
-
-  return (
-    <View style={styles.container}>
-      <View style={styles.headerTransaction}>
-        <IconButton
-          icon="arrow-left-bold-circle"
-          size={20}
-          onPress={() => {
-            setSelectedDate(moment(selectedDate).subtract(1, 'M'));
-          }}
-        />
-        <IconButton
-          icon="arrow-right-bold-circle"
-          size={20}
-          onPress={() => {
-            setSelectedDate(moment(selectedDate).add(1, 'M'));
-          }}
-        />
-        <Text style={styles.headerMonthTransaction} variant="titleLarge">
-          {moment(selectedDate).format('MMM Y')}
-        </Text>
-        <Text variant="labelMedium" style={styles.headerTotalMonthTransaction}>
-          {currency(total)}
-        </Text>
-      </View>
-      {filteredTransactions?.length > 0 ? (
-        filteredTransactions.map((transaction, index) => (
-          <Transaction {...transaction} key={`${index}-transaction-item`} />
-        ))
-      ) : (
-        <View style={styles.noTransactionContainer}>
-          <Text style={styles.titleStyle}>No Transaction</Text>
-        </View>
-      )}
-    </View>
-  );
-};
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 20,
-    paddingHorizontal: 16,
     flex: 1,
   },
   itemContainer: {
@@ -229,6 +152,7 @@ const styles = StyleSheet.create({
   },
 
   transactionContainer: {
+    marginHorizontal: 16,
     flex: 1,
     marginVertical: 8,
     borderRadius: 10,
@@ -288,6 +212,8 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   headerTransaction: {
+    marginTop: 20,
+    paddingHorizontal: 16,
     flexDirection: 'row',
     alignItems: 'center',
   },

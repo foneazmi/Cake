@@ -1,11 +1,5 @@
-import React, {useMemo} from 'react';
-import {
-  Pressable,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  View,
-} from 'react-native';
+import React, {useMemo, useState} from 'react';
+import {Pressable, SafeAreaView, StyleSheet, View} from 'react-native';
 import {IconButton, Text} from 'react-native-paper';
 import {currency, navigator} from '../../../../helpers';
 import {useTheme} from 'react-native-paper';
@@ -15,16 +9,62 @@ import {
   setDialog,
   updateAccount,
 } from '../../../../stores/actions';
+import {FlashList} from '@shopify/flash-list';
 import {useDispatch, useSelector} from 'react-redux';
-import {RecentTransaction} from './components/recent-transaction';
+import moment from 'moment';
+import {Transaction} from './components';
+
+const accountByType = {
+  cash: ['Income', 'Expense', 'wallet'],
+  invest: ['Unrealized', 'Realized', 'chart-areaspline-variant'],
+  loan: ['Credit', 'Debt', 'credit-card'],
+};
 
 export const DetailAccountScreen = ({route}) => {
-  const {accounts, transactions} = useSelector(({account}) => account);
   const dispatch = useDispatch();
+
+  const {accounts, transactions} = useSelector(({account}) => account);
+  const [selectedDate, setSelectedDate] = useState(moment());
 
   const account = useMemo(() => {
     return accounts.find(acc => acc.id === route.params.id);
   }, [accounts, route.params.id]);
+
+  const filteredTransactions = useMemo(
+    () =>
+      transactions.filter(transaction => {
+        if (account) {
+          return (
+            moment(transaction.date).format('y/M') ===
+              moment(selectedDate).format('y/M') &&
+            (transaction.idAccount === account.id ||
+              transaction.idAccount2 === account.id)
+          );
+        } else {
+          return (
+            moment(transaction.date).format('y/M') ===
+            moment(selectedDate).format('y/M')
+          );
+        }
+      }),
+    [account, selectedDate, transactions],
+  );
+
+  const totalInOneMonth = useMemo(() => {
+    let totalIncome = filteredTransactions
+      .filter(transaction => transaction.type === 'income')
+      .reduce(
+        (accumulator, currentValue) => accumulator + currentValue.amount,
+        0,
+      );
+    let totalExpense = filteredTransactions
+      .filter(transaction => transaction.type === 'expense')
+      .reduce(
+        (accumulator, currentValue) => accumulator + currentValue.amount,
+        0,
+      );
+    return totalIncome - totalExpense;
+  }, [filteredTransactions]);
 
   const [income, incomeTransaction, expense, expenseTransaction, total] =
     useMemo(() => {
@@ -75,12 +115,6 @@ export const DetailAccountScreen = ({route}) => {
     }, [transactions, account]);
 
   const theme = useTheme();
-
-  const accountByType = {
-    cash: ['Income', 'Expense', 'wallet'],
-    invest: ['Unrealized', 'Realized', 'chart-areaspline-variant'],
-    loan: ['Credit', 'Debt', 'credit-card'],
-  };
 
   const deleteAccountDialog = () => {
     dispatch(
@@ -355,11 +389,49 @@ export const DetailAccountScreen = ({route}) => {
         },
       ]}>
       <Header />
-      <ScrollView>
-        <AccountDetail />
-        <TransactionsDetail />
-        <RecentTransaction account={account} />
-      </ScrollView>
+      <FlashList
+        showsVerticalScrollIndicator={false}
+        ListHeaderComponent={
+          <>
+            <AccountDetail />
+            <TransactionsDetail />
+            <View style={styles.headerTransaction}>
+              <IconButton
+                icon="arrow-left-bold-circle"
+                size={20}
+                onPress={() => {
+                  setSelectedDate(moment(selectedDate).subtract(1, 'M'));
+                }}
+              />
+              <IconButton
+                icon="arrow-right-bold-circle"
+                size={20}
+                onPress={() => {
+                  setSelectedDate(moment(selectedDate).add(1, 'M'));
+                }}
+              />
+              <Text style={styles.headerMonthTransaction} variant="titleLarge">
+                {moment(selectedDate).format('MMM Y')}
+              </Text>
+              <Text
+                variant="labelMedium"
+                style={styles.headerTotalMonthTransaction}>
+                {currency(totalInOneMonth)}
+              </Text>
+            </View>
+          </>
+        }
+        data={filteredTransactions}
+        keyExtractor={(_, index) => `${index}-transaction`}
+        renderItem={({item}) => <Transaction {...item} />}
+        ListEmptyComponent={
+          <View style={styles.noTransactionContainer}>
+            <Text style={styles.titleStyle}>No Transaction</Text>
+          </View>
+        }
+        estimatedItemSize={1000}
+      />
+      {/* </ScrollView> */}
     </SafeAreaView>
   );
 };
@@ -444,5 +516,24 @@ const styles = StyleSheet.create({
   },
   accountDetailTitle: {
     fontWeight: 'bold',
+  },
+  /////
+
+  headerTransaction: {
+    marginTop: 20,
+    paddingHorizontal: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headerMonthTransaction: {
+    flex: 1,
+  },
+  headerTotalMonthTransaction: {
+    fontWeight: 'bold',
+  },
+  noTransactionContainer: {
+    marginTop: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

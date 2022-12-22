@@ -334,6 +334,7 @@ const styles = StyleSheet.create({
     fontWeight: '300',
   },
   buttonStyle: {
+    alignItems: 'center',
     borderRadius: 10,
     marginTop: 16,
     padding: 10,

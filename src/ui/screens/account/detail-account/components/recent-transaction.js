@@ -164,6 +164,22 @@ export const RecentTransaction = props => {
     [props.account, selectedDate, transactions],
   );
 
+  const total = useMemo(() => {
+    let totalIncome = filteredTransactions
+      .filter(transaction => transaction.type === 'income')
+      .reduce(
+        (accumulator, currentValue) => accumulator + currentValue.amount,
+        0,
+      );
+    let totalExpense = filteredTransactions
+      .filter(transaction => transaction.type === 'expense')
+      .reduce(
+        (accumulator, currentValue) => accumulator + currentValue.amount,
+        0,
+      );
+    return totalIncome - totalExpense;
+  }, [filteredTransactions]);
+
   return (
     <View style={styles.container}>
       <View style={styles.headerTransaction}>
@@ -176,6 +192,9 @@ export const RecentTransaction = props => {
         />
         <Text style={styles.headerMonthTransaction} variant="titleLarge">
           {moment(selectedDate).format('MMM Y')}
+        </Text>
+        <Text variant="labelMedium" style={styles.headerTotalMonthTransaction}>
+          {currency(total)}
         </Text>
         <IconButton
           icon="arrow-right-bold-circle"
@@ -274,5 +293,8 @@ const styles = StyleSheet.create({
   },
   headerMonthTransaction: {
     flex: 1,
+  },
+  headerTotalMonthTransaction: {
+    fontWeight: 'bold',
   },
 });

@@ -12,7 +12,9 @@ import {useTheme, FAB, Text, SegmentedButtons} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export const AccountPage = () => {
-  const {accounts, transactions} = useSelector(({account}) => account);
+  const {accounts, transactions, features} = useSelector(
+    ({account}) => account,
+  );
   const [type, setType] = useState('all');
   const [scrollY, setScrollY] = useState(0);
   const [showFab, setShowFab] = useState(true);
@@ -33,6 +35,14 @@ export const AccountPage = () => {
     return totalIncome - totalExpense;
   }, [transactions]);
 
+  const isAccountTypeFeature = useMemo(
+    () =>
+      features?.find(feature => {
+        return feature.name === 'account-type';
+      })?.active || false,
+    [features],
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -43,29 +53,31 @@ export const AccountPage = () => {
       </View>
       <FlatList
         ListHeaderComponent={
-          <SegmentedButtons
-            value={type}
-            onValueChange={setType}
-            buttons={[
-              {
-                value: 'all',
-                label: 'All',
-              },
-              {
-                value: 'cash',
-                label: 'Cash',
-              },
-              {
-                value: 'invest',
-                label: 'Invest',
-              },
-              {
-                value: 'loan',
-                label: 'Loan',
-              },
-            ]}
-            style={styles.headerSegmentContainer}
-          />
+          isAccountTypeFeature && (
+            <SegmentedButtons
+              value={type}
+              onValueChange={setType}
+              buttons={[
+                {
+                  value: 'all',
+                  label: 'All',
+                },
+                {
+                  value: 'cash',
+                  label: 'Cash',
+                },
+                {
+                  value: 'invest',
+                  label: 'Invest',
+                },
+                {
+                  value: 'loan',
+                  label: 'Loan',
+                },
+              ]}
+              style={styles.headerSegmentContainer}
+            />
+          )
         }
         scrollEventThrottle={300}
         onScroll={({nativeEvent}) => {
@@ -80,6 +92,11 @@ export const AccountPage = () => {
           type === 'all'
             ? accounts
             : accounts.filter(account => account.type === type)
+        }
+        ListEmptyComponent={
+          <View style={styles.noAccountContainer}>
+            <Text style={styles.noAccountText}>No Account</Text>
+          </View>
         }
         keyExtractor={(_, index) => `account-${index}`}
         renderItem={({item}) => <Account {...item} />}
@@ -322,5 +339,15 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 4,
     marginLeft: 4,
+  },
+  ///
+  noAccountContainer: {
+    marginTop: 16,
+    padding: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noAccountText: {
+    fontWeight: 'bold',
   },
 });

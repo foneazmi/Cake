@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {BottomNavigation} from 'react-native-paper';
 import {useDispatch} from 'react-redux';
-import {backupData} from '../../../stores/actions';
+import {syncData} from '../../../stores/actions';
 
 import {HomePage, ProfilePage, AccountPage} from './pages';
 
@@ -35,7 +35,7 @@ export const DashboardScreen = () => {
     profile: ProfilePage,
   });
   useEffect(() => {
-    dispatch(backupData('', false));
+    dispatch(syncData('', false));
   }, [dispatch]);
 
   return (

@@ -1,28 +1,13 @@
 import {combineReducers} from 'redux';
-import {persistStore, persistReducer} from 'redux-persist';
+import {persistStore} from 'redux-persist';
 import thunkMiddleware from 'redux-thunk';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {global, account} from './reducers';
+import {persistAccount, persistGlobal} from './reducers';
 import {configureStore} from '@reduxjs/toolkit';
 import {loggerMiddleware} from './middleware';
 
 const reducer = combineReducers({
-  global: persistReducer(
-    {
-      key: 'global',
-      storage: AsyncStorage,
-      blacklist: ['loading'],
-    },
-    global,
-  ),
-  account: persistReducer(
-    {
-      key: 'account',
-      storage: AsyncStorage,
-      blacklist: ['loading'],
-    },
-    account,
-  ),
+  global: persistGlobal,
+  account: persistAccount,
 });
 
 export const store = configureStore({

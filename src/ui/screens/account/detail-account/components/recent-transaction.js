@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import React, {useMemo, useState} from 'react';
 import {View, StyleSheet, Pressable} from 'react-native';
 import {Text, useTheme, IconButton} from 'react-native-paper';
@@ -88,14 +87,8 @@ const Transaction = props => {
             : []),
         ]}
       />
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'center',
-          marginTop: 4,
-          alignItems: 'center',
-        }}>
-        <View style={{flex: 1, marginRight: 8}}>
+      <View style={styles.transactionItemContainer}>
+        <View style={styles.transactionItemContentContainer}>
           {props.title && (
             <Text
               numberOfLines={1}
@@ -173,7 +166,7 @@ export const RecentTransaction = props => {
 
   return (
     <View style={styles.container}>
-      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+      <View style={styles.headerTransaction}>
         <IconButton
           icon="arrow-left-bold-circle"
           size={20}
@@ -181,7 +174,9 @@ export const RecentTransaction = props => {
             setSelectedDate(moment(selectedDate).subtract(1, 'M'));
           }}
         />
-        <Text variant="titleLarge">{moment(selectedDate).format('MMM Y')}</Text>
+        <Text style={styles.headerMonthTransaction} variant="titleLarge">
+          {moment(selectedDate).format('MMM Y')}
+        </Text>
         <IconButton
           icon="arrow-right-bold-circle"
           size={20}
@@ -217,7 +212,6 @@ const styles = StyleSheet.create({
   transactionContainer: {
     flex: 1,
     marginVertical: 8,
-    // marginTop: 8,
     borderRadius: 10,
     padding: 20,
   },
@@ -263,5 +257,22 @@ const styles = StyleSheet.create({
   },
   transactionsGroupContainer: {
     marginTop: 12,
+  },
+  transactionItemContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 4,
+    alignItems: 'center',
+  },
+  transactionItemContentContainer: {
+    flex: 1,
+    marginRight: 8,
+  },
+  headerTransaction: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headerMonthTransaction: {
+    flex: 1,
   },
 });

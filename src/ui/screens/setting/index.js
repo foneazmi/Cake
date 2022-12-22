@@ -10,7 +10,7 @@ import {
 import {Appbar, List, Text} from 'react-native-paper';
 import {navigator} from '../../../helpers';
 import {useTheme} from 'react-native-paper';
-import {setDarkMode, backupData, resetAll} from '../../../stores/actions';
+import {setDarkMode, syncData, resetAll} from '../../../stores/actions';
 import {useDispatch, useSelector} from 'react-redux';
 import {getReadableVersion} from 'react-native-device-info';
 
@@ -65,7 +65,7 @@ export const SettingScreen = () => {
           <List.Item
             onPress={() => {
               if (sync) {
-                dispatch(backupData());
+                dispatch(syncData());
               } else {
                 setModalSync(true);
               }
@@ -139,7 +139,7 @@ export const SettingScreen = () => {
                 if (modalSyncText.length > 0) {
                   setModalSync(false);
                   setModalSyncText('');
-                  dispatch(backupData(modalSyncText));
+                  dispatch(syncData(modalSyncText));
                 }
               }}>
               <Text

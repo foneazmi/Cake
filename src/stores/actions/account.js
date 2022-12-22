@@ -1,6 +1,6 @@
 import {removeObjectWithId, mergeByProperty, logger} from '../../helpers';
 import {pb} from '../../services';
-import {SET_ACCOUNT, SET_TRANSACTION, SET_SYNC} from '../types';
+import {SET_ACCOUNT, SET_TRANSACTION, SET_SYNC, SET_FEATURES} from '../types';
 import {begin, end} from './global';
 import NetInfo from '@react-native-community/netinfo';
 
@@ -61,9 +61,10 @@ export const deleteTransaction = id => (dispatch, getState) => {
   dispatch({type: SET_TRANSACTION, payload: newTransactions});
 };
 
-export const backupData =
+export const syncData =
   (syncCode = '', loading = true) =>
   async (dispatch, getState) => {
+    logger('SyncData...');
     let netInfo = await NetInfo.fetch();
     if (netInfo.isConnected) {
       try {
@@ -92,12 +93,14 @@ export const backupData =
 
             dispatch({type: SET_ACCOUNT, payload: mergedAccounts});
             dispatch({type: SET_TRANSACTION, payload: mergedTransactions});
-
+            dispatch({type: SET_FEATURES, payload: syncDataResult.features});
             delete syncDataResult.accounts;
             delete syncDataResult.transactions;
+            delete syncDataResult.features;
             dispatch({type: SET_SYNC, payload: syncDataResult});
           } else {
             let resultSync = await pb.create('cake_sync', {
+              name: syncCode,
               code: syncCode,
               accounts,
               transactions,
@@ -105,16 +108,20 @@ export const backupData =
             if (resultSync.code === 400) {
               dispatch({type: SET_SYNC, payload: false});
             } else {
+              dispatch({type: SET_FEATURES, payload: []});
               delete resultSync.accounts;
               delete resultSync.transactions;
+              delete resultSync.features;
               dispatch({type: SET_SYNC, payload: resultSync});
             }
           }
         }
-        loading && dispatch(end());
+        dispatch(end());
       } catch (error) {
-        loading && dispatch(end());
+        dispatch(end());
         logger(error);
+      } finally {
+        dispatch(end());
       }
     }
   };

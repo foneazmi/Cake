@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useMemo} from 'react';
 import {
   StyleSheet,
   View,
@@ -11,7 +11,7 @@ import {
 import {IconButton, Text, useTheme, SegmentedButtons} from 'react-native-paper';
 import {navigator} from '../../../../helpers';
 import CurrencyInput from 'react-native-currency-input';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {addAccount, updateAccount} from '../../../../stores/actions';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -68,35 +68,46 @@ export const AddAccountScreen = ({route}) => {
   );
 
   const Form = () => {
+    const {features} = useSelector(({account}) => account);
     const [modalFor, setModalFor] = useState('');
     const [modalText, setModalText] = useState('');
     const submitModal = () => {
       setForm({...form, [`${modalFor}`]: modalText});
       setModalFor('');
     };
+
+    const isAccountTypeFeature = useMemo(
+      () =>
+        features?.find(feature => {
+          return feature.name === 'account-type';
+        })?.active || false,
+      [features],
+    );
     return (
       <View style={styles.formContainer}>
-        <SegmentedButtons
-          value={form.type}
-          onValueChange={value => {
-            setForm({...form, type: value});
-          }}
-          buttons={[
-            {
-              value: 'cash',
-              label: 'Cash',
-            },
-            {
-              value: 'invest',
-              label: 'Invest',
-            },
-            {
-              value: 'loan',
-              label: 'Loan',
-            },
-          ]}
-          style={styles.segmentContainer}
-        />
+        {isAccountTypeFeature && (
+          <SegmentedButtons
+            value={form.type}
+            onValueChange={value => {
+              setForm({...form, type: value});
+            }}
+            buttons={[
+              {
+                value: 'cash',
+                label: 'Cash',
+              },
+              {
+                value: 'invest',
+                label: 'Invest',
+              },
+              {
+                value: 'loan',
+                label: 'Loan',
+              },
+            ]}
+            style={styles.segmentContainer}
+          />
+        )}
         <Pressable
           onPress={() => {
             setModalText(form.name || '');

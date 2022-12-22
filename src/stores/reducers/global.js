@@ -1,3 +1,6 @@
+import {persistReducer} from 'redux-persist';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import {
   BEGIN,
   END,
@@ -33,3 +36,12 @@ export const global = (state = INITIAL_STATE, action) => {
       return state;
   }
 };
+
+export const persistGlobal = persistReducer(
+  {
+    key: 'global',
+    storage: AsyncStorage,
+    blacklist: ['loading', 'progressDescription'],
+  },
+  global,
+);

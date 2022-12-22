@@ -200,7 +200,7 @@ export const RecentTransaction = props => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 32,
+    marginTop: 20,
     paddingHorizontal: 16,
     flex: 1,
   },

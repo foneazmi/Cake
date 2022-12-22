@@ -152,6 +152,101 @@ export const DetailAccountScreen = ({route}) => {
     </View>
   );
 
+  const TransactionDetailItem = ({
+    title,
+    totalIncome,
+    totalTransaction,
+    type,
+  }) => (
+    <>
+      <Text
+        variant="titleMedium"
+        style={[
+          styles.titleStyle,
+          {
+            color: theme.colors.onSecondaryContainer,
+          },
+        ]}>
+        {title}
+      </Text>
+      <Text
+        variant="titleSmall"
+        style={[
+          styles.amountStyle,
+          {
+            color: theme.colors.onSecondaryContainer,
+          },
+        ]}>
+        {currency(totalIncome, {})}
+      </Text>
+      <Text
+        variant="titleSmall"
+        style={[
+          styles.subTitleStyle,
+          {
+            color: theme.colors.onSecondaryContainer,
+          },
+        ]}>
+        Indonesian Rupiah
+      </Text>
+
+      <Text
+        variant="titleSmall"
+        style={[
+          styles.amountStyle,
+          {
+            color: theme.colors.onSecondaryContainer,
+          },
+        ]}>
+        {totalTransaction}
+      </Text>
+      <Text
+        variant="titleSmall"
+        style={[
+          styles.subTitleStyle,
+          {
+            color: theme.colors.onSecondaryContainer,
+          },
+        ]}>
+        Transactions
+      </Text>
+      <Pressable
+        onPress={() =>
+          navigator.navigate('add-transaction', {
+            type,
+            idAccount: account?.id || '',
+          })
+        }
+        style={[
+          {
+            backgroundColor: theme.colors.primary,
+          },
+          styles.buttonStyle,
+        ]}>
+        <Icon
+          name={
+            type === 'income'
+              ? 'credit-card-plus-outline'
+              : 'credit-card-minus-outline'
+          }
+          size={16}
+          color={theme.colors.onPrimary}
+        />
+        <Text
+          variant="labelMedium"
+          numberOfLines={1}
+          style={[
+            styles.buttonText,
+            {
+              color: theme.colors.onPrimary,
+            },
+          ]}>
+          {`Add ${title}`}
+        </Text>
+      </Pressable>
+    </>
+  );
+
   const TransactionsDetail = () => (
     <View style={styles.contentContainer}>
       <View
@@ -161,57 +256,12 @@ export const DetailAccountScreen = ({route}) => {
             backgroundColor: theme.colors.secondaryContainer,
           },
         ]}>
-        <Text
-          variant="titleMedium"
-          style={[
-            styles.titleStyle,
-            {
-              color: theme.colors.onSecondaryContainer,
-            },
-          ]}>
-          {account?.type ? accountByType[account.type][0] : 'Income'}
-        </Text>
-        <Text
-          variant="titleSmall"
-          style={[
-            styles.amountStyle,
-            {
-              color: theme.colors.onSecondaryContainer,
-            },
-          ]}>
-          {currency(income, {})}
-        </Text>
-        <Text
-          variant="titleSmall"
-          style={[
-            styles.subTitleStyle,
-            {
-              color: theme.colors.onSecondaryContainer,
-            },
-          ]}>
-          Indonesian Rupiah
-        </Text>
-
-        <Text
-          variant="titleSmall"
-          style={[
-            styles.amountStyle,
-            {
-              color: theme.colors.onSecondaryContainer,
-            },
-          ]}>
-          {incomeTransaction}
-        </Text>
-        <Text
-          variant="titleSmall"
-          style={[
-            styles.subTitleStyle,
-            {
-              color: theme.colors.onSecondaryContainer,
-            },
-          ]}>
-          Transactions
-        </Text>
+        <TransactionDetailItem
+          title={account?.type ? accountByType[account.type][0] : 'Income'}
+          totalIncome={income}
+          totalTransaction={incomeTransaction}
+          type="income"
+        />
       </View>
       <View
         style={[
@@ -220,58 +270,12 @@ export const DetailAccountScreen = ({route}) => {
             backgroundColor: theme.colors.secondaryContainer,
           },
         ]}>
-        <Text
-          variant="titleSmall"
-          style={[
-            styles.titleStyle,
-            {
-              color: theme.colors.onSecondaryContainer,
-            },
-          ]}>
-          {account?.type ? accountByType[account.type][1] : 'Expense'}
-        </Text>
-        <Text
-          variant="titleMedium"
-          style={[
-            styles.amountStyle,
-
-            {
-              color: theme.colors.onSecondaryContainer,
-            },
-          ]}>
-          {currency(expense, {})}
-        </Text>
-        <Text
-          variant="titleSmall"
-          style={[
-            styles.subTitleStyle,
-            {
-              color: theme.colors.onSecondaryContainer,
-            },
-          ]}>
-          Indonesian Rupiah
-        </Text>
-
-        <Text
-          variant="titleSmall"
-          style={[
-            styles.amountStyle,
-            {
-              color: theme.colors.onSecondaryContainer,
-            },
-          ]}>
-          {expenseTransaction}
-        </Text>
-        <Text
-          variant="titleSmall"
-          style={[
-            styles.subTitleStyle,
-            {
-              color: theme.colors.onSecondaryContainer,
-            },
-          ]}>
-          Transactions
-        </Text>
+        <TransactionDetailItem
+          title={account?.type ? accountByType[account.type][1] : 'Income'}
+          totalIncome={expense}
+          totalTransaction={expenseTransaction}
+          type="expense"
+        />
       </View>
     </View>
   );
@@ -328,6 +332,15 @@ const styles = StyleSheet.create({
   },
   subTitleStyle: {
     fontWeight: '300',
+  },
+  buttonStyle: {
+    borderRadius: 10,
+    marginTop: 16,
+    padding: 10,
+    flexDirection: 'row',
+  },
+  buttonText: {
+    marginLeft: 8,
   },
   ///////
   headerContainer: {

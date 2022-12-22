@@ -190,12 +190,6 @@ export const RecentTransaction = props => {
             setSelectedDate(moment(selectedDate).subtract(1, 'M'));
           }}
         />
-        <Text style={styles.headerMonthTransaction} variant="titleLarge">
-          {moment(selectedDate).format('MMM Y')}
-        </Text>
-        <Text variant="labelMedium" style={styles.headerTotalMonthTransaction}>
-          {currency(total)}
-        </Text>
         <IconButton
           icon="arrow-right-bold-circle"
           size={20}
@@ -203,6 +197,12 @@ export const RecentTransaction = props => {
             setSelectedDate(moment(selectedDate).add(1, 'M'));
           }}
         />
+        <Text style={styles.headerMonthTransaction} variant="titleLarge">
+          {moment(selectedDate).format('MMM Y')}
+        </Text>
+        <Text variant="labelMedium" style={styles.headerTotalMonthTransaction}>
+          {currency(total)}
+        </Text>
       </View>
       {filteredTransactions?.length > 0 ? (
         filteredTransactions.map((transaction, index) => (

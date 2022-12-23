@@ -11,12 +11,12 @@ export const mergeByProperty = (datas, prop) => {
     if (isAvail === -1) {
       mergedData.push(data);
     } else {
-      if (mergedData[isAvail].updateAt && data.updateAt) {
+      if (mergedData[isAvail].updatedAt && data.updatedAt) {
         mergedData[isAvail] =
-          mergedData[isAvail].updateAt > data.updateAt
+          mergedData[isAvail].updatedAt > data.updatedAt
             ? mergedData[isAvail]
             : data;
-      } else if (data?.updateAt) {
+      } else if (data?.updatedAt) {
         mergedData[isAvail] = data;
       }
     }

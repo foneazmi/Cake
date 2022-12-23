@@ -1,13 +1,7 @@
 import React, {useState, useMemo} from 'react';
-import {
-  View,
-  StyleSheet,
-  FlatList,
-  SafeAreaView,
-  Pressable,
-} from 'react-native';
+import {View, StyleSheet, SafeAreaView, Pressable} from 'react-native';
 import {useSelector} from 'react-redux';
-import {currency, navigator} from '../../../../../helpers';
+import {currency, height, navigator} from '../../../../../helpers';
 import {
   useTheme,
   FAB,
@@ -16,15 +10,14 @@ import {
   IconButton,
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import {getTransactions} from '../../../../../stores/selector';
+import {FlashList} from '@shopify/flash-list';
 export const AccountPage = () => {
-  const {accounts, transactions, features} = useSelector(
-    ({account}) => account,
-  );
+  const {accounts, features} = useSelector(({account}) => account);
+  const transactions = useSelector(getTransactions);
   const [type, setType] = useState('all');
   const [scrollY, setScrollY] = useState(0);
   const [showFab, setShowFab] = useState(true);
-
   const total = useMemo(() => {
     let totalIncome = transactions
       .filter(transaction => transaction.type === 'income')
@@ -65,7 +58,8 @@ export const AccountPage = () => {
           onPress={() => navigator.navigate('archive-account')}
         />
       </View>
-      <FlatList
+      <FlashList
+        estimatedItemSize={height}
         ListHeaderComponent={
           isAccountTypeFeature && (
             <SegmentedButtons
@@ -104,9 +98,9 @@ export const AccountPage = () => {
         }}
         data={
           type === 'all'
-            ? accounts.filter(account => !account.archiveAt)
+            ? accounts.filter(account => !account.archivedAt)
             : accounts.filter(
-                account => account.type === type && !account.archiveAt,
+                account => account.type === type && !account.archivedAt,
               )
         }
         ListEmptyComponent={
@@ -131,7 +125,7 @@ export const AccountPage = () => {
 };
 
 const Account = props => {
-  const {transactions} = useSelector(({account}) => account);
+  const transactions = useSelector(getTransactions);
 
   const [
     income,

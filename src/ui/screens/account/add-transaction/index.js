@@ -3,7 +3,6 @@ import {
   StyleSheet,
   View,
   SafeAreaView,
-  FlatList,
   Pressable,
   Modal,
   TextInput,
@@ -26,6 +25,7 @@ import {
   en,
 } from 'react-native-paper-dates';
 import moment from 'moment';
+import {FlashList} from '@shopify/flash-list';
 
 registerTranslation('en', en);
 export const AddTransactionScreen = ({route}) => {
@@ -98,7 +98,7 @@ export const AddTransactionScreen = ({route}) => {
         ...form,
         type,
         id,
-        updateAt: Date.now(),
+        updatedAt: Date.now(),
         idAccount: selectedAccount,
         idAccount2: selectedToAccount,
       };
@@ -176,9 +176,10 @@ export const AddTransactionScreen = ({route}) => {
           <Text style={styles.accountListTitle} variant="labelLarge">
             {type === 'income' ? 'Add Money To' : 'Pay With'}
           </Text>
-          <FlatList
-            style={styles.accountListContainer}
-            data={accounts.filter(account => !account.archiveAt)}
+          <FlashList
+            estimatedItemSize={100}
+            contentContainerStyle={styles.accountListContainer}
+            data={accounts.filter(account => !account.archivedAt)}
             showsHorizontalScrollIndicator={false}
             ListFooterComponent={
               <Button
@@ -210,9 +211,10 @@ export const AddTransactionScreen = ({route}) => {
           <Text style={styles.accountListTitle} variant="labelLarge">
             From
           </Text>
-          <FlatList
+          <FlashList
+            estimatedItemSize={100}
             data={accounts}
-            style={styles.accountListContainer}
+            contentContainerStyle={styles.accountListContainer}
             showsHorizontalScrollIndicator={false}
             horizontal
             ListFooterComponent={
@@ -244,10 +246,11 @@ export const AddTransactionScreen = ({route}) => {
           <Text style={styles.accountListTitle} variant="labelLarge">
             To
           </Text>
-          <FlatList
+          <FlashList
+            estimatedItemSize={100}
             showsHorizontalScrollIndicator={false}
             data={accounts}
-            style={styles.accountListContainer}
+            contentContainerStyle={styles.accountListContainer}
             horizontal
             ListFooterComponent={
               <Button

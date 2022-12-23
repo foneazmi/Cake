@@ -1,15 +1,11 @@
 import React, {useMemo} from 'react';
-import {
-  View,
-  StyleSheet,
-  FlatList,
-  SafeAreaView,
-  Pressable,
-} from 'react-native';
+import {View, StyleSheet, SafeAreaView, Pressable} from 'react-native';
 import {useSelector} from 'react-redux';
 import {currency, navigator} from '../../../../helpers';
 import {useTheme, Text, IconButton} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {getTransactions} from '../../../../stores/selector';
+import {FlashList} from '@shopify/flash-list';
 
 export const ArchiveAccountScreen = () => {
   const {accounts} = useSelector(({account}) => account);
@@ -33,8 +29,9 @@ export const ArchiveAccountScreen = () => {
           Archived Accounts
         </Text>
       </View>
-      <FlatList
-        data={accounts.filter(account => account.archiveAt)}
+      <FlashList
+        estimatedItemSize={100}
+        data={accounts.filter(account => account.archivedAt)}
         ListEmptyComponent={
           <View style={styles.noAccountContainer}>
             <Text style={styles.noAccountText}>No Account</Text>
@@ -48,7 +45,7 @@ export const ArchiveAccountScreen = () => {
 };
 
 const Account = props => {
-  const {transactions} = useSelector(({account}) => account);
+  const transactions = useSelector(getTransactions);
 
   const [income, expense, total] = useMemo(() => {
     let totalIncome = transactions.filter(transaction => {

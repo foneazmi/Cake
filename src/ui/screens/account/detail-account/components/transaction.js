@@ -1,11 +1,10 @@
-import React, {useMemo, useState} from 'react';
+import React, {useMemo} from 'react';
 import {View, StyleSheet, Pressable} from 'react-native';
-import {Text, useTheme, IconButton} from 'react-native-paper';
+import {Text, useTheme} from 'react-native-paper';
 import {currency, navigator} from '../../../../../helpers';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
 import moment from 'moment';
-import {FlashList} from '@shopify/flash-list';
 
 const ListTag = props => {
   const theme = useTheme();
@@ -129,7 +128,7 @@ export const Transaction = props => {
           <Text
             variant="titleSmall"
             style={[
-              styles.amountStyle,
+              styles.transactionAmountStyle,
               {
                 color: theme.colors.onSecondaryContainer,
               },
@@ -143,14 +142,6 @@ export const Transaction = props => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  itemContainer: {
-    flexDirection: 'row',
-    margin: 4,
-  },
-
   transactionContainer: {
     marginHorizontal: 16,
     flex: 1,
@@ -158,29 +149,20 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 20,
   },
-  titleContainer: {
-    flexDirection: 'row',
-  },
   titleStyle: {
     fontWeight: 'bold',
   },
   descriptionStyle: {
     marginVertical: 2,
   },
-  amountStyle: {
-    fontWeight: '400',
-    marginLeft: 8,
-  },
   amountContainer: {
     alignItems: 'center',
     flexDirection: 'row',
   },
-  noTransactionContainer: {
-    marginTop: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
+  transactionAmountStyle: {
+    marginLeft: 4,
+    fontWeight: 'bold',
   },
-
   ///
   listTagContainer: {
     flexDirection: 'row',
@@ -198,9 +180,6 @@ const styles = StyleSheet.create({
     marginLeft: 4,
     fontWeight: 'bold',
   },
-  transactionsGroupContainer: {
-    marginTop: 12,
-  },
   transactionItemContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -210,17 +189,5 @@ const styles = StyleSheet.create({
   transactionItemContentContainer: {
     flex: 1,
     marginRight: 8,
-  },
-  headerTransaction: {
-    marginTop: 20,
-    paddingHorizontal: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  headerMonthTransaction: {
-    flex: 1,
-  },
-  headerTotalMonthTransaction: {
-    fontWeight: 'bold',
   },
 });

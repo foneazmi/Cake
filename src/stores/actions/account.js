@@ -56,9 +56,14 @@ export const updateTransaction = (id, data) => (dispatch, getState) => {
 };
 
 export const deleteTransaction = id => (dispatch, getState) => {
+  const deletedAt = Date.now();
   const {transactions} = getState().account;
-  const newTransactions = removeObjectWithId(transactions, id);
-  dispatch({type: SET_TRANSACTION, payload: newTransactions});
+  const newTransaction = transactions.map(transaction =>
+    transaction.id === id
+      ? {...transaction, deletedAt, updatedAt: deletedAt}
+      : transaction,
+  );
+  dispatch({type: SET_TRANSACTION, payload: newTransaction});
 };
 
 export const syncData =
@@ -98,6 +103,7 @@ export const syncData =
             delete syncDataResult.transactions;
             delete syncDataResult.features;
             dispatch({type: SET_SYNC, payload: syncDataResult});
+            dispatch(end());
           } else {
             let resultSync = await pb.create('cake_sync', {
               name: syncCode,
@@ -114,6 +120,7 @@ export const syncData =
               delete resultSync.features;
               dispatch({type: SET_SYNC, payload: resultSync});
             }
+            dispatch(end());
           }
         }
         dispatch(end());

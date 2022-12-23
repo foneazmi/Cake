@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
 import {CalendarWeek} from '../../../../../../ui/components/calendar';
 import moment from 'moment';
+import {getTransactions} from '../../../../../../stores/selector';
 
 const ListTag = props => {
   const theme = useTheme();
@@ -132,7 +133,7 @@ const Transaction = props => {
 
 export const RecentTransaction = () => {
   const theme = useTheme();
-  const {transactions} = useSelector(({account}) => account);
+  const transactions = useSelector(getTransactions);
   const nowDate = new Date();
   const [selectedDate, setSelectedDate] = useState(nowDate);
   const filteredTransactions = useMemo(

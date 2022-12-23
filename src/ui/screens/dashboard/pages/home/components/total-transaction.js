@@ -6,9 +6,10 @@ import {currency} from '../../../../../../helpers';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
+import {getTransactions} from '../../../../../../stores/selector';
 export const TotalTransaction = () => {
   const theme = useTheme();
-  const {transactions} = useSelector(({account}) => account);
+  const transactions = useSelector(getTransactions);
 
   const [
     income,

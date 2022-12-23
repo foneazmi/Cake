@@ -49,19 +49,45 @@ export const DetailAccountScreen = ({route}) => {
 
   const totalInOneMonth = useMemo(() => {
     let totalAmountIncome = filteredTransactions
-      .filter(transaction => transaction.type === 'income')
+      .filter(transaction => {
+        if (account) {
+          return (
+            (transaction.type === 'income' &&
+              transaction.idAccount === account?.id) ||
+            (transaction.type === 'transfer' &&
+              transaction.idAccount2 === account?.id)
+          );
+        } else {
+          return (
+            transaction.type === 'income' || transaction.type === 'transfer'
+          );
+        }
+      })
       .reduce(
         (accumulator, currentValue) => accumulator + currentValue.amount,
         0,
       );
     let totalAmountExpense = filteredTransactions
-      .filter(transaction => transaction.type === 'expense')
+      .filter(transaction => {
+        if (account) {
+          return (
+            (transaction.type === 'expense' &&
+              transaction.idAccount === account?.id) ||
+            (transaction.type === 'transfer' &&
+              transaction.idAccount === account?.id)
+          );
+        } else {
+          return (
+            transaction.type === 'expense' || transaction.type === 'transfer'
+          );
+        }
+      })
       .reduce(
         (accumulator, currentValue) => accumulator + currentValue.amount,
         0,
       );
     return totalAmountIncome - totalAmountExpense;
-  }, [filteredTransactions]);
+  }, [account, filteredTransactions]);
 
   const [
     totalIncome,
@@ -174,12 +200,6 @@ export const DetailAccountScreen = ({route}) => {
       />
       {account && (
         <View style={styles.headerActionContainer}>
-          <IconButton
-            icon={account?.archivedAt ? 'archive-off' : 'archive'}
-            mode="outlined"
-            size={20}
-            onPress={archiveAccountDialog}
-          />
           {!account?.archivedAt && (
             <>
               <Pressable
@@ -199,14 +219,20 @@ export const DetailAccountScreen = ({route}) => {
                   Edit
                 </Text>
               </Pressable>
-              <IconButton
+              {/* <IconButton
                 icon="trash-can"
                 mode="outlined"
                 size={20}
                 onPress={deleteAccountDialog}
-              />
+              /> */}
             </>
           )}
+          <IconButton
+            icon={account?.archivedAt ? 'archive-off' : 'archive'}
+            mode="outlined"
+            size={20}
+            onPress={archiveAccountDialog}
+          />
         </View>
       )}
     </View>

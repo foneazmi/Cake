@@ -17,16 +17,6 @@ export const updateAccount = (id, data) => (dispatch, getState) => {
   dispatch({type: SET_ACCOUNT, payload: newAccount});
 };
 
-export const deleteAccount = id => (dispatch, getState) => {
-  const {accounts, transactions} = getState().account;
-  const newAccount = removeObjectWithId(accounts, id);
-  const newTransactions = transactions.filter(
-    transaction => transaction.idAccount !== id,
-  );
-  dispatch({type: SET_ACCOUNT, payload: newAccount});
-  dispatch({type: SET_TRANSACTION, payload: newTransactions});
-};
-
 export const addTransaction = data => (dispatch, getState) => {
   const {transactions} = getState().account;
   const newTransactions = [

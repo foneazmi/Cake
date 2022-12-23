@@ -88,6 +88,8 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   dialogActionText: {
+    minWidth: 60,
     fontWeight: 'bold',
+    textAlign: 'right',
   },
 });

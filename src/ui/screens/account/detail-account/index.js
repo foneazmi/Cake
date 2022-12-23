@@ -4,11 +4,7 @@ import {IconButton, Text} from 'react-native-paper';
 import {currency, height, navigator} from '../../../../helpers';
 import {useTheme} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {
-  deleteAccount,
-  setDialog,
-  updateAccount,
-} from '../../../../stores/actions';
+import {setDialog, updateAccount} from '../../../../stores/actions';
 import {FlashList} from '@shopify/flash-list';
 import {useDispatch, useSelector} from 'react-redux';
 import moment from 'moment';
@@ -141,27 +137,6 @@ export const DetailAccountScreen = ({route}) => {
 
   const theme = useTheme();
 
-  const deleteAccountDialog = () => {
-    dispatch(
-      setDialog({
-        title: 'Delete Account',
-        description: 'Do you want to delete this account ?',
-        actions: [
-          {
-            title: 'No',
-          },
-          {
-            title: 'Yes',
-            onPress: () => {
-              dispatch(deleteAccount(account.id));
-              navigator.goBack();
-            },
-          },
-        ],
-      }),
-    );
-  };
-
   const archiveAccountDialog = () => {
     let desc = account?.archivedAt ? 'unarchive' : 'archive';
     dispatch(
@@ -219,12 +194,6 @@ export const DetailAccountScreen = ({route}) => {
                   Edit
                 </Text>
               </Pressable>
-              {/* <IconButton
-                icon="trash-can"
-                mode="outlined"
-                size={20}
-                onPress={deleteAccountDialog}
-              /> */}
             </>
           )}
           <IconButton

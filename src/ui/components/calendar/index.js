@@ -1,45 +1,58 @@
-import * as React from 'react';
+import React, {useMemo} from 'react';
 import {View, StyleSheet, Pressable} from 'react-native';
 import {useState} from 'react';
 import moment from 'moment';
 import {Text, useTheme} from 'react-native-paper';
+import {useSelector} from 'react-redux';
+import {getTransactions} from '../../../stores/selector';
 
-export const CalendarWeek = props => {
-  const weekNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
-  let days = [];
+export const CalendarWeek = ({nowDate, onDateSelect}) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
-  let num = props.nowDate.getDay();
-  if (num === 0) {
-    num = 7;
-  }
+  const transactions = useSelector(getTransactions);
 
-  for (let i = 0; i < 7; i++) {
-    let date = new Date(
-      props.nowDate.getFullYear(),
-      props.nowDate.getMonth(),
-      props.nowDate.getDate() + i + (1 - num),
+  const week = useMemo(
+    () =>
+      [...Array(7)].map((_, index) => {
+        return new Date(
+          nowDate.getFullYear(),
+          nowDate.getMonth(),
+          nowDate.getDate() +
+            index +
+            1 -
+            (nowDate.getDay() === 0 ? 7 : nowDate.getDay()),
+        );
+      }),
+    [nowDate],
+  );
+  const transactionInWeek = useMemo(() => {
+    const formatWeek = week.map(day => moment(day).format('D/M/y'));
+    return transactions.filter(transaction =>
+      formatWeek.includes(moment(transaction.date).format('D/M/y')),
     );
-    days.push(date);
-  }
+  }, [transactions, week]);
 
   return (
     <View style={styles.itemContainer}>
-      {weekNames.map((item, index) => {
+      {week.map(day => {
+        const isThereTransaction = transactionInWeek.findIndex(
+          transaction =>
+            moment(day).format('D') === moment(transaction.date).format('D'),
+        );
         return (
           <CalendarWeekItem
-            key={item}
-            weekName={item}
-            day={days[index]}
+            key={day}
+            isThereTransaction={isThereTransaction !== -1}
+            weekName={moment(day).format('ddd')}
+            day={day}
             isSelected={
-              moment(days[index]).format('YYYY-MM-DD') ===
+              moment(day).format('YYYY-MM-DD') ===
               moment(selectedDate).format('YYYY-MM-DD')
                 ? true
                 : false
             }
             onDateSelect={day => {
               setSelectedDate(new Date(day));
-              props.onDateSelect(day);
+              onDateSelect(day);
             }}
           />
         );
@@ -48,40 +61,63 @@ export const CalendarWeek = props => {
   );
 };
 
-export const CalendarWeekItem = props => {
+export const CalendarWeekItem = ({
+  isSelected,
+  onDateSelect,
+  day,
+  weekName,
+  isThereTransaction,
+}) => {
   const theme = useTheme();
+
   return (
     <Pressable
       accessible={false}
       style={[
         styles.container,
-        props.isSelected && {
+        isSelected && {
           backgroundColor: theme.colors.primary,
         },
       ]}
       onPress={() => {
-        props.onDateSelect(moment(props.day).utc().format());
+        onDateSelect(moment(day).utc().format());
       }}>
       <View>
         <Text
           style={[
             styles.weekName,
-            props.isSelected && {
+            isSelected && {
               color: theme.colors.onPrimary,
             },
           ]}>
-          {props.weekName}
+          {weekName}
         </Text>
         <Text
           style={[
             styles.weekday,
-            props.isSelected && {
+            isSelected && {
               color: theme.colors.onPrimary,
             },
           ]}>
-          {moment(props.day).format('DD')}
+          {moment(day).format('DD')}
         </Text>
       </View>
+      {isThereTransaction && (
+        <View
+          style={[
+            {
+              height: 6,
+              borderRadius: 10,
+              marginTop: 4,
+              width: 6,
+              backgroundColor: theme.colors.primary,
+            },
+            isSelected && {
+              backgroundColor: theme.colors.onPrimary,
+            },
+          ]}
+        />
+      )}
     </Pressable>
   );
 };
@@ -113,7 +149,7 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
+    // alignItems: 'center',
     justifyContent: 'center',
     marginTop: 3,
   },

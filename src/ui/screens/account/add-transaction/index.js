@@ -26,6 +26,7 @@ import {
 } from 'react-native-paper-dates';
 import moment from 'moment';
 import {FlashList} from '@shopify/flash-list';
+import {getAccounts} from '../../../../stores/selector';
 
 registerTranslation('en', en);
 export const AddTransactionScreen = ({route}) => {
@@ -49,13 +50,13 @@ export const AddTransactionScreen = ({route}) => {
     date: date === '' ? Date.now() : date,
   });
 
-  const {accounts} = useSelector(({account}) => account);
+  const {activeAccounts} = useSelector(getAccounts);
   const [selectedAccount, setSelectedAccount] = useState(
-    idAccount || accounts[0]?.id,
+    idAccount || activeAccounts[0]?.id,
   );
 
   const [selectedToAccount, setSelectedToAccount] = useState(
-    idAccount2 ? idAccount2 : type === 'transfer' ? accounts[1]?.id : '',
+    idAccount2 ? idAccount2 : type === 'transfer' ? activeAccounts[1]?.id : '',
   );
 
   const typeDescription = {
@@ -179,7 +180,7 @@ export const AddTransactionScreen = ({route}) => {
           <FlashList
             estimatedItemSize={100}
             contentContainerStyle={styles.accountListContainer}
-            data={accounts.filter(account => !account.archivedAt)}
+            data={activeAccounts}
             showsHorizontalScrollIndicator={false}
             ListFooterComponent={
               <Button
@@ -213,7 +214,7 @@ export const AddTransactionScreen = ({route}) => {
           </Text>
           <FlashList
             estimatedItemSize={100}
-            data={accounts}
+            data={activeAccounts}
             contentContainerStyle={styles.accountListContainer}
             showsHorizontalScrollIndicator={false}
             horizontal
@@ -249,7 +250,7 @@ export const AddTransactionScreen = ({route}) => {
           <FlashList
             estimatedItemSize={100}
             showsHorizontalScrollIndicator={false}
-            data={accounts}
+            data={activeAccounts}
             contentContainerStyle={styles.accountListContainer}
             horizontal
             ListFooterComponent={

@@ -1,4 +1,4 @@
-import React, {useState, useMemo} from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -14,6 +14,7 @@ import CurrencyInput from 'react-native-currency-input';
 import {useDispatch, useSelector} from 'react-redux';
 import {addAccount, setDialog, updateAccount} from '../../../../stores/actions';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {getFeatures} from '../../../../stores/selector';
 
 export const AddAccountScreen = ({route}) => {
   let {
@@ -78,7 +79,7 @@ export const AddAccountScreen = ({route}) => {
   );
 
   const Form = () => {
-    const {features} = useSelector(({account}) => account);
+    const {accountType} = useSelector(getFeatures);
     const [modalFor, setModalFor] = useState('');
     const [modalText, setModalText] = useState('');
     const submitModal = () => {
@@ -86,16 +87,9 @@ export const AddAccountScreen = ({route}) => {
       setModalFor('');
     };
 
-    const isAccountTypeFeature = useMemo(
-      () =>
-        features?.find(feature => {
-          return feature.name === 'account-type';
-        })?.active || false,
-      [features],
-    );
     return (
       <View style={styles.formContainer}>
-        {isAccountTypeFeature && (
+        {accountType && (
           <SegmentedButtons
             value={form.type}
             onValueChange={value => {

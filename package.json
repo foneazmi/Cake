@@ -3,9 +3,11 @@
   "version": "0.1.1",
   "private": true,
   "scripts": {
+    "env:dev": "cp -f ./env/.dev .env",
+    "env:prod": "cp -f ./env/.prd .env",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "start": "react-native start",
+    "start": "react-native start --reset-cache",
     "test": "jest",
     "lint": "eslint .",
     "code:push": "appcenter codepush release-react -a Cake-Apps/Cake-Android -d DEV"
@@ -48,6 +50,7 @@
     "eslint": "^7.32.0",
     "jest": "^26.6.3",
     "metro-react-native-babel-preset": "^0.72.1",
+    "react-native-dotenv": "^3.4.6",
     "react-test-renderer": "18.1.0"
   },
   "jest": {

@@ -10,7 +10,12 @@ import {
 import {Appbar, List, Text} from 'react-native-paper';
 import {navigator} from '../../../helpers';
 import {useTheme} from 'react-native-paper';
-import {setDarkMode, syncData, resetAll} from '../../../stores/actions';
+import {
+  setDarkMode,
+  syncData,
+  resetAll,
+  formatData,
+} from '../../../stores/actions';
 import {useDispatch, useSelector} from 'react-redux';
 import {getReadableVersion} from 'react-native-device-info';
 
@@ -86,14 +91,14 @@ export const SettingScreen = () => {
               description="Delete All Saved Data"
               right={props => <List.Icon {...props} icon="information-off" />}
             />
-            {/* <List.Item
-            onPress={() => {
-              dispatch(setTemplateData());
-            }}
-            title="Set Template Data"
-            description=""
-            right={props => <List.Icon {...props} icon="information-off" />}
-          /> */}
+            <List.Item
+              onPress={() => {
+                dispatch(formatData());
+              }}
+              title="Format Data"
+              description="Change Structure data"
+              right={props => <List.Icon {...props} icon="information-off" />}
+            />
           </List.Section>
         )}
         <Text

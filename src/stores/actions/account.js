@@ -1,8 +1,27 @@
-import {removeObjectWithId, mergeByProperty, logger} from '../../helpers';
+import {mergeByProperty, logger} from '../../helpers';
 import {pb} from '../../services';
 import {SET_ACCOUNT, SET_TRANSACTION, SET_SYNC, SET_FEATURES} from '../types';
 import {begin, end} from './global';
 import NetInfo from '@react-native-community/netinfo';
+
+export const formatData = () => (dispatch, getState) => {
+  const {accounts, transactions} = getState().account;
+  const newTransactions = transactions.map(transaction => {
+    delete transaction.updateAt;
+    delete transaction.archiveAt;
+    return transaction;
+  });
+  const newAccounts = accounts.map(account => {
+    delete account.updateAt;
+    delete account.archiveAt;
+    return account;
+  });
+  dispatch({type: SET_ACCOUNT, payload: newAccounts});
+  dispatch({
+    type: SET_TRANSACTION,
+    payload: newTransactions,
+  });
+};
 
 export const addAccount = data => (dispatch, getState) => {
   const {accounts} = getState().account;

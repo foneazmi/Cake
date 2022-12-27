@@ -72,23 +72,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#00000080',
   },
   dialogContainer: {
-    width: width * 0.9,
-    padding: 20,
+    width: width * 0.85,
+    padding: 24,
     borderRadius: 10,
   },
   dialogTitle: {
+    marginBottom: 4,
     fontWeight: 'bold',
   },
   dialogActionsContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    marginTop: 12,
+    marginTop: 20,
   },
   dialogActionContainer: {
     padding: 8,
   },
   dialogActionText: {
-    minWidth: 60,
+    minWidth: 40,
     fontWeight: 'bold',
     textAlign: 'right',
   },

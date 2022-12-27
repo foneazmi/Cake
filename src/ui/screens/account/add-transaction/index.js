@@ -55,7 +55,7 @@ export const AddTransactionScreen = ({route}) => {
   );
 
   const [selectedToAccount, setSelectedToAccount] = useState(
-    idAccount2 || type === 'transfer' ? accounts[1]?.id : '',
+    idAccount2 ? idAccount2 : type === 'transfer' ? accounts[1]?.id : '',
   );
 
   const typeDescription = {

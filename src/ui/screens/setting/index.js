@@ -6,10 +6,13 @@ import {
   Pressable,
   TextInput,
   ScrollView,
+  Linking,
 } from 'react-native';
 import {Appbar, List, Text} from 'react-native-paper';
 import {navigator} from '../../../helpers';
 import {useTheme} from 'react-native-paper';
+import {APP_CENTER_URL} from '@env';
+
 import {
   setDarkMode,
   syncData,
@@ -18,6 +21,7 @@ import {
 } from '../../../stores/actions';
 import {useDispatch, useSelector} from 'react-redux';
 import {getReadableVersion} from 'react-native-device-info';
+import {getFeatures} from '../../../stores/selector';
 
 export const SettingScreen = () => {
   const [{darkMode}, {sync}] = useSelector(({global, account}) => [
@@ -35,6 +39,8 @@ export const SettingScreen = () => {
       backgroundColor: theme.colors.background,
     },
   ];
+
+  const {downloadPortal} = useSelector(getFeatures);
 
   return (
     <View style={containerStyle}>
@@ -66,7 +72,7 @@ export const SettingScreen = () => {
         </List.Section>
 
         <List.Section>
-          <List.Subheader>Sync</List.Subheader>
+          <List.Subheader>Misc</List.Subheader>
           <List.Item
             onPress={() => {
               if (sync) {
@@ -77,8 +83,18 @@ export const SettingScreen = () => {
             }}
             title="Sync Data"
             description="Sync Data to server"
-            right={props => <List.Icon {...props} icon="code-braces" />}
+            right={props => <List.Icon {...props} icon="cloud-upload" />}
           />
+          {downloadPortal && (
+            <List.Item
+              onPress={() => {
+                Linking.openURL(APP_CENTER_URL);
+              }}
+              title="Download Cake"
+              description="get the latest CAKE app"
+              right={props => <List.Icon {...props} icon="cloud-download" />}
+            />
+          )}
         </List.Section>
         {__DEV__ && (
           <List.Section>

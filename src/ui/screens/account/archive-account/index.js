@@ -4,11 +4,11 @@ import {useSelector} from 'react-redux';
 import {currency, navigator} from '../../../../helpers';
 import {useTheme, Text, IconButton} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {getTransactions} from '../../../../stores/selector';
+import {getAccounts, getTransactions} from '../../../../stores/selector';
 import {FlashList} from '@shopify/flash-list';
 
 export const ArchiveAccountScreen = () => {
-  const {accounts} = useSelector(({account}) => account);
+  const {archivedAccounts} = useSelector(getAccounts);
 
   const Header = () => (
     <View style={styles.headerContainer}>
@@ -31,7 +31,7 @@ export const ArchiveAccountScreen = () => {
       </View>
       <FlashList
         estimatedItemSize={100}
-        data={accounts.filter(account => account.archivedAt)}
+        data={archivedAccounts}
         ListEmptyComponent={
           <View style={styles.noAccountContainer}>
             <Text style={styles.noAccountText}>No Account</Text>

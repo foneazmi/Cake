@@ -36,7 +36,7 @@ export const resetAll = () => dispatch => {
 };
 
 export const setDialog =
-  ({title = '', description = '', actions = []}) =>
+  ({title = 'Oops...', description = '', actions = []}) =>
   dispatch => {
     if ((title === '' && description === '') || actions.length === 0) {
       dispatch({type: SET_DIALOG, payload: false});

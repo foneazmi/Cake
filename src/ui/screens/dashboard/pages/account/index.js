@@ -10,11 +10,17 @@ import {
   IconButton,
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {getTransactions} from '../../../../../stores/selector';
+import {
+  getAccounts,
+  getFeatures,
+  getTransactions,
+} from '../../../../../stores/selector';
 import {FlashList} from '@shopify/flash-list';
 export const AccountPage = () => {
-  const {accounts, features} = useSelector(({account}) => account);
+  const {activeAccounts} = useSelector(getAccounts);
   const transactions = useSelector(getTransactions);
+  const {accountType} = useSelector(getFeatures);
+
   const [type, setType] = useState('all');
   const [scrollY, setScrollY] = useState(0);
   const [showFab, setShowFab] = useState(true);
@@ -33,14 +39,6 @@ export const AccountPage = () => {
       );
     return totalIncome - totalExpense;
   }, [transactions]);
-
-  const isAccountTypeFeature = useMemo(
-    () =>
-      features?.find(feature => {
-        return feature.name === 'account-type';
-      })?.active || false,
-    [features],
-  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -61,7 +59,7 @@ export const AccountPage = () => {
       <FlashList
         estimatedItemSize={height}
         ListHeaderComponent={
-          isAccountTypeFeature && (
+          accountType && (
             <SegmentedButtons
               value={type}
               onValueChange={setType}
@@ -98,10 +96,8 @@ export const AccountPage = () => {
         }}
         data={
           type === 'all'
-            ? accounts.filter(account => !account.archivedAt)
-            : accounts.filter(
-                account => account.type === type && !account.archivedAt,
-              )
+            ? activeAccounts
+            : activeAccounts.filter(account => account.type === type)
         }
         ListEmptyComponent={
           <View style={styles.noAccountContainer}>

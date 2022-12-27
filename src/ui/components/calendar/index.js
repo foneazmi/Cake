@@ -1,58 +1,25 @@
-import React, {useMemo} from 'react';
+import React from 'react';
 import {View, StyleSheet, Pressable} from 'react-native';
 import {useState} from 'react';
 import moment from 'moment';
 import {Text, useTheme} from 'react-native-paper';
-import {useSelector} from 'react-redux';
-import {getTransactions} from '../../../stores/selector';
 
-export const CalendarWeek = ({nowDate, onDateSelect}) => {
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const transactions = useSelector(getTransactions);
-
-  const week = useMemo(
-    () =>
-      [...Array(7)].map((_, index) => {
-        return new Date(
-          nowDate.getFullYear(),
-          nowDate.getMonth(),
-          nowDate.getDate() +
-            index +
-            1 -
-            (nowDate.getDay() === 0 ? 7 : nowDate.getDay()),
-        );
-      }),
-    [nowDate],
-  );
-  const transactionInWeek = useMemo(() => {
-    const formatWeek = week.map(day => moment(day).format('D/M/y'));
-    return transactions.filter(transaction =>
-      formatWeek.includes(moment(transaction.date).format('D/M/y')),
-    );
-  }, [transactions, week]);
-
+export const CalendarWeek = ({onDateSelect, markerInWeek}) => {
+  const [selectedDate, setSelectedDate] = useState(moment().format('ddd'));
   return (
     <View style={styles.itemContainer}>
-      {week.map(day => {
-        const isThereTransaction = transactionInWeek.findIndex(
-          transaction =>
-            moment(day).format('D') === moment(transaction.date).format('D'),
-        );
+      {markerInWeek.map(day => {
         return (
           <CalendarWeekItem
-            key={day}
-            isThereTransaction={isThereTransaction !== -1}
-            weekName={moment(day).format('ddd')}
-            day={day}
-            isSelected={
-              moment(day).format('YYYY-MM-DD') ===
-              moment(selectedDate).format('YYYY-MM-DD')
-                ? true
-                : false
-            }
-            onDateSelect={day => {
-              setSelectedDate(new Date(day));
-              onDateSelect(day);
+            key={day.dayName}
+            isThereTransaction={day.isThereTransaction}
+            dayName={day.dayName}
+            dayDate={day.dayDate}
+            date={day.date}
+            isSelected={day.dayName === selectedDate ? true : false}
+            onDateSelect={date => {
+              setSelectedDate(day.dayName);
+              onDateSelect(date);
             }}
           />
         );
@@ -64,8 +31,9 @@ export const CalendarWeek = ({nowDate, onDateSelect}) => {
 export const CalendarWeekItem = ({
   isSelected,
   onDateSelect,
-  day,
-  weekName,
+  date,
+  dayDate,
+  dayName,
   isThereTransaction,
 }) => {
   const theme = useTheme();
@@ -80,7 +48,7 @@ export const CalendarWeekItem = ({
         },
       ]}
       onPress={() => {
-        onDateSelect(moment(day).utc().format());
+        onDateSelect(date);
       }}>
       <View>
         <Text
@@ -90,7 +58,7 @@ export const CalendarWeekItem = ({
               color: theme.colors.onPrimary,
             },
           ]}>
-          {weekName}
+          {dayName}
         </Text>
         <Text
           style={[
@@ -99,19 +67,16 @@ export const CalendarWeekItem = ({
               color: theme.colors.onPrimary,
             },
           ]}>
-          {moment(day).format('DD')}
+          {dayDate}
         </Text>
       </View>
       {isThereTransaction && (
         <View
           style={[
             {
-              height: 6,
-              borderRadius: 10,
-              marginTop: 4,
-              width: 6,
               backgroundColor: theme.colors.primary,
             },
+            styles.isThereTransaction,
             isSelected && {
               backgroundColor: theme.colors.onPrimary,
             },
@@ -152,5 +117,11 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
     justifyContent: 'center',
     marginTop: 3,
+  },
+  isThereTransaction: {
+    height: 6,
+    borderRadius: 10,
+    marginTop: 4,
+    width: 6,
   },
 });

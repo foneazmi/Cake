@@ -134,17 +134,58 @@ const Transaction = props => {
 export const RecentTransaction = () => {
   const theme = useTheme();
   const transactions = useSelector(getTransactions);
-  const nowDate = new Date();
+
+  const nowDate = useMemo(() => new Date(), []);
+
   const [selectedDate, setSelectedDate] = useState(nowDate);
-  const filteredTransactions = useMemo(
+
+  const week = useMemo(
     () =>
-      transactions.filter(
+      [...Array(7)].map((_, index) => {
+        return new Date(
+          nowDate.getFullYear(),
+          nowDate.getMonth(),
+          nowDate.getDate() +
+            index +
+            1 -
+            (nowDate.getDay() === 0 ? 7 : nowDate.getDay()),
+        );
+      }),
+    [nowDate],
+  );
+
+  const transactionInWeek = useMemo(() => {
+    const formatWeek = week.map(day => moment(day).format('D/M/y'));
+    return transactions.filter(transaction =>
+      formatWeek.includes(moment(transaction.date).format('D/M/y')),
+    );
+  }, [transactions, week]);
+
+  const transactionInDay = useMemo(
+    () =>
+      transactionInWeek.filter(
         transaction =>
           moment(transaction.date).format('D/M/Y') ===
           moment(selectedDate).format('D/M/Y'),
       ),
-    [transactions, selectedDate],
+    [transactionInWeek, selectedDate],
   );
+
+  const markerInWeek = useMemo(() => {
+    return week.map(day => {
+      const isThereTransaction = transactionInWeek.findIndex(
+        transaction =>
+          moment(day).format('D') === moment(transaction.date).format('D'),
+      );
+      return {
+        dayName: moment(day).format('ddd'),
+        dayDate: moment(day).format('DD'),
+        date: day,
+        isThereTransaction: isThereTransaction !== -1,
+      };
+    });
+  }, [transactionInWeek, week]);
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -165,14 +206,14 @@ export const RecentTransaction = () => {
         ]}>
         <View style={styles.calendarWeekContainer}>
           <CalendarWeek
-            nowDate={nowDate}
+            markerInWeek={markerInWeek}
             onDateSelect={day => {
               setSelectedDate(day);
             }}
           />
         </View>
-        {filteredTransactions.length > 0 ? (
-          filteredTransactions.map((transaction, index) => (
+        {transactionInDay.length > 0 ? (
+          transactionInDay.map((transaction, index) => (
             <Transaction {...transaction} key={`${index}-transaction-item`} />
           ))
         ) : (

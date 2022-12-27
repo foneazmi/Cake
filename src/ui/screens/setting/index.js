@@ -11,7 +11,6 @@ import {
 import {Appbar, List, Text} from 'react-native-paper';
 import {navigator} from '../../../helpers';
 import {useTheme} from 'react-native-paper';
-import {APP_CENTER_URL} from '@env';
 
 import {
   setDarkMode,
@@ -22,6 +21,7 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import {getReadableVersion} from 'react-native-device-info';
 import {getFeatures} from '../../../stores/selector';
+import {APP_CENTER_URL, ENV} from '../../../config';
 
 export const SettingScreen = () => {
   const [{darkMode}, {sync}] = useSelector(({global, account}) => [
@@ -96,7 +96,7 @@ export const SettingScreen = () => {
             />
           )}
         </List.Section>
-        {__DEV__ && (
+        {ENV === 'DEV' && (
           <List.Section>
             <List.Subheader>Developer Mode</List.Subheader>
             <List.Item
@@ -121,7 +121,7 @@ export const SettingScreen = () => {
           variant="labelSmall"
           style={
             styles.versionText
-          }>{`App Version ${getReadableVersion()}`}</Text>
+          }>{`App Version ${getReadableVersion()} [${ENV}]`}</Text>
       </ScrollView>
 
       <Modal animationType="fade" transparent={true} visible={modalSync}>

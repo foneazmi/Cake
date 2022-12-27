@@ -8,7 +8,8 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "code:push": "appcenter codepush release-react -a Cake-Apps/Cake-Android -d Staging"
+    "code:push:dev": "appcenter codepush release-react -a Cake-Apps/Cake-Android -d DEV",
+    "code:push:prod": "appcenter codepush release-react -a Cake-Apps/Cake-Android -d PROD"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.17.10",

@@ -11,6 +11,8 @@ workflows:
     triggering:
       events:
         - push
+        - pull_request
+        - tag
       branch_patterns:
         - pattern: '*dev*'
           include: true
@@ -57,6 +59,8 @@ workflows:
     triggering:
       events:
         - push
+        - pull_request
+        - tag
       branch_patterns:
         - pattern: '*master*'
           include: true

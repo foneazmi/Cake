@@ -14,13 +14,10 @@ workflows:
       events:
         - push
       branch_patterns:
-        - pattern: '*'
+        - pattern: '*dev*'
           include: true
           source: true
-      tag_patterns:
-        - pattern: '*'
-          include: true
-      cancel_previous_builds: false  # Set to `true` to automatically cancel outdated webhook builds
+      cancel_previous_builds: true
     scripts:
       - name: Set Environment
         script: | 
@@ -59,11 +56,11 @@ workflows:
         - cake
       groups:
         - cake
+    cache:
+      cache_paths: []
     triggering:
       events:
         - push
-        - pull_request
-        - tag
       branch_patterns:
         - pattern: '*master*'
           include: true

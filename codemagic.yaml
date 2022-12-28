@@ -28,7 +28,7 @@ workflows:
       - name: Publishing to App Center
         script: | 
           appcenter distribute release \
-          --group "dev" \
+          --group "Dev" \
           --file $APK_PATH \
           --release-notes 'App submission via Code Magic' \
           --app Cake-Apps/Cake-Android \

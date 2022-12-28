@@ -8,27 +8,17 @@ workflows:
         - cake
       groups:
         - cake
+    cache:
+      cache_paths: []
     triggering:
-      events:                       # List the events that trigger builds
+      events:
         - push
-        - pull_request
-        - tag
-      branch_patterns:              # Include or exclude watched branches
+      branch_patterns:
         - pattern: '*'
           include: true
           source: true
-        - pattern: excluded-target
-          include: false
-          source: false
-        - pattern: included-source
-          include: true
-          source: true
-      tag_patterns:                 # Include or exlude watched tag labels
+      tag_patterns:
         - pattern: '*'
-          include: true
-        - pattern: excluded-tag
-          include: false
-        - pattern: included-tag
           include: true
       cancel_previous_builds: false  # Set to `true` to automatically cancel outdated webhook builds
     scripts:

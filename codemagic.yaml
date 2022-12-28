@@ -21,7 +21,7 @@ workflows:
       - name: Build Android release
         script: | 
           cd android
-          ./gradlew bundleRelease -PversionCode=$PROJECT_BUILD_NUMBER \
+          ./gradlew assembleRelease -PversionCode=$PROJECT_BUILD_NUMBER \
       - name: Installing App Center CLI tools
         script: | 
           npm install -g appcenter-cli

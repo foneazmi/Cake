@@ -12,7 +12,9 @@ workflows:
       events:
         - push
       branch_patterns:
-        - pattern: 'dev'
+        - pattern: '*dev*'
+          include: true
+          source: true
       cancel_previous_builds: true
     scripts:
       - name: Set Environment
@@ -56,7 +58,9 @@ workflows:
       events:
         - push
       branch_patterns:
-        - pattern: 'master'
+        - pattern: '*master*'
+          include: true
+          source: true
       cancel_previous_builds: true
     scripts:
       - name: Set Environment

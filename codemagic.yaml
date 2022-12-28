@@ -8,6 +8,9 @@ workflows:
         - codemagic
       groups:
         - google_play
+    cache:
+      cache_paths:
+        - ~/.pub-cache
     scripts:
       - name: Install npm dependencies
         script: | 
@@ -28,7 +31,7 @@ workflows:
           --group "public" \
           --file $APK_PATH \
           --release-notes 'App submission via Code Magic' \
-          --app Farkhan/hello-flutter \
+          --app Cake-Apps/Cake-Android \
           --token $APP_CENTER_TOKEN \
           --quiet
     artifacts:

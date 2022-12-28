@@ -7,7 +7,7 @@ workflows:
       android_signing:
         - codemagic
       groups:
-        - google_play
+        - cake
     cache:
       cache_paths:
         - ~/.pub-cache

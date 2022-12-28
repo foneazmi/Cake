@@ -1,6 +1,6 @@
 workflows:
   react-native-android:
-    name: Cake-Android
+    name: Cake-Android-DEV
     max_build_duration: 20
     instance_type: mac_mini_m1
     environment:
@@ -8,6 +8,12 @@ workflows:
         - cake
       groups:
         - cake
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: 'dev'
+      cancel_previous_builds: true
     scripts:
       - name: Set Environment
         script: | 

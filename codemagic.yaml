@@ -47,6 +47,7 @@ workflows:
     artifacts:
       - android/app/build/outputs/**/**/*.apk
 
+
   cake-prod:
     name: Cake-Android-PROD
     max_build_duration: 20

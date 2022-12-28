@@ -104,9 +104,14 @@ export const syncData =
               accounts: mergedAccounts,
               transactions: mergedTransactions,
             });
-
-            dispatch({type: SET_ACCOUNT, payload: mergedAccounts});
-            dispatch({type: SET_TRANSACTION, payload: mergedTransactions});
+            dispatch({
+              type: SET_ACCOUNT,
+              payload: mergedAccounts.sort((a, b) => a.id - b.id),
+            });
+            dispatch({
+              type: SET_TRANSACTION,
+              payload: mergedTransactions.sort((a, b) => a.id - b.id),
+            });
             dispatch({type: SET_FEATURES, payload: syncDataResult.features});
             delete syncDataResult.accounts;
             delete syncDataResult.transactions;

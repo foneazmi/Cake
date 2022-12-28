@@ -2,9 +2,9 @@ import React from 'react';
 import {StyleSheet, View, Modal, Pressable} from 'react-native';
 import {useIsFocused} from '@react-navigation/native';
 import {Text, useTheme} from 'react-native-paper';
-import {width} from '../../../helpers';
 import {useDispatch, useSelector} from 'react-redux';
-import {setDialog} from '../../../stores/actions';
+import {width} from '../../../../helpers';
+import {setDialog} from '../../../../stores/actions';
 
 export const Dialog = () => {
   const theme = useTheme();

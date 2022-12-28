@@ -1,5 +1,5 @@
 workflows:
-  react-native-android:
+  cake-dev:
     name: Cake-Android-DEV
     max_build_duration: 20
     instance_type: mac_mini_m1
@@ -43,7 +43,7 @@ workflows:
     artifacts:
       - android/app/build/outputs/**/**/*.apk
 
-  react-native-android:
+  cake-prod:
     name: Cake-Android-PROD
     max_build_duration: 20
     instance_type: mac_mini_m1

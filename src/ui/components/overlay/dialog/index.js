@@ -1,6 +1,5 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {StyleSheet, View, Modal, Pressable} from 'react-native';
-import {useIsFocused} from '@react-navigation/native';
 import {Text, useTheme} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
 import {width} from '../../../../helpers';
@@ -8,14 +7,14 @@ import {setDialog} from '../../../../stores/actions';
 
 export const Dialog = () => {
   const theme = useTheme();
-  const isFocused = useIsFocused();
   const dispatch = useDispatch();
   const {dialog} = useSelector(({global}) => global);
   const ACTIONS = dialog?.actions || [];
-  return isFocused ? (
+  const visible = useMemo(() => (dialog ? true : false), [dialog]);
+  return visible ? (
     <Modal
       transparent
-      visible={dialog ? true : false}
+      visible={visible}
       animationType="fade"
       statusBarTranslucent>
       <Pressable

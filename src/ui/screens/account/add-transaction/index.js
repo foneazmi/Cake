@@ -29,6 +29,119 @@ import {FlashList} from '@shopify/flash-list';
 import {getAccounts} from '../../../../stores/selector';
 
 registerTranslation('en', en);
+
+const AccountList = ({
+  type,
+  activeAccounts,
+  selectedAccount,
+  selectedToAccount,
+  onPressAccount,
+  onPressToAccount,
+}) => {
+  if (type === 'income' || type === 'expense') {
+    return (
+      <View>
+        <Text style={styles.accountListTitle} variant="labelLarge">
+          {type === 'income' ? 'Add Money To' : 'Pay With'}
+        </Text>
+        <FlashList
+          estimatedItemSize={100}
+          contentContainerStyle={styles.accountListContainer}
+          data={activeAccounts}
+          showsHorizontalScrollIndicator={false}
+          ListFooterComponent={
+            <Button
+              icon="wallet-plus"
+              mode="contained-tonal"
+              style={styles.accountItemContainer}
+              onPress={() => navigator.navigate('add-account')}>
+              Add Account
+            </Button>
+          }
+          horizontal
+          renderItem={({item}) => (
+            <Button
+              icon="wallet"
+              mode={
+                selectedAccount === item.id ? 'contained' : 'contained-tonal'
+              }
+              style={styles.accountItemContainer}
+              onPress={() => onPressAccount(item.id)}>
+              {item.name}
+            </Button>
+          )}
+        />
+      </View>
+    );
+  } else {
+    return (
+      <View>
+        <Text style={styles.accountListTitle} variant="labelLarge">
+          From
+        </Text>
+        <FlashList
+          estimatedItemSize={100}
+          data={activeAccounts}
+          contentContainerStyle={styles.accountListContainer}
+          showsHorizontalScrollIndicator={false}
+          horizontal
+          ListFooterComponent={
+            <Button
+              icon="wallet-plus"
+              mode="contained-tonal"
+              style={styles.accountItemContainer}
+              onPress={() => navigator.navigate('add-account')}>
+              Add Account
+            </Button>
+          }
+          renderItem={({item}) => (
+            <Button
+              icon="wallet"
+              mode={
+                selectedAccount === item.id ? 'contained' : 'contained-tonal'
+              }
+              style={styles.accountItemContainer}
+              onPress={onPressAccount(item.id)}>
+              {item.name}
+            </Button>
+          )}
+        />
+        <Text style={styles.accountListTitle} variant="labelLarge">
+          To
+        </Text>
+        <FlashList
+          estimatedItemSize={100}
+          showsHorizontalScrollIndicator={false}
+          data={activeAccounts}
+          contentContainerStyle={styles.accountListContainer}
+          horizontal
+          ListFooterComponent={
+            <Button
+              icon="wallet-plus"
+              mode="contained-tonal"
+              style={styles.accountItemContainer}
+              onPress={() => navigator.navigate('add-account')}>
+              Add Account
+            </Button>
+          }
+          renderItem={({item}) => (
+            <Button
+              disabled={selectedAccount === item.id}
+              icon="wallet"
+              mode={
+                selectedToAccount === item.id ? 'contained' : 'contained-tonal'
+              }
+              style={styles.accountItemContainer}
+              onPress={onPressToAccount(item.id)}>
+              {item.name}
+            </Button>
+          )}
+        />
+      </View>
+    );
+  }
+};
+
 export const AddTransactionScreen = ({route}) => {
   const {
     amount = '',
@@ -170,117 +283,6 @@ export const AddTransactionScreen = ({route}) => {
     </View>
   );
 
-  const AccountList = () => {
-    if (type === 'income' || type === 'expense') {
-      return (
-        <View>
-          <Text style={styles.accountListTitle} variant="labelLarge">
-            {type === 'income' ? 'Add Money To' : 'Pay With'}
-          </Text>
-          <FlashList
-            estimatedItemSize={100}
-            contentContainerStyle={styles.accountListContainer}
-            data={activeAccounts}
-            showsHorizontalScrollIndicator={false}
-            ListFooterComponent={
-              <Button
-                icon="wallet-plus"
-                mode="contained-tonal"
-                style={styles.accountItemContainer}
-                onPress={() => navigator.navigate('add-account')}>
-                Add Account
-              </Button>
-            }
-            horizontal
-            renderItem={({item}) => (
-              <Button
-                icon="wallet"
-                mode={
-                  selectedAccount === item.id ? 'contained' : 'contained-tonal'
-                }
-                style={styles.accountItemContainer}
-                onPress={() => setSelectedAccount(item.id)}>
-                {item.name}
-              </Button>
-            )}
-          />
-        </View>
-      );
-    } else {
-      return (
-        <View>
-          <Text style={styles.accountListTitle} variant="labelLarge">
-            From
-          </Text>
-          <FlashList
-            estimatedItemSize={100}
-            data={activeAccounts}
-            contentContainerStyle={styles.accountListContainer}
-            showsHorizontalScrollIndicator={false}
-            horizontal
-            ListFooterComponent={
-              <Button
-                icon="wallet-plus"
-                mode="contained-tonal"
-                style={styles.accountItemContainer}
-                onPress={() => navigator.navigate('add-account')}>
-                Add Account
-              </Button>
-            }
-            renderItem={({item}) => (
-              <Button
-                icon="wallet"
-                mode={
-                  selectedAccount === item.id ? 'contained' : 'contained-tonal'
-                }
-                style={styles.accountItemContainer}
-                onPress={() => {
-                  if (selectedToAccount === item.id) {
-                    setSelectedToAccount('');
-                  }
-                  setSelectedAccount(item.id);
-                }}>
-                {item.name}
-              </Button>
-            )}
-          />
-          <Text style={styles.accountListTitle} variant="labelLarge">
-            To
-          </Text>
-          <FlashList
-            estimatedItemSize={100}
-            showsHorizontalScrollIndicator={false}
-            data={activeAccounts}
-            contentContainerStyle={styles.accountListContainer}
-            horizontal
-            ListFooterComponent={
-              <Button
-                icon="wallet-plus"
-                mode="contained-tonal"
-                style={styles.accountItemContainer}
-                onPress={() => navigator.navigate('add-account')}>
-                Add Account
-              </Button>
-            }
-            renderItem={({item}) => (
-              <Button
-                disabled={selectedAccount === item.id}
-                icon="wallet"
-                mode={
-                  selectedToAccount === item.id
-                    ? 'contained'
-                    : 'contained-tonal'
-                }
-                style={styles.accountItemContainer}
-                onPress={() => setSelectedToAccount(item.id)}>
-                {item.name}
-              </Button>
-            )}
-          />
-        </View>
-      );
-    }
-  };
   const Form = () => {
     const [modalFor, setModalFor] = useState('');
     const [modalText, setModalText] = useState('');
@@ -501,7 +503,21 @@ export const AddTransactionScreen = ({route}) => {
       ]}>
       <Header />
       <View style={styles.container}>
-        <AccountList />
+        <AccountList
+          type={type}
+          activeAccounts={activeAccounts}
+          selectedAccount={selectedAccount}
+          selectedToAccount={selectedToAccount}
+          onPressAccount={selectedId => {
+            if (selectedToAccount === selectedId) {
+              setSelectedToAccount('');
+            }
+            setSelectedAccount(selectedId);
+          }}
+          onPressToAccount={selectedId => {
+            setSelectedToAccount(selectedId);
+          }}
+        />
         <Form />
       </View>
       <Pressable

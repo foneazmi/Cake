@@ -1,6 +1,6 @@
 workflows:
   react-native-android:
-    name: Cake-Android
+    name: Cake-Android-DEV
     max_build_duration: 20
     instance_type: mac_mini_m1
     environment:
@@ -8,6 +8,56 @@ workflows:
         - cake
       groups:
         - cake
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: 'dev'
+      cancel_previous_builds: true
+    scripts:
+      - name: Set Environment
+        script: | 
+          npm run config:dev
+      - name: Install npm dependencies
+        script: | 
+          npm install
+      - name: Set Android SDK location
+        script: | 
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/android/local.properties"
+      - name: Build Android release
+        script: | 
+          cd android
+          ./gradlew assembleRelease -PversionCode=$PROJECT_BUILD_NUMBER \
+      - name: Installing App Center CLI tools
+        script: | 
+          npm install -g appcenter-cli
+      - name: Publishing to App Center
+        script: | 
+          appcenter distribute release \
+          --group "Dev" \
+          --file $APK_PATH \
+          --release-notes 'App submission via Code Magic' \
+          --app Cake-Apps/Cake-Android \
+          --token $APP_CENTER_TOKEN \
+          --quiet
+    artifacts:
+      - android/app/build/outputs/**/**/*.apk
+
+  react-native-android:
+    name: Cake-Android-PROD
+    max_build_duration: 20
+    instance_type: mac_mini_m1
+    environment:
+      android_signing:
+        - cake
+      groups:
+        - cake
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: 'master'
+      cancel_previous_builds: true
     scripts:
       - name: Set Environment
         script: | 

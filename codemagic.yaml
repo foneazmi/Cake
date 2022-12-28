@@ -8,6 +8,8 @@ workflows:
         - cake
       groups:
         - cake
+    cache:
+      cache_paths: []
     triggering:
       events:
         - push
@@ -54,6 +56,8 @@ workflows:
         - cake
       groups:
         - cake
+    cache:
+      cache_paths: []
     triggering:
       events:
         - push

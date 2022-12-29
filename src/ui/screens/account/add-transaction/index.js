@@ -7,6 +7,7 @@ import {
   Modal,
   TextInput,
   Platform,
+  FlatList,
 } from 'react-native';
 import {Button, useTheme, IconButton, Text} from 'react-native-paper';
 import CurrencyInput from 'react-native-currency-input';
@@ -25,7 +26,6 @@ import {
   en,
 } from 'react-native-paper-dates';
 import moment from 'moment';
-import {FlashList} from '@shopify/flash-list';
 import {getAccounts} from '../../../../stores/selector';
 
 registerTranslation('en', en);
@@ -44,8 +44,7 @@ const AccountList = ({
         <Text style={styles.accountListTitle} variant="labelLarge">
           {type === 'income' ? 'Add Money To' : 'Pay With'}
         </Text>
-        <FlashList
-          estimatedItemSize={100}
+        <FlatList
           contentContainerStyle={styles.accountListContainer}
           data={activeAccounts}
           showsHorizontalScrollIndicator={false}
@@ -79,8 +78,7 @@ const AccountList = ({
         <Text style={styles.accountListTitle} variant="labelLarge">
           From
         </Text>
-        <FlashList
-          estimatedItemSize={100}
+        <FlatList
           data={activeAccounts}
           contentContainerStyle={styles.accountListContainer}
           showsHorizontalScrollIndicator={false}
@@ -109,8 +107,7 @@ const AccountList = ({
         <Text style={styles.accountListTitle} variant="labelLarge">
           To
         </Text>
-        <FlashList
-          estimatedItemSize={100}
+        <FlatList
           showsHorizontalScrollIndicator={false}
           data={activeAccounts}
           contentContainerStyle={styles.accountListContainer}

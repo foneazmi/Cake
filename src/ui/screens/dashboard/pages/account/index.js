@@ -17,7 +17,7 @@ import {
 } from '../../../../../stores/selector';
 import {FlashList} from '@shopify/flash-list';
 export const AccountPage = () => {
-  const {activeAccounts} = useSelector(getAccounts);
+  const {activeAccounts, archivedAccounts} = useSelector(getAccounts);
   const transactions = useSelector(getTransactions);
   const {accountType} = useSelector(getFeatures);
 
@@ -107,15 +107,15 @@ export const AccountPage = () => {
         keyExtractor={(_, index) => `account-${index}`}
         renderItem={({item}) => <Account {...item} />}
       />
-      {/* {accounts.length < 6 && ( */}
-      <FAB
-        icon="plus"
-        visible={showFab}
-        animated
-        style={styles.fab}
-        onPress={() => navigator.navigate('add-account')}
-      />
-      {/* )} */}
+      {(activeAccounts?.length || 0) + (archivedAccounts?.length || 0) <= 6 && (
+        <FAB
+          icon="plus"
+          visible={showFab}
+          animated
+          style={styles.fab}
+          onPress={() => navigator.navigate('add-account')}
+        />
+      )}
     </SafeAreaView>
   );
 };

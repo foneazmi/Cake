@@ -87,20 +87,26 @@ export const syncData =
           let getSync = await pb.getList('cake_sync', {
             filter: `(code='${code}')`,
           });
-          const {accounts, transactions} = getState().account;
+          const {accounts, transactions, tags} = getState().account;
           if (getSync.items.length > 0) {
             const syncDataResult = getSync.items[0];
             const mergedAccounts = mergeByProperty(
-              accounts.concat(syncDataResult.accounts),
+              accounts.concat(syncDataResult.accounts || []),
               'id',
             );
             const mergedTransactions = mergeByProperty(
-              transactions.concat(syncDataResult.transactions),
+              transactions.concat(syncDataResult.transactions || []),
+              'id',
+            );
+
+            const mergedTags = mergeByProperty(
+              tags.concat(syncDataResult.tags || []),
               'id',
             );
             await pb.update('cake_sync', syncDataResult.id, {
               accounts: mergedAccounts,
               transactions: mergedTransactions,
+              tags: mergedTags,
             });
             dispatch({
               type: SET_ACCOUNT,

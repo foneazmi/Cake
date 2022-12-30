@@ -49,7 +49,7 @@ export const AccountDetail = ({account, total, tag}) => {
             {account
               ? account?.description || ''
               : tag
-              ? 'Transaction By Tag'
+              ? tag.description
               : 'All Transaction Account'}
           </Text>
         </View>

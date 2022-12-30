@@ -24,7 +24,13 @@ const TagList = ({query, onSubmit, name, value}) => {
     <FlashList
       estimatedItemSize={20}
       showsVerticalScrollIndicator={false}
-      data={query ? tags.filter(tag => tag.name.includes(query)) : tags}
+      data={
+        query
+          ? tags.filter(tag =>
+              tag.name.toLowerCase().includes(query.toLowerCase()),
+            )
+          : tags
+      }
       keyExtractor={(_, index) => `tag-${index}`}
       ListFooterComponent={
         <Pressable
@@ -111,7 +117,8 @@ const AccountList = ({query, onSubmit, name, value, disableItem}) => {
         query
           ? activeAccounts.filter(
               account =>
-                account.name.includes(query) && disableItem !== account.id,
+                account.name.toLowerCase().includes(query.toLowerCase()) &&
+                disableItem !== account.id,
             )
           : activeAccounts.filter(account => disableItem !== account.id)
       }

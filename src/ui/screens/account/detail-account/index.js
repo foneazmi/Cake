@@ -14,7 +14,7 @@ import {getTransactions} from '../../../../stores/selector';
 export const DetailAccountScreen = ({route}) => {
   const dispatch = useDispatch();
 
-  const {accounts} = useSelector(({account}) => account);
+  const {accounts, tags} = useSelector(({account}) => account);
   const transactions = useSelector(getTransactions);
 
   const [selectedDate, setSelectedDate] = useState(moment());
@@ -22,6 +22,10 @@ export const DetailAccountScreen = ({route}) => {
   const account = useMemo(() => {
     return accounts.find(acc => acc.id === route.params.id);
   }, [accounts, route.params.id]);
+
+  const tag = useMemo(() => {
+    return tags.find(tg => tg.id === route.params.id);
+  }, [tags, route.params.id]);
 
   const filteredTransactions = useMemo(
     () =>
@@ -33,6 +37,11 @@ export const DetailAccountScreen = ({route}) => {
             (transaction.idAccount === account.id ||
               transaction.idAccount2 === account.id)
           );
+        } else if (tag) {
+          return (
+            moment(transaction.date).format('y/M') ===
+              moment(selectedDate).format('y/M') && transaction.tag === tag.id
+          );
         } else {
           return (
             moment(transaction.date).format('y/M') ===
@@ -40,7 +49,7 @@ export const DetailAccountScreen = ({route}) => {
           );
         }
       }),
-    [account, selectedDate, transactions],
+    [account, selectedDate, tag, transactions],
   );
 
   const totalInOneMonth = useMemo(() => {
@@ -52,6 +61,12 @@ export const DetailAccountScreen = ({route}) => {
               transaction.idAccount === account?.id) ||
             (transaction.type === 'transfer' &&
               transaction.idAccount2 === account?.id)
+          );
+        } else if (tag) {
+          return (
+            (transaction.type === 'income' ||
+              transaction.type === 'transfer') &&
+            transaction.tag === tag.id
           );
         } else {
           return (
@@ -72,6 +87,12 @@ export const DetailAccountScreen = ({route}) => {
             (transaction.type === 'transfer' &&
               transaction.idAccount === account?.id)
           );
+        } else if (tag) {
+          return (
+            (transaction.type === 'expense' ||
+              transaction.type === 'transfer') &&
+            transaction.tag === tag.id
+          );
         } else {
           return (
             transaction.type === 'expense' || transaction.type === 'transfer'
@@ -83,7 +104,7 @@ export const DetailAccountScreen = ({route}) => {
         0,
       );
     return totalAmountIncome - totalAmountExpense;
-  }, [account, filteredTransactions]);
+  }, [account, filteredTransactions, tag]);
 
   const [
     totalIncome,
@@ -100,6 +121,11 @@ export const DetailAccountScreen = ({route}) => {
           (transaction.type === 'transfer' &&
             transaction.idAccount2 === account?.id)
         );
+      } else if (tag) {
+        return (
+          (transaction.type === 'income' || transaction.type === 'transfer') &&
+          transaction.tag === tag.id
+        );
       } else {
         return transaction.type === 'income' || transaction.type === 'transfer';
       }
@@ -115,6 +141,11 @@ export const DetailAccountScreen = ({route}) => {
             transaction.idAccount === account?.id) ||
           (transaction.type === 'transfer' &&
             transaction.idAccount === account?.id)
+        );
+      } else if (tag) {
+        return (
+          (transaction.type === 'expense' || transaction.type === 'transfer') &&
+          transaction.tag === tag.id
         );
       } else {
         return (
@@ -133,7 +164,7 @@ export const DetailAccountScreen = ({route}) => {
       expenseTransaction.length,
       amountIncome - amountExpense,
     ];
-  }, [transactions, account]);
+  }, [transactions, account, tag]);
 
   const theme = useTheme();
 
@@ -176,25 +207,23 @@ export const DetailAccountScreen = ({route}) => {
       {account && (
         <View style={styles.headerActionContainer}>
           {!account?.archivedAt && (
-            <>
-              <Pressable
-                onPress={() => navigator.navigate('add-account', account)}
-                style={[
-                  styles.headerActionEditContainer,
-                  {
-                    borderColor: theme.colors.outline,
-                  },
-                ]}>
-                <Icon
-                  name="application-edit"
-                  color={theme.colors.onSurface}
-                  size={16}
-                />
-                <Text style={styles.headerActionEditText} variant="labelMedium">
-                  Edit
-                </Text>
-              </Pressable>
-            </>
+            <Pressable
+              onPress={() => navigator.navigate('add-account', account)}
+              style={[
+                styles.headerActionEditContainer,
+                {
+                  borderColor: theme.colors.outline,
+                },
+              ]}>
+              <Icon
+                name="application-edit"
+                color={theme.colors.onSurface}
+                size={16}
+              />
+              <Text style={styles.headerActionEditText} variant="labelMedium">
+                Edit
+              </Text>
+            </Pressable>
           )}
           <IconButton
             icon={account?.archivedAt ? 'archive-off' : 'archive'}
@@ -202,6 +231,28 @@ export const DetailAccountScreen = ({route}) => {
             size={20}
             onPress={archiveAccountDialog}
           />
+        </View>
+      )}
+
+      {tag && (
+        <View style={styles.headerActionContainer}>
+          <Pressable
+            onPress={() => navigator.navigate('add-tag', tag)}
+            style={[
+              styles.headerActionEditContainer,
+              {
+                borderColor: theme.colors.outline,
+              },
+            ]}>
+            <Icon
+              name="application-edit"
+              color={theme.colors.onSurface}
+              size={16}
+            />
+            <Text style={styles.headerActionEditText} variant="labelMedium">
+              Edit
+            </Text>
+          </Pressable>
         </View>
       )}
     </View>
@@ -220,8 +271,9 @@ export const DetailAccountScreen = ({route}) => {
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={
           <>
-            <AccountDetail total={total} account={account} />
+            <AccountDetail total={total} account={account} tag={tag} />
             <TransactionsDetail
+              tag={tag}
               account={account}
               totalIncome={totalIncome}
               totalIncomeTransaction={totalIncomeTransaction}

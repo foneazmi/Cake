@@ -184,7 +184,7 @@ export const ModalInput = ({
             <View
               style={{
                 width,
-                height: height / 2,
+                height: height / 2.5,
                 padding: 24,
                 borderRadius: 10,
                 backgroundColor: theme.colors.background,

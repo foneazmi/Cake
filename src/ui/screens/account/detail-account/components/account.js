@@ -11,14 +11,20 @@ const accountByType = {
   loan: ['Credit', 'Debt', 'credit-card'],
 };
 
-export const AccountDetail = ({account, total}) => {
+export const AccountDetail = ({account, total, tag}) => {
   const theme = useTheme();
 
   return (
     <View style={styles.accountDetailContainer}>
       <View style={styles.accountDetailHeaderContainer}>
         <Icon
-          name={account?.type ? accountByType[account.type][2] : 'credit-card'}
+          name={
+            account?.type
+              ? accountByType[account.type][2]
+              : tag
+              ? 'tag-outline'
+              : 'credit-card'
+          }
           color={theme.colors.onSurface}
           size={24}
         />
@@ -31,7 +37,7 @@ export const AccountDetail = ({account, total}) => {
               },
             ]}
             variant="labelLarge">
-            {account ? account?.name || '' : 'All'}
+            {tag ? tag.name : account ? account?.name || '' : 'All'}
             {account?.archivedAt ? ' [Archived]' : ''}
           </Text>
 
@@ -40,7 +46,11 @@ export const AccountDetail = ({account, total}) => {
               color: theme.colors.onSecondaryContainer,
             }}
             variant="labelSmall">
-            {account ? account?.description || '' : 'All Transaction Account'}
+            {account
+              ? account?.description || ''
+              : tag
+              ? 'Transaction By Tag'
+              : 'All Transaction Account'}
           </Text>
         </View>
       </View>
@@ -231,6 +241,7 @@ const styles = StyleSheet.create({
   },
   accountDetailTextContainer: {
     marginLeft: 8,
+    height: 40,
   },
   accountDetailTitle: {
     fontWeight: 'bold',

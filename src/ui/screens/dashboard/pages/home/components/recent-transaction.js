@@ -40,7 +40,7 @@ const ListTag = props => {
 };
 const Transaction = props => {
   const theme = useTheme();
-  const {accounts} = useSelector(({account}) => account);
+  const {accounts, tags} = useSelector(({account}) => account);
 
   const account = useMemo(
     () => accounts.find(acc => acc.id === props.idAccount),
@@ -51,6 +51,10 @@ const Transaction = props => {
     [accounts, props.idAccount2],
   );
 
+  const tag = useMemo(
+    () => tags.find(e => e.id === props.tag),
+    [tags, props.tag],
+  );
   const transactionByType = {
     transfer: 'credit-card-sync-outline',
     income: 'credit-card-plus-outline',
@@ -80,6 +84,16 @@ const Transaction = props => {
                   name: account2?.name || '',
                   icon: accountByType[account2?.type] || '',
                   id: account2?.id || '',
+                },
+              ]
+            : []),
+          ...(tag
+            ? [
+                {
+                  name: tag?.name || '',
+                  icon: 'tag-outline',
+                  id: tag?.id || '',
+                  type: 'tag',
                 },
               ]
             : []),
@@ -289,7 +303,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     borderRadius: 50,
-    marginRight: 4,
+    marginRight: 8,
   },
   tagName: {
     marginLeft: 4,

@@ -38,7 +38,7 @@ const ListTag = props => {
 };
 export const Transaction = props => {
   const theme = useTheme();
-  const {accounts} = useSelector(({account}) => account);
+  const {accounts, tags} = useSelector(({account}) => account);
   const account = useMemo(
     () => accounts.find(acc => acc.id === props.idAccount),
     [accounts, props.idAccount],
@@ -47,6 +47,11 @@ export const Transaction = props => {
   const account2 = useMemo(
     () => accounts.find(acc => acc.id === props.idAccount2),
     [accounts, props.idAccount2],
+  );
+
+  const tag = useMemo(
+    () => tags.find(e => e.id === props.tag),
+    [tags, props.tag],
   );
 
   const transactionByType = {
@@ -82,6 +87,16 @@ export const Transaction = props => {
                   name: account2?.name,
                   icon: accountByType[account2?.type],
                   id: account2?.id,
+                },
+              ]
+            : []),
+          ...(tag
+            ? [
+                {
+                  name: tag?.name || '',
+                  icon: 'tag-outline',
+                  id: tag?.id || '',
+                  type: 'tag',
                 },
               ]
             : []),

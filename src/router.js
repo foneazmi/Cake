@@ -7,6 +7,7 @@ import {
   LoremScreen,
   SettingScreen,
   AddAccountScreen,
+  AddTagScreen,
   DetailAccountScreen,
   AddTransactionScreen,
   ArchiveAccountScreen,
@@ -48,6 +49,8 @@ export const AppRouter = () => {
 
           {/* //? Account  */}
           <Stack.Screen name="add-account" component={AddAccountScreen} />
+          <Stack.Screen name="add-tag" component={AddTagScreen} />
+          {/*  */}
           <Stack.Screen name="detail-account" component={DetailAccountScreen} />
           <Stack.Screen
             name="archive-account"

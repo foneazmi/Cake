@@ -6,25 +6,18 @@ import {
   Pressable,
   Platform,
 } from 'react-native';
-import {IconButton, Text, useTheme, SegmentedButtons} from 'react-native-paper';
+import {IconButton, Text, useTheme} from 'react-native-paper';
 import {navigator} from '../../../../helpers';
-import {useDispatch, useSelector} from 'react-redux';
-import {addAccount, setDialog, updateAccount} from '../../../../stores/actions';
-import {getFeatures} from '../../../../stores/selector';
+import {useDispatch} from 'react-redux';
+import {addTag, setDialog, updateTag} from '../../../../stores/actions';
 import {FormInput, ModalInput} from '../../../components/input';
 
-export const AddAccountScreen = ({route}) => {
-  let {
-    id = '',
-    name = '',
-    description = '',
-    type = 'cash',
-  } = route?.params || {};
+export const AddTagScreen = ({route}) => {
+  let {id = '', name = '', description = ''} = route?.params || {};
 
   const theme = useTheme();
   const dispatch = useDispatch();
   const [form, setForm] = useState({
-    type,
     name,
     description,
   });
@@ -33,7 +26,7 @@ export const AddAccountScreen = ({route}) => {
     if (form.name === '') {
       dispatch(
         setDialog({
-          description: 'Account name cannot empty!',
+          description: 'Tag name cannot empty!',
           actions: [
             {
               title: 'OK',
@@ -45,7 +38,7 @@ export const AddAccountScreen = ({route}) => {
     } else {
       if (id === '') {
         dispatch(
-          addAccount({
+          addTag({
             ...form,
             id: Date.now(),
             updatedAt: Date.now(),
@@ -53,7 +46,7 @@ export const AddAccountScreen = ({route}) => {
         );
       } else {
         dispatch(
-          updateAccount(id, {
+          updateTag(id, {
             ...form,
             id,
             updatedAt: Date.now(),
@@ -76,7 +69,6 @@ export const AddAccountScreen = ({route}) => {
   );
 
   const Form = () => {
-    const {accountType} = useSelector(getFeatures);
     const [modal, setModal] = useState({});
     const submitModal = (attribute, value) => {
       if (attribute || value) {
@@ -86,30 +78,6 @@ export const AddAccountScreen = ({route}) => {
     };
     return (
       <View style={styles.formContainer}>
-        {accountType && (
-          <SegmentedButtons
-            value={form.type}
-            onValueChange={value => {
-              setForm({...form, type: value});
-            }}
-            buttons={[
-              {
-                value: 'cash',
-                label: 'Cash',
-              },
-              {
-                value: 'invest',
-                label: 'Invest',
-              },
-              {
-                value: 'loan',
-                label: 'Loan',
-              },
-            ]}
-            style={styles.segmentContainer}
-          />
-        )}
-
         <FormInput
           onPress={() => {
             setModal({
@@ -170,7 +138,7 @@ export const AddAccountScreen = ({route}) => {
               color: theme.colors.onPrimary,
             },
           ]}>
-          {id === '' ? 'Add Account' : 'Update Account'}
+          {id === '' ? 'Add Tag' : 'Update Tag'}
         </Text>
       </Pressable>
     </SafeAreaView>

@@ -8,6 +8,10 @@ import {
   en,
 } from 'react-native-paper-dates';
 import moment from 'moment';
+import {height, width, navigator} from '../../../helpers';
+import {FlashList} from '@shopify/flash-list';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector} from 'react-redux';
 
 registerTranslation('en', en);
 
@@ -20,6 +24,9 @@ export const ModalInput = ({
   visible = false,
 }) => {
   const [valueForm, setValueForm] = useState('');
+  const [query, setQuery] = useState('');
+  const {tags} = useSelector(({account}) => account);
+
   useEffect(() => {
     setValueForm(value);
   }, [value]);
@@ -157,6 +164,139 @@ export const ModalInput = ({
             onSubmit(name, moment(params.date).valueOf());
           }}
         />
+      );
+
+    case 'tag-select':
+      return (
+        <Modal
+          transparent
+          visible={visible}
+          animationType="fade"
+          statusBarTranslucent>
+          <Pressable
+            onPress={() => onSubmit()}
+            style={{
+              flex: 1,
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+              backgroundColor: '#00000080',
+            }}>
+            <View
+              style={{
+                width,
+                height: height / 2,
+                padding: 24,
+                borderRadius: 10,
+                backgroundColor: theme.colors.background,
+              }}>
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                }}
+                variant="titleMedium">
+                {title}
+              </Text>
+
+              <TextInput
+                placeholder="Search here"
+                onChangeText={setQuery}
+                value={query}
+                placeholderTextColor={theme.colors.secondaryContainer}
+                style={{
+                  paddingVertical: 16,
+                  paddingHorizontal: 24,
+                  marginTop: 12,
+                  borderColor: theme.colors.onSecondaryContainer,
+                  borderWidth: 1,
+                  borderRadius: 10,
+                  color: theme.colors.onBackground,
+                }}
+              />
+
+              <FlashList
+                estimatedItemSize={20}
+                showsVerticalScrollIndicator={false}
+                data={
+                  query ? tags.filter(tag => tag.name.includes(query)) : tags
+                }
+                keyExtractor={(_, index) => `tag-${index}`}
+                ListFooterComponent={
+                  <Pressable
+                    onPress={() => {
+                      onSubmit();
+                      navigator.navigate('add-tag');
+                    }}
+                    style={{
+                      backgroundColor: theme.colors.secondaryContainer,
+                      flexDirection: 'row',
+                      borderRadius: 10,
+                      marginTop: 12,
+                      paddingVertical: 16,
+                      paddingHorizontal: 24,
+                    }}>
+                    <Icon
+                      name="tag-plus"
+                      size={20}
+                      color={theme.colors.onSurface}
+                    />
+
+                    <Text
+                      style={{
+                        marginLeft: 8,
+                        color: theme.colors.onSurface,
+                      }}
+                      variant="labelLarge">
+                      Add new tag
+                    </Text>
+                  </Pressable>
+                }
+                renderItem={({item}) => (
+                  <Pressable
+                    onPress={() => {
+                      onSubmit(name, item.id);
+                    }}
+                    style={[
+                      {
+                        backgroundColor: theme.colors.secondaryContainer,
+                        flexDirection: 'row',
+                        borderRadius: 10,
+                        marginTop: 12,
+                        paddingVertical: 16,
+                        paddingHorizontal: 24,
+                      },
+                      value === item.id && {
+                        backgroundColor: theme.colors.primary,
+                      },
+                    ]}>
+                    <Icon
+                      name="tag-outline"
+                      size={20}
+                      color={
+                        value === item.id
+                          ? theme.colors.onPrimary
+                          : theme.colors.onSecondaryContainer
+                      }
+                    />
+                    <Text
+                      style={[
+                        {
+                          marginLeft: 8,
+                          color: theme.colors.onSurface,
+                        },
+
+                        value === item.id && {
+                          color: theme.colors.onPrimary,
+                        },
+                      ]}
+                      variant="labelLarge">
+                      {item.name}
+                    </Text>
+                  </Pressable>
+                )}
+              />
+            </View>
+          </Pressable>
+        </Modal>
       );
 
     default:

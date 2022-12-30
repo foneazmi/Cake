@@ -7,6 +7,7 @@ import {
   SET_ACCOUNT,
   SET_TRANSACTION,
   SET_SYNC,
+  SET_TAG,
 } from '../types';
 
 const INITIAL_STATE = {
@@ -14,6 +15,7 @@ const INITIAL_STATE = {
   features: [],
   accounts: [],
   transactions: [],
+  tags: [],
 };
 
 export const account = (state = INITIAL_STATE, action) => {
@@ -24,6 +26,8 @@ export const account = (state = INITIAL_STATE, action) => {
       return {...state, transactions: action.payload};
     case SET_FEATURES:
       return {...state, features: action.payload};
+    case SET_TAG:
+      return {...state, tags: action.payload};
     case SET_SYNC:
       return {...state, sync: action.payload};
     case RESET_ACCOUNT:

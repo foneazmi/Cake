@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useMemo} from 'react';
 import {
   StyleSheet,
   View,
@@ -6,7 +6,7 @@ import {
   Pressable,
   Platform,
 } from 'react-native';
-import {useTheme, IconButton, Text} from 'react-native-paper';
+import {useTheme, IconButton, Text, Button} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   addTransaction,
@@ -50,6 +50,8 @@ export const AddTransactionScreen = ({route}) => {
   });
 
   const {activeAccounts} = useSelector(getAccounts);
+  const {tags} = useSelector(({account}) => account);
+
   const [selectedAccount, setSelectedAccount] = useState(
     idAccount || activeAccounts[0]?.id,
   );
@@ -177,24 +179,41 @@ export const AddTransactionScreen = ({route}) => {
       }
       setModal({});
     };
+    const selectedTag = useMemo(() => tags.find(e => e.id === form.tag), []);
     return (
       <View style={styles.formContainer}>
-        {/* <FormInput
-          onPress={() => {
-            setModal({
-              type: 'tag-list',
-              name: 'tag',
-              title: 'Tag',
-              value: form.tag || '',
-              onSubmit: submitModal,
-              visible: true,
-            });
-          }}
-          icon="tag-text-outline"
-          title={form.title || 'Add Tag'}
-        /> */}
+        <View style={{flexDirection: 'row', marginVertical: 8}}>
+          <View>
+            <Text
+              style={{
+                fontWeight: 'bold',
+                marginBottom: 8,
+              }}
+              variant="labelLarge">
+              Add Tag
+            </Text>
+            <Button
+              icon="tag-outline"
+              mode={selectedTag?.id ? 'contained' : 'contained-tonal'}
+              style={{
+                marginRight: 8,
+              }}
+              onPress={() => {
+                setModal({
+                  type: 'tag-select',
+                  name: 'tag',
+                  title: 'Select Tag',
+                  value: form.tag || '',
+                  onSubmit: submitModal,
+                  visible: true,
+                });
+              }}>
+              {selectedTag?.name || 'Select Tag'}
+            </Button>
+          </View>
+        </View>
         <FormInput
-          onPress={() =>
+          onPress={() => {
             setModal({
               type: 'date',
               name: 'date',
@@ -202,8 +221,8 @@ export const AddTransactionScreen = ({route}) => {
               value: form.date,
               onSubmit: submitModal,
               visible: true,
-            })
-          }
+            });
+          }}
           icon="calendar"
           title={moment(form.date).format('D MMM Y') || 'Add description'}
         />

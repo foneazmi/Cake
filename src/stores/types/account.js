@@ -4,3 +4,5 @@ export const SET_TRANSACTION = 'SET_TRANSACTION';
 
 export const SET_SYNC = 'SET_SYNC';
 export const SET_FEATURES = 'SET_FEATURES';
+
+export const SET_TAG = 'SET_TAG';

@@ -1,6 +1,12 @@
 import {mergeByProperty, logger} from '../../helpers';
 import {pb} from '../../services';
-import {SET_ACCOUNT, SET_TRANSACTION, SET_SYNC, SET_FEATURES} from '../types';
+import {
+  SET_ACCOUNT,
+  SET_TRANSACTION,
+  SET_SYNC,
+  SET_FEATURES,
+  SET_TAG,
+} from '../types';
 import {begin, end} from './global';
 import NetInfo from '@react-native-community/netinfo';
 
@@ -41,15 +47,7 @@ export const addTransaction = data => (dispatch, getState) => {
   const newTransactions = [
     {...data, id: transactions.length + 1},
     ...transactions,
-  ].sort((a, b) => {
-    if (a.date < b.date) {
-      return 1;
-    }
-    if (a.date > b.date) {
-      return -1;
-    }
-    return 0;
-  });
+  ];
   dispatch({
     type: SET_TRANSACTION,
     payload: newTransactions,
@@ -154,3 +152,34 @@ export const syncData =
       }
     }
   };
+
+//TAGS
+export const addTag = data => (dispatch, getState) => {
+  const {tags} = getState().account;
+  const newTags = [{...data, id: tags.length + 1}, ...tags];
+  dispatch({
+    type: SET_TAG,
+    payload: newTags,
+  });
+};
+
+export const updateTag = (id, data) => (dispatch, getState) => {
+  const {tags} = getState().account;
+  const newTags = tags.map(tag => (tag.id === id ? data : tag));
+  dispatch({
+    type: SET_TAG,
+    payload: newTags,
+  });
+};
+
+export const deleteTag = id => (dispatch, getState) => {
+  const deletedAt = Date.now();
+  const {tags} = getState().account;
+  const newTags = tags.map(tag =>
+    tag.id === id ? {...tag, deletedAt, updatedAt: deletedAt} : tag,
+  );
+  dispatch({
+    type: SET_TAG,
+    payload: newTags,
+  });
+};

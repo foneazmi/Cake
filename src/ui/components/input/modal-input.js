@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Pressable, Modal, TextInput} from 'react-native';
-import {useTheme, Text} from 'react-native-paper';
+import {useTheme, Text, IconButton} from 'react-native-paper';
 import CurrencyInput from 'react-native-currency-input';
 import {
   DatePickerModal,
@@ -199,8 +199,6 @@ export const ModalInput = ({
 }) => {
   const [valueForm, setValueForm] = useState('');
   const [query, setQuery] = useState('');
-  const {tags} = useSelector(({account}) => account);
-  const {activeAccounts} = useSelector(getAccounts);
 
   useEffect(() => {
     setValueForm(value);
@@ -348,8 +346,7 @@ export const ModalInput = ({
           visible={visible}
           animationType="fade"
           statusBarTranslucent>
-          <Pressable
-            onPress={() => onSubmit()}
+          <View
             style={{
               flex: 1,
               justifyContent: 'flex-end',
@@ -364,14 +361,23 @@ export const ModalInput = ({
                 borderRadius: 10,
                 backgroundColor: theme.colors.background,
               }}>
-              <Text
-                style={{
-                  fontWeight: 'bold',
-                }}
-                variant="titleMedium">
-                {title}
-              </Text>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Text
+                  style={{
+                    flex: 1,
+                    fontWeight: 'bold',
+                  }}
+                  variant="titleMedium">
+                  {title}
+                </Text>
 
+                <IconButton
+                  icon="close"
+                  mode="outlined"
+                  size={20}
+                  onPress={() => onSubmit()}
+                />
+              </View>
               <TextInput
                 placeholder="Search here"
                 onChangeText={setQuery}
@@ -394,7 +400,7 @@ export const ModalInput = ({
                 value={value}
               />
             </View>
-          </Pressable>
+          </View>
         </Modal>
       );
 
@@ -405,8 +411,7 @@ export const ModalInput = ({
           visible={visible}
           animationType="fade"
           statusBarTranslucent>
-          <Pressable
-            onPress={() => onSubmit()}
+          <View
             style={{
               flex: 1,
               justifyContent: 'flex-end',
@@ -421,13 +426,23 @@ export const ModalInput = ({
                 borderRadius: 10,
                 backgroundColor: theme.colors.background,
               }}>
-              <Text
-                style={{
-                  fontWeight: 'bold',
-                }}
-                variant="titleMedium">
-                {title}
-              </Text>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Text
+                  style={{
+                    flex: 1,
+                    fontWeight: 'bold',
+                  }}
+                  variant="titleMedium">
+                  {title}
+                </Text>
+
+                <IconButton
+                  icon="close"
+                  mode="outlined"
+                  size={20}
+                  onPress={() => onSubmit()}
+                />
+              </View>
 
               <TextInput
                 placeholder="Search here"
@@ -452,7 +467,7 @@ export const ModalInput = ({
                 disableItem={disableItem}
               />
             </View>
-          </Pressable>
+          </View>
         </Modal>
       );
 

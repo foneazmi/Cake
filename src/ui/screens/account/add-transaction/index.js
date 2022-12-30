@@ -4,12 +4,9 @@ import {
   View,
   SafeAreaView,
   Pressable,
-  Modal,
-  TextInput,
   Platform,
 } from 'react-native';
 import {useTheme, IconButton, Text} from 'react-native-paper';
-import CurrencyInput from 'react-native-currency-input';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   addTransaction,
@@ -19,26 +16,26 @@ import {
 } from '../../../../stores/actions';
 import {currency, navigator} from '../../../../helpers';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {
-  DatePickerModal,
-  registerTranslation,
-  en,
-} from 'react-native-paper-dates';
+import {registerTranslation, en} from 'react-native-paper-dates';
 import moment from 'moment';
 import {getAccounts} from '../../../../stores/selector';
 import {AccountList} from './account-list';
+import {FormInput, ModalInput} from '../../../components/input';
 
 registerTranslation('en', en);
 
 export const AddTransactionScreen = ({route}) => {
   const {
-    amount = '',
-    description = '',
     id = '',
+
+    title = '',
+    description = '',
+    tag = '',
+    date = '',
+    amount = '',
+
     idAccount = '',
     idAccount2 = '',
-    title = '',
-    date = '',
     type,
   } = route?.params || {};
   const theme = useTheme();
@@ -48,6 +45,7 @@ export const AddTransactionScreen = ({route}) => {
     title,
     description,
     amount,
+    tag,
     date: date === '' ? Date.now() : date,
   });
 
@@ -172,212 +170,86 @@ export const AddTransactionScreen = ({route}) => {
   );
 
   const Form = () => {
-    const [modalFor, setModalFor] = useState('');
-    const [modalText, setModalText] = useState('');
-    const [open, setOpen] = React.useState(false);
-
-    const submitModal = () => {
-      setForm({...form, [`${modalFor}`]: modalText});
-      setModalFor('');
+    const [modal, setModal] = useState({});
+    const submitModal = (attribute, value) => {
+      if (attribute || value) {
+        setForm({...form, [`${attribute}`]: value});
+      }
+      setModal({});
     };
-
-    const onConfirmSingle = React.useCallback(
-      params => {
-        setOpen(false);
-        setForm({...form, date: moment(params.date).valueOf()});
-      },
-      [setOpen],
-    );
-
     return (
       <View style={styles.formContainer}>
-        <Pressable
+        {/* <FormInput
           onPress={() => {
-            setOpen(true);
-            // setModalText(form.description || '');
-            // setModalFor('description');
+            setModal({
+              type: 'tag-list',
+              name: 'tag',
+              title: 'Tag',
+              value: form.tag || '',
+              onSubmit: submitModal,
+              visible: true,
+            });
           }}
-          style={[
-            styles.formInputContainer,
-            {
-              backgroundColor: theme.colors.secondaryContainer,
-            },
-          ]}>
-          <Icon name="calendar" size={20} color={theme.colors.onSurface} />
-          <Text
-            style={[
-              styles.formText,
-              {
-                color: theme.colors.onSurface,
-              },
-            ]}
-            variant="labelLarge">
-            {moment(form.date).format('D MMM Y') || 'Add description'}
-          </Text>
-        </Pressable>
-        <Pressable
-          onPress={() => {
-            setModalText(form.title || '');
-            setModalFor('title');
-          }}
-          style={[
-            styles.formInputContainer,
-            {
-              backgroundColor: theme.colors.secondaryContainer,
-            },
-          ]}>
-          <Icon
-            name="tag-text-outline"
-            size={20}
-            color={theme.colors.onSurface}
-          />
-          <Text
-            style={[
-              styles.formText,
-              {
-                color: theme.colors.onSurface,
-              },
-            ]}
-            variant="labelLarge">
-            {form.title || 'Add title'}
-          </Text>
-        </Pressable>
-
-        <Pressable
-          onPress={() => {
-            setModalText(form.description || '');
-            setModalFor('description');
-          }}
-          style={[
-            styles.formInputContainer,
-            {
-              backgroundColor: theme.colors.secondaryContainer,
-            },
-          ]}>
-          <Icon name="text" size={20} color={theme.colors.onSurface} />
-          <Text
-            style={[
-              styles.formText,
-              {
-                color: theme.colors.onSurface,
-              },
-            ]}
-            variant="labelLarge">
-            {form.description || 'Add description'}
-          </Text>
-        </Pressable>
-
-        <Pressable
-          onPress={() => {
-            setModalText(form.amount || '');
-            setModalFor('amount');
-          }}
-          style={[
-            styles.formInputContainer,
-            {
-              backgroundColor: theme.colors.secondaryContainer,
-            },
-          ]}>
-          <Icon
-            name="sort-numeric-variant"
-            size={20}
-            color={theme.colors.onSurface}
-          />
-          <Text
-            style={[
-              styles.formText,
-              {
-                color: theme.colors.onSurface,
-              },
-            ]}
-            variant="labelLarge">
-            {form.amount ? currency(form.amount) : 'Add amount'}
-          </Text>
-        </Pressable>
-
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={modalFor.length > 0}>
-          <Pressable onPress={submitModal} style={styles.modalContainer}>
-            <View
-              style={[
-                styles.modalContentContainer,
-                {
-                  backgroundColor: theme.colors.background,
-                },
-              ]}>
-              <Text style={styles.modalFormTitle}>
-                {modalFor.toUpperCase()}
-              </Text>
-              {modalFor === 'amount' ? (
-                <CurrencyInput
-                  placeholderTextColor={theme.colors.onBackground}
-                  autoFocus
-                  prefix="IDR "
-                  placeholder="Input Here"
-                  style={[
-                    styles.modalFormInput,
-                    {
-                      color: theme.colors.onBackground,
-                    },
-                  ]}
-                  onChangeValue={e => setModalText(e ? Math.abs(e) : '')}
-                  value={modalText}
-                  delimiter=","
-                  separator="."
-                  precision={0}
-                />
-              ) : (
-                <TextInput
-                  placeholderTextColor={theme.colors.onBackground}
-                  autoFocus
-                  placeholder="Input Here"
-                  style={[
-                    styles.modalFormInput,
-                    {
-                      color: theme.colors.onBackground,
-                    },
-                  ]}
-                  onChangeText={e => setModalText(e)}
-                  value={modalText}
-                />
-              )}
-
-              <Pressable
-                style={[
-                  styles.modalSubmitContainer,
-                  {
-                    backgroundColor: theme.colors.primary,
-                  },
-                ]}
-                onPress={submitModal}>
-                <Text
-                  style={[
-                    styles.modalSubmitText,
-                    {
-                      color: theme.colors.onPrimary,
-                    },
-                  ]}>
-                  Save
-                </Text>
-              </Pressable>
-            </View>
-          </Pressable>
-        </Modal>
-
-        <DatePickerModal
-          locale="en"
-          mode="single"
-          visible={open}
-          onDismiss={() => setOpen(false)}
-          date={new Date(form.date)}
-          onConfirm={onConfirmSingle}
-          validRange={{
-            startDate: new Date(2021, 1, 2),
-            endDate: new Date(),
-          }}
+          icon="tag-text-outline"
+          title={form.title || 'Add Tag'}
+        /> */}
+        <FormInput
+          onPress={() =>
+            setModal({
+              type: 'date',
+              name: 'date',
+              title: '',
+              value: form.date,
+              onSubmit: submitModal,
+              visible: true,
+            })
+          }
+          icon="calendar"
+          title={moment(form.date).format('D MMM Y') || 'Add description'}
         />
+        <FormInput
+          onPress={() => {
+            setModal({
+              type: 'text',
+              name: 'title',
+              title: 'Title',
+              value: form.title || '',
+              onSubmit: submitModal,
+              visible: true,
+            });
+          }}
+          icon="card-text"
+          title={form.title || 'Add title'}
+        />
+        <FormInput
+          onPress={() => {
+            setModal({
+              type: 'text',
+              name: 'description',
+              title: 'Description',
+              value: form.description || '',
+              onSubmit: submitModal,
+              visible: true,
+            });
+          }}
+          icon="card-text-outline"
+          title={form.description || 'Add description'}
+        />
+        <FormInput
+          onPress={() => {
+            setModal({
+              type: 'currency',
+              name: 'amount',
+              title: 'Amount',
+              value: form.amount || '',
+              onSubmit: submitModal,
+              visible: true,
+            });
+          }}
+          icon="sort-numeric-variant"
+          title={form.amount ? currency(form.amount) : 'Add amount'}
+        />
+        <ModalInput {...modal} />
       </View>
     );
   };
@@ -460,48 +332,7 @@ const styles = StyleSheet.create({
   formContainer: {
     padding: 16,
   },
-  segmentContainer: {
-    alignSelf: 'center',
-  },
-  formInputContainer: {
-    flexDirection: 'row',
-    borderRadius: 10,
-    marginTop: 12,
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-  },
-  formText: {
-    marginLeft: 8,
-  },
   //////
-  modalContainer: {
-    flex: 1,
-    backgroundColor: '#00000080',
-  },
-  modalContentContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingHorizontal: 16,
-    paddingVertical: 32,
-  },
-  modalFormTitle: {
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  modalFormInput: {
-    marginBottom: 32,
-    fontSize: 20,
-  },
-  modalSubmitContainer: {
-    borderRadius: 10,
-    padding: 16,
-  },
-  modalSubmitText: {
-    textAlign: 'center',
-  },
-  ///
   submitContainer: {
     borderRadius: 10,
     marginHorizontal: 16,

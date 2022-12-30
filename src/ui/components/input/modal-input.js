@@ -1,0 +1,195 @@
+import React, {useState, useEffect} from 'react';
+import {StyleSheet, View, Pressable, Modal, TextInput} from 'react-native';
+import {useTheme, Text} from 'react-native-paper';
+import CurrencyInput from 'react-native-currency-input';
+import {
+  DatePickerModal,
+  registerTranslation,
+  en,
+} from 'react-native-paper-dates';
+import moment from 'moment';
+
+registerTranslation('en', en);
+
+export const ModalInput = ({
+  type = '',
+  name = '',
+  title = '',
+  value = '',
+  onSubmit = () => {},
+  visible = false,
+}) => {
+  const [valueForm, setValueForm] = useState('');
+  useEffect(() => {
+    setValueForm(value);
+  }, [value]);
+
+  const theme = useTheme();
+  switch (type) {
+    case 'text':
+      return (
+        <Modal animationType="fade" transparent={true} visible={visible}>
+          <Pressable
+            onPress={() => {
+              onSubmit(name, valueForm);
+              setValueForm('');
+            }}
+            style={styles.modalContainer}>
+            <View
+              style={[
+                styles.modalContentContainer,
+                {
+                  backgroundColor: theme.colors.background,
+                },
+              ]}>
+              <Text style={styles.modalFormTitle}>{title}</Text>
+              <TextInput
+                placeholderTextColor={theme.colors.onBackground}
+                autoFocus
+                placeholder="Input Here"
+                style={[
+                  styles.modalFormInput,
+                  {
+                    color: theme.colors.onBackground,
+                  },
+                ]}
+                onChangeText={val => setValueForm(val)}
+                value={valueForm}
+              />
+
+              <Pressable
+                style={[
+                  styles.modalSubmitContainer,
+                  {
+                    backgroundColor: theme.colors.primary,
+                  },
+                ]}
+                onPress={() => {
+                  onSubmit(name, valueForm);
+                  setValueForm('');
+                }}>
+                <Text
+                  style={[
+                    styles.modalSubmitText,
+                    {
+                      color: theme.colors.onPrimary,
+                    },
+                  ]}>
+                  Save
+                </Text>
+              </Pressable>
+            </View>
+          </Pressable>
+        </Modal>
+      );
+
+    case 'currency':
+      return (
+        <Modal animationType="fade" transparent={true} visible={visible}>
+          <Pressable
+            onPress={() => {
+              onSubmit(name, valueForm);
+              setValueForm('');
+            }}
+            style={styles.modalContainer}>
+            <View
+              style={[
+                styles.modalContentContainer,
+                {
+                  backgroundColor: theme.colors.background,
+                },
+              ]}>
+              <Text style={styles.modalFormTitle}>{title}</Text>
+
+              <CurrencyInput
+                placeholderTextColor={theme.colors.onBackground}
+                autoFocus
+                prefix="IDR "
+                placeholder="Input Here"
+                style={[
+                  styles.modalFormInput,
+                  {
+                    color: theme.colors.onBackground,
+                  },
+                ]}
+                onChangeValue={e => setValueForm(e ? Math.abs(e) : '')}
+                value={valueForm}
+                delimiter=","
+                separator="."
+                precision={0}
+              />
+
+              <Pressable
+                style={[
+                  styles.modalSubmitContainer,
+                  {
+                    backgroundColor: theme.colors.primary,
+                  },
+                ]}
+                onPress={() => {
+                  onSubmit(name, valueForm);
+                  setValueForm('');
+                }}>
+                <Text
+                  style={[
+                    styles.modalSubmitText,
+                    {
+                      color: theme.colors.onPrimary,
+                    },
+                  ]}>
+                  Save
+                </Text>
+              </Pressable>
+            </View>
+          </Pressable>
+        </Modal>
+      );
+
+    case 'date':
+      return (
+        <DatePickerModal
+          locale="en"
+          mode="single"
+          visible={visible}
+          onDismiss={() => onSubmit()}
+          date={new Date(value)}
+          onConfirm={params => {
+            onSubmit(name, moment(params.date).valueOf());
+          }}
+        />
+      );
+
+    default:
+      return <></>;
+  }
+};
+
+const styles = StyleSheet.create({
+  modalContainer: {
+    flex: 1,
+    backgroundColor: '#00000080',
+  },
+  modalContentContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 16,
+    paddingVertical: 32,
+  },
+  modalFormTitle: {
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  modalFormInput: {
+    marginBottom: 32,
+    fontSize: 20,
+  },
+  modalSubmitContainer: {
+    borderRadius: 10,
+    padding: 16,
+  },
+  modalSubmitText: {
+    textAlign: 'center',
+  },
+});

@@ -19,7 +19,6 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {registerTranslation, en} from 'react-native-paper-dates';
 import moment from 'moment';
 import {getAccounts} from '../../../../stores/selector';
-import {AccountList} from './account-list';
 import {FormInput, ModalInput} from '../../../components/input';
 
 registerTranslation('en', en);
@@ -33,32 +32,30 @@ export const AddTransactionScreen = ({route}) => {
     tag = '',
     date = '',
     amount = '',
-
     idAccount = '',
     idAccount2 = '',
+
     type,
   } = route?.params || {};
   const theme = useTheme();
   const dispatch = useDispatch();
 
+  const {activeAccounts} = useSelector(getAccounts);
+  const {tags} = useSelector(({account}) => account);
+
   const [form, setForm] = useState({
+    idAccount: idAccount
+      ? idAccount
+      : activeAccounts.length > 0
+      ? activeAccounts[0].id
+      : '',
+    idAccount2,
     title,
     description,
     amount,
     tag,
     date: date === '' ? Date.now() : date,
   });
-
-  const {activeAccounts} = useSelector(getAccounts);
-  const {tags} = useSelector(({account}) => account);
-
-  const [selectedAccount, setSelectedAccount] = useState(
-    idAccount || activeAccounts[0]?.id,
-  );
-
-  const [selectedToAccount, setSelectedToAccount] = useState(
-    idAccount2 ? idAccount2 : type === 'transfer' ? activeAccounts[1]?.id : '',
-  );
 
   const typeDescription = {
     income: 'Add Income',
@@ -80,13 +77,12 @@ export const AddTransactionScreen = ({route}) => {
       );
       return;
     } else if (
-      selectedAccount === '' ||
-      selectedAccount === undefined ||
-      (type === 'transfer' && selectedToAccount === '')
+      form.idAccount === '' ||
+      (type === 'transfer' && form.idAccount2 === '')
     ) {
       dispatch(
         setDialog({
-          description: 'Please select account first!',
+          description: 'Account cannot be empty!',
           actions: [
             {
               title: 'OK',
@@ -101,8 +97,6 @@ export const AddTransactionScreen = ({route}) => {
         type,
         id,
         updatedAt: Date.now(),
-        idAccount: selectedAccount,
-        idAccount2: selectedToAccount,
       };
       if (id === '') {
         dispatch(addTransaction(payload));
@@ -175,14 +169,101 @@ export const AddTransactionScreen = ({route}) => {
     const [modal, setModal] = useState({});
     const submitModal = (attribute, value) => {
       if (attribute || value) {
-        setForm({...form, [`${attribute}`]: value});
+        if (
+          type === 'transfer' &&
+          attribute === 'idAccount' &&
+          value === form.idAccount2
+        ) {
+          setForm({...form, [`${attribute}`]: value, idAccount2: ''});
+        } else {
+          setForm({...form, [`${attribute}`]: value});
+        }
       }
       setModal({});
     };
     const selectedTag = useMemo(() => tags.find(e => e.id === form.tag), []);
+
+    const selectedAccount = useMemo(
+      () => activeAccounts.find(account => account.id === form.idAccount),
+      [],
+    );
+    const selectedAccount2 = useMemo(
+      () => activeAccounts.find(account => account.id === form.idAccount2),
+      [],
+    );
+
     return (
       <View style={styles.formContainer}>
-        <View style={{flexDirection: 'row', marginVertical: 8}}>
+        <View style={{flexDirection: 'row'}}>
+          <View style={{flexDirection: 'row', flex: 1}}>
+            <View>
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  marginBottom: 8,
+                }}
+                variant="labelLarge">
+                {type === 'transfer'
+                  ? 'From'
+                  : type === 'income'
+                  ? 'Add Money To'
+                  : 'Pay with'}
+              </Text>
+              <Button
+                icon="wallet-outline"
+                mode={selectedAccount?.id ? 'contained' : 'contained-tonal'}
+                style={{
+                  marginRight: 8,
+                }}
+                onPress={() => {
+                  setModal({
+                    type: 'account-select',
+                    name: 'idAccount',
+                    title: 'Select Account',
+                    value: form.idAccount || '',
+                    onSubmit: submitModal,
+                    visible: true,
+                  });
+                }}>
+                {selectedAccount?.name || 'Select Account'}
+              </Button>
+            </View>
+          </View>
+          {type === 'transfer' && (
+            <View style={{flexDirection: 'row', flex: 1}}>
+              <View>
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    marginBottom: 8,
+                  }}
+                  variant="labelLarge">
+                  To
+                </Text>
+                <Button
+                  icon="wallet-outline"
+                  mode={selectedAccount2?.id ? 'contained' : 'contained-tonal'}
+                  style={{
+                    marginRight: 8,
+                  }}
+                  onPress={() => {
+                    setModal({
+                      type: 'account-select',
+                      name: 'idAccount2',
+                      title: 'Select Account',
+                      value: form.idAccount2 || '',
+                      onSubmit: submitModal,
+                      disableItem: form.idAccount || '',
+                      visible: true,
+                    });
+                  }}>
+                  {selectedAccount2?.name || 'Select Account'}
+                </Button>
+              </View>
+            </View>
+          )}
+        </View>
+        <View style={{flexDirection: 'row', marginVertical: 16}}>
           <View>
             <Text
               style={{
@@ -282,21 +363,6 @@ export const AddTransactionScreen = ({route}) => {
       ]}>
       <Header />
       <View style={styles.container}>
-        <AccountList
-          type={type}
-          activeAccounts={activeAccounts}
-          selectedAccount={selectedAccount}
-          selectedToAccount={selectedToAccount}
-          onPressAccount={selectedId => {
-            if (selectedToAccount === selectedId) {
-              setSelectedToAccount('');
-            }
-            setSelectedAccount(selectedId);
-          }}
-          onPressToAccount={selectedId => {
-            setSelectedToAccount(selectedId);
-          }}
-        />
         <Form />
       </View>
       <Pressable

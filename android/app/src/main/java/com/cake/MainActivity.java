@@ -4,6 +4,9 @@ import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
 
+import android.os.Bundle;
+import android.content.pm.ActivityInfo;
+
 public class MainActivity extends ReactActivity {
 
   /**
@@ -15,6 +18,15 @@ public class MainActivity extends ReactActivity {
     return "Cake";
   }
 
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    if (getResources().getBoolean(R.bool.screen_orientation_portrait)) {
+      setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    }else if (getResources().getBoolean(R.bool.screen_orientation_landscape)) {
+      setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+    }
+  }
   /**
    * Returns the instance of the {@link ReactActivityDelegate}. There the RootView is created and
    * you can specify the renderer you wish to use - the new renderer (Fabric) or the old renderer
